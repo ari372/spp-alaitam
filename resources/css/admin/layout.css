@@ -1,0 +1,393 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f5f7f6;
+    color: #333;
+}
+
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    background: #0f5132;
+    color: white;
+
+    padding: 20px;
+
+    overflow-y: auto;
+}
+
+.logo {
+    text-align: center;
+
+    padding: 10px 5px 25px;
+
+    border-bottom: 1px solid rgba(255,255,255,.2);
+
+    margin-bottom: 25px;
+}
+
+.logo h2 {
+    font-size: 21px;
+    margin-bottom: 5px;
+}
+
+.logo p {
+    font-size: 12px;
+    opacity: .8;
+}
+
+
+/* ========================================
+   MENU
+======================================== */
+
+.menu-title {
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    color: rgba(255,255,255,.6);
+
+    margin: 20px 10px 8px;
+}
+
+.menu {
+    list-style: none;
+}
+
+.menu li {
+    margin-bottom: 6px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px;
+
+    color: white;
+
+    text-decoration: none;
+
+    border-radius: 8px;
+
+    transition: .2s;
+}
+
+.menu a:hover {
+    background: rgba(255,255,255,.12);
+}
+
+.menu a.active {
+    background: #d4a017;
+    color: white;
+}
+
+.menu-icon {
+    width: 25px;
+    text-align: center;
+}
+
+
+/* ========================================
+   MAIN
+======================================== */
+
+.main {
+    margin-left: 250px;
+    min-height: 100vh;
+}
+
+
+/* ========================================
+   NAVBAR
+======================================== */
+
+.navbar {
+    height: 70px;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    border-bottom: 1px solid #ddd;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+}
+
+.navbar-title h3 {
+    color: #0f5132;
+    font-size: 20px;
+}
+
+.navbar-title p {
+    font-size: 12px;
+    color: #777;
+    margin-top: 3px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* ========================================
+   ADMIN PROFILE
+======================================== */
+
+.admin-profile {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #0f5132;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: bold;
+}
+
+.admin-info strong {
+    display: block;
+    color: #333;
+}
+
+.admin-info span {
+    font-size: 12px;
+    color: #777;
+}
+
+
+/* ========================================
+   LOGOUT
+======================================== */
+
+.logout-form {
+    margin-left: 18px;
+}
+
+.logout-btn {
+    border: none;
+
+    background: #dc3545;
+
+    color: white;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.logout-btn:hover {
+    background: #bb2d3b;
+}
+
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.content {
+    padding: 30px;
+}
+
+
+/* ========================================
+   NOTIFICATION
+======================================== */
+
+.notification-wrapper {
+    position: relative;
+
+    margin-right: 20px;
+}
+
+.notification-btn {
+    position: relative;
+
+    text-decoration: none;
+
+    font-size: 23px;
+
+    color: #0f5132;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 42px;
+
+    height: 42px;
+}
+
+.notification-badge {
+    position: absolute;
+
+    top: 0;
+
+    right: 0;
+
+    background: #dc3545;
+
+    color: white;
+
+    min-width: 19px;
+
+    height: 19px;
+
+    padding: 0 5px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* ========================================
+   RESPONSIVE TABLET
+======================================== */
+
+@media(max-width: 768px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        margin-left: 210px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .navbar {
+        padding: 0 15px;
+    }
+
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+}
+
+
+/* ========================================
+   RESPONSIVE MOBILE
+======================================== */
+
+@media(max-width: 600px) {
+
+    .sidebar {
+        width: 70px;
+        padding: 10px;
+    }
+
+    .main {
+        margin-left: 70px;
+    }
+
+    .logo h2,
+    .logo p,
+    .menu-title,
+    .menu-text,
+    .admin-info {
+        display: none;
+    }
+
+    .menu a {
+        justify-content: center;
+    }
+
+    .menu-icon {
+        font-size: 20px;
+    }
+
+    .navbar {
+        padding: 0 10px;
+    }
+
+    .navbar-title h3 {
+        font-size: 16px;
+    }
+
+    .navbar-title p {
+        display: none;
+    }
+
+    .notification-wrapper {
+        margin-right: 5px;
+    }
+
+    .logout-form {
+        margin-left: 8px;
+    }
+
+    .logout-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+}

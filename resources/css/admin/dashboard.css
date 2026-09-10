@@ -1,0 +1,414 @@
+/* =========================================================
+   DASHBOARD ADMIN
+========================================================= */
+
+.dashboard-header {
+    margin-bottom: 25px;
+}
+
+.dashboard-header h2 {
+    color: #0f5132;
+    margin: 0 0 6px;
+    font-size: 25px;
+}
+
+.dashboard-header p {
+    color: #777;
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   STATISTIK
+========================================================= */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .07);
+
+    border-left: 5px solid #0f5132;
+
+    transition: .2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .10);
+}
+
+.stat-icon {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.stat-title {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    color: #0f5132;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   STATUS PEMBAYARAN
+========================================================= */
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.status-card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .07);
+
+    transition: .2s;
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+}
+
+.status-card h4 {
+    margin: 0 0 15px;
+    color: #333;
+    font-size: 16px;
+}
+
+.status-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-content span:first-child {
+    color: #777;
+    font-size: 14px;
+}
+
+.status-number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.status-lunas {
+    color: #198754;
+}
+
+.status-belum {
+    color: #ffc107;
+}
+
+.status-terlambat {
+    color: #dc3545;
+}
+
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .07);
+}
+
+.card h3 {
+    margin: 0 0 20px;
+    color: #0f5132;
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   GRAFIK
+========================================================= */
+
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+
+/* =========================================================
+   MENUNGGU PERSETUJUAN
+========================================================= */
+
+.approval-number {
+    font-size: 38px;
+    font-weight: bold;
+    color: #f0ad00;
+    margin-bottom: 10px;
+}
+
+.approval-text {
+    color: #777;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    transition: .2s;
+}
+
+.btn-green {
+    background: #0f5132;
+    color: white;
+}
+
+.btn-green:hover {
+    background: #0b3d25;
+}
+
+
+/* =========================================================
+   RINGKASAN TAGIHAN
+========================================================= */
+
+.summary-card {
+    margin-bottom: 25px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid #eee;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    color: #777;
+    font-size: 14px;
+}
+
+.summary-value {
+    font-weight: bold;
+    color: #0f5132;
+}
+
+
+/* =========================================================
+   PEMBAYARAN TERBARU
+========================================================= */
+
+.payment-card {
+    margin-bottom: 25px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.payment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment-table th {
+    background: #0f5132;
+    color: white;
+
+    padding: 12px;
+
+    text-align: left;
+
+    font-size: 14px;
+}
+
+.payment-table td {
+    padding: 12px;
+
+    border-bottom: 1px solid #eee;
+
+    font-size: 14px;
+}
+
+.payment-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+
+/* =========================================================
+   BADGE STATUS
+========================================================= */
+
+.badge {
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+.badge-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.badge-warning {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.badge-danger {
+    background: #f8d7da;
+    color: #842029;
+}
+
+
+/* =========================================================
+   AKSI CEPAT
+========================================================= */
+
+.quick-card {
+    margin-bottom: 0;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.quick-action {
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background: #f5f7f6;
+
+    text-decoration: none;
+
+    color: #0f5132;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    border: 1px solid #e5e5e5;
+
+    transition: .2s;
+}
+
+.quick-action:hover {
+    background: #e8f3ed;
+
+    transform: translateY(-2px);
+
+    border-color: #0f5132;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-header h2 {
+        font-size: 21px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .stat-card {
+        padding: 18px;
+    }
+
+    .status-card {
+        padding: 18px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .status-number {
+        font-size: 24px;
+    }
+
+}

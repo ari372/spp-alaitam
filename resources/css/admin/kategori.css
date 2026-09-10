@@ -1,0 +1,345 @@
+/* =========================================================
+   KATEGORI PEMBAYARAN
+========================================================= */
+
+.kategori-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.kategori-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.kategori-header h2 {
+    color: #0f5132;
+
+    margin: 0 0 6px;
+
+    font-size: 25px;
+}
+
+.kategori-header p {
+    color: #777;
+
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.kategori-card {
+    background: white;
+
+    padding: 25px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+
+    margin-bottom: 25px;
+}
+
+.kategori-card h3 {
+    color: #0f5132;
+
+    margin: 0 0 20px;
+
+    font-size: 18px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.alert-success {
+    background: #d1e7dd;
+
+    color: #0f5132;
+
+    padding: 14px 18px;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid #badbcc;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.kategori-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(200px, 1fr));
+
+    gap: 20px;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group label {
+    display: block;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #333;
+
+    margin-bottom: 7px;
+}
+
+.form-group input {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: .2s;
+
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #0f5132;
+
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, .08);
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+
+/* =========================================================
+   BUTTON TAMBAH
+========================================================= */
+
+.btn-tambah-kategori {
+    margin-top: 20px;
+
+    background: #0f5132;
+
+    color: white;
+
+    border: none;
+
+    padding: 11px 20px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.btn-tambah-kategori:hover {
+    background: #0b3d25;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.kategori-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 650px;
+}
+
+.kategori-table thead tr {
+    background: #0f5132;
+
+    color: white;
+}
+
+.kategori-table th {
+    padding: 14px;
+
+    text-align: left;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.kategori-table th:first-child {
+    text-align: center;
+
+    width: 70px;
+}
+
+.kategori-table th:last-child {
+    text-align: center;
+
+    width: 100px;
+}
+
+.kategori-table td {
+    padding: 14px;
+
+    border-bottom: 1px solid #eee;
+
+    font-size: 14px;
+
+    color: #333;
+}
+
+.kategori-table tbody tr {
+    transition: .2s;
+}
+
+.kategori-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+.text-center {
+    text-align: center;
+}
+
+
+/* =========================================================
+   NOMINAL
+========================================================= */
+
+.kategori-table .nominal {
+    font-weight: bold;
+
+    color: #0f5132;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   BUTTON HAPUS
+========================================================= */
+
+.btn-hapus {
+    background: #dc3545;
+
+    color: white;
+
+    border: none;
+
+    padding: 7px 12px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.btn-hapus:hover {
+    background: #bb2d3b;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   DATA KOSONG
+========================================================= */
+
+.empty-data {
+    text-align: center;
+
+    padding: 40px !important;
+
+    color: #777 !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .kategori-card {
+        padding: 20px;
+    }
+
+    .kategori-header h2 {
+        font-size: 22px;
+    }
+
+    .kategori-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .kategori-card {
+        padding: 16px;
+    }
+
+    .kategori-header h2 {
+        font-size: 20px;
+    }
+
+    .kategori-header p {
+        font-size: 13px;
+    }
+
+    .btn-tambah-kategori {
+        width: 100%;
+    }
+
+}

@@ -1,0 +1,316 @@
+/* =========================================================
+   PEMBAYARAN
+========================================================= */
+
+.pembayaran-container {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pembayaran-header {
+    margin-bottom: 25px;
+}
+
+.pembayaran-header h2 {
+    margin: 0 0 5px;
+    color: #0f5132;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.pembayaran-header p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.pembayaran-alert {
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.pembayaran-alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.pembayaran-alert-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.pembayaran-card {
+    background: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   CARD HEADER
+========================================================= */
+
+.pembayaran-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.pembayaran-card-header h3 {
+    margin: 0;
+    color: #0f5132;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.pembayaran-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: #fff3cd;
+    color: #664d03;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   INFORMASI PEMBAYARAN
+========================================================= */
+
+.pembayaran-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.pembayaran-info-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 7px;
+}
+
+.pembayaran-info-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.pembayaran-info-value {
+    color: #212529;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BUKTI PEMBAYARAN
+========================================================= */
+
+.pembayaran-bukti {
+    margin: 20px 0;
+}
+
+.pembayaran-bukti h4 {
+    margin: 0 0 12px;
+    color: #333;
+    font-size: 16px;
+}
+
+.pembayaran-bukti img {
+    display: block;
+    max-width: 350px;
+    max-height: 450px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #ffffff;
+    object-fit: contain;
+}
+
+.pembayaran-bukti-empty {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   AKSI
+========================================================= */
+
+.pembayaran-actions {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.pembayaran-btn {
+    border: none;
+    padding: 11px 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.pembayaran-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SETUJUI
+========================================================= */
+
+.pembayaran-btn-setujui {
+    background: #198754;
+    color: #ffffff;
+}
+
+.pembayaran-btn-setujui:hover {
+    background: #146c43;
+}
+
+
+/* =========================================================
+   TOLAK
+========================================================= */
+
+.pembayaran-tolak-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pembayaran-tolak-form textarea {
+    width: 300px;
+    min-height: 70px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    outline: none;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.pembayaran-tolak-form textarea:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.08);
+}
+
+.pembayaran-btn-tolak {
+    background: #dc3545;
+    color: #ffffff;
+}
+
+.pembayaran-btn-tolak:hover {
+    background: #bb2d3b;
+}
+
+
+/* =========================================================
+   DATA KOSONG
+========================================================= */
+
+.pembayaran-empty {
+    background: #ffffff;
+    padding: 50px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.pembayaran-empty-icon {
+    margin-bottom: 10px;
+    color: #198754;
+    font-size: 40px;
+}
+
+.pembayaran-empty h3 {
+    margin: 0 0 8px;
+    color: #333;
+    font-size: 20px;
+}
+
+.pembayaran-empty p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .pembayaran-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pembayaran-info {
+        grid-template-columns: 1fr;
+    }
+
+    .pembayaran-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pembayaran-actions form {
+        width: 100%;
+    }
+
+    .pembayaran-btn {
+        width: 100%;
+    }
+
+    .pembayaran-tolak-form textarea {
+        width: 100%;
+    }
+
+    .pembayaran-empty {
+        padding: 40px 20px;
+    }
+}

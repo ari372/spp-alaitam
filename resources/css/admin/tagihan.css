@@ -1,0 +1,162 @@
+.tagihan-container {
+    width: 100%;
+}
+
+.tagihan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.tagihan-header h2 {
+    color: #0f5132;
+    margin: 0 0 5px 0;
+}
+
+.tagihan-header p {
+    color: #777;
+    margin: 0;
+}
+
+.btn-tambah-tagihan {
+    background: #0f5132;
+    color: white;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.btn-tambah-tagihan:hover {
+    background: #146c43;
+}
+
+.alert {
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.tagihan-table-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+}
+
+.tagihan-table-wrapper {
+    overflow-x: auto;
+}
+
+.tagihan-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tagihan-table thead tr {
+    background: #0f5132;
+    color: white;
+}
+
+.tagihan-table th {
+    padding: 14px;
+    text-align: left;
+}
+
+.tagihan-table th:first-child {
+    text-align: center;
+}
+
+.tagihan-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.tagihan-table td {
+    padding: 14px;
+}
+
+.tagihan-table td.no {
+    text-align: center;
+}
+
+.tagihan-nominal {
+    font-weight: bold;
+}
+
+.tagihan-aksi {
+    padding: 14px;
+    white-space: nowrap;
+}
+
+.btn-aksi {
+    display: inline-block;
+    padding: 7px 11px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.btn-detail {
+    background: #0d6efd;
+    color: white;
+}
+
+.btn-detail:hover {
+    background: #0b5ed7;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-edit:hover {
+    background: #e0a800;
+}
+
+.btn-hapus {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-hapus:hover {
+    background: #bb2d3b;
+}
+
+.tagihan-empty {
+    padding: 40px !important;
+    text-align: center;
+    color: #777;
+}
+
+@media (max-width: 700px) {
+
+    .tagihan-header {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .btn-tambah-tagihan {
+        width: 100%;
+        text-align: center;
+    }
+
+    .tagihan-table-card {
+        padding: 15px;
+    }
+
+}

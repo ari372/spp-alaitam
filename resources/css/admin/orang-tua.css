@@ -1,0 +1,302 @@
+/* =========================================================
+   DATA ORANG TUA
+========================================================= */
+
+.orang-tua-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.orang-tua-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.orang-tua-header h2 {
+    margin: 0 0 5px;
+    color: #0f5132;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.orang-tua-header p {
+    margin: 0;
+    color: #777;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   TOMBOL TAMBAH
+========================================================= */
+
+.btn-tambah-orang-tua {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: #0f5132;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-tambah-orang-tua:hover {
+    background: #0b3d25;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.orang-tua-alert {
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.orang-tua-alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.orang-tua-alert-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+
+/* =========================================================
+   CARD TABLE
+========================================================= */
+
+.orang-tua-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.orang-tua-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.orang-tua-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.orang-tua-table thead tr {
+    background: #0f5132;
+    color: #ffffff;
+}
+
+.orang-tua-table th {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.orang-tua-table th.text-center,
+.orang-tua-table td.text-center {
+    text-align: center;
+}
+
+.orang-tua-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eeeeee;
+    color: #333333;
+    font-size: 14px;
+}
+
+.orang-tua-table tbody tr {
+    transition: 0.2s ease;
+}
+
+.orang-tua-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+
+/* =========================================================
+   JUMLAH ANAK
+========================================================= */
+
+.jumlah-anak {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 20px;
+    background: #d1e7dd;
+    color: #0f5132;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   AKSI
+========================================================= */
+
+.orang-tua-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+
+/* =========================================================
+   TOMBOL AKSI
+========================================================= */
+
+.btn-orang-tua {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-orang-tua:hover {
+    transform: translateY(-1px);
+}
+
+
+/* DETAIL */
+
+.btn-detail-orang-tua {
+    background: #0d6efd;
+    color: #ffffff;
+}
+
+.btn-detail-orang-tua:hover {
+    background: #0b5ed7;
+    color: #ffffff;
+}
+
+
+/* EDIT */
+
+.btn-edit-orang-tua {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-edit-orang-tua:hover {
+    background: #e0a800;
+    color: #212529;
+}
+
+
+/* HAPUS */
+
+.btn-hapus-orang-tua {
+    background: #dc3545;
+    color: #ffffff;
+}
+
+.btn-hapus-orang-tua:hover {
+    background: #bb2d3b;
+}
+
+
+/* =========================================================
+   EMPTY DATA
+========================================================= */
+
+.orang-tua-empty {
+    padding: 40px !important;
+    text-align: center;
+    color: #777;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .orang-tua-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .orang-tua-header h2 {
+        font-size: 25px;
+    }
+
+    .orang-tua-card {
+        padding: 20px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .orang-tua-header {
+        flex-direction: column;
+    }
+
+    .btn-tambah-orang-tua {
+        width: 100%;
+    }
+
+    .orang-tua-card {
+        padding: 15px;
+    }
+
+    .orang-tua-table th,
+    .orang-tua-table td {
+        padding: 11px;
+        font-size: 13px;
+    }
+
+    .orang-tua-actions {
+        flex-wrap: wrap;
+    }
+
+}

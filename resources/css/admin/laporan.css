@@ -1,0 +1,418 @@
+/* =========================================================
+   LAPORAN PEMBAYARAN
+========================================================= */
+
+.laporan-page {
+    width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.laporan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.laporan-header h2 {
+    margin: 0 0 6px;
+    color: #0f5132;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.laporan-header p {
+    margin: 0;
+    color: #777;
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   FILTER LAPORAN
+========================================================= */
+
+.laporan-filter {
+    background: #ffffff;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.laporan-filter h3 {
+    margin: 0 0 20px;
+    color: #0f5132;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FORM FILTER
+========================================================= */
+
+.laporan-filter form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 20px;
+    align-items: end;
+}
+
+
+/* =========================================================
+   FORM GROUP
+========================================================= */
+
+.laporan-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.laporan-form-group label {
+    margin-bottom: 7px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INPUT & SELECT
+========================================================= */
+
+.laporan-form-group select,
+.laporan-form-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    outline: none;
+}
+
+.laporan-form-group select:focus,
+.laporan-form-group input:focus {
+    border-color: #0f5132;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
+.laporan-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-laporan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TAMPILKAN
+========================================================= */
+
+.btn-laporan-green {
+    background: #0f5132 !important;
+    color: #ffffff !important;
+}
+
+.btn-laporan-green:hover {
+    background: #0b3d25 !important;
+}
+
+
+/* =========================================================
+   EXCEL
+========================================================= */
+
+.btn-laporan-excel {
+    background: #198754 !important;
+    color: #ffffff !important;
+}
+
+.btn-laporan-excel:hover {
+    background: #146c43 !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   CETAK / PDF
+========================================================= */
+
+.btn-laporan-print {
+    background: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.btn-laporan-print:hover {
+    background: #bb2d3b !important;
+    color: #ffffff !important;
+}
+
+
+/* =========================================================
+   RINGKASAN
+========================================================= */
+
+.laporan-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.laporan-summary-card {
+    background: #fff;
+    padding: 22px;
+    border-radius: 14px;
+    border-left: 5px solid #0f5132;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.laporan-summary-card h4 {
+    margin: 0 0 10px;
+    color: #777;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.laporan-summary-card strong {
+    color: #0f5132;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DATA PEMBAYARAN
+========================================================= */
+
+.laporan-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.laporan-card h3 {
+    margin: 0 0 20px;
+    color: #0f5132;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.laporan-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.laporan-table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+.laporan-table thead tr {
+    background: #0f5132;
+    color: #fff;
+}
+
+.laporan-table th {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.laporan-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    font-size: 14px;
+}
+
+.laporan-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+
+/* =========================================================
+   TEXT CENTER
+========================================================= */
+
+.text-center {
+    text-align: center !important;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status-lunas {
+    display: inline-block;
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #d1e7dd;
+    color: #0f5132;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-belum {
+    display: inline-block;
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    background: #fff3cd;
+    color: #856404;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EMPTY DATA
+========================================================= */
+
+.laporan-empty {
+    padding: 40px !important;
+    text-align: center;
+    color: #777;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+========================================================= */
+
+.laporan-success {
+    margin-bottom: 20px;
+    padding: 14px 18px;
+
+    border-radius: 8px;
+
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .laporan-filter form {
+        grid-template-columns: 1fr;
+    }
+
+    .laporan-actions {
+        width: 100%;
+    }
+
+    .btn-laporan {
+        flex: 1;
+    }
+
+    .laporan-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .laporan-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .laporan-filter,
+    .laporan-card {
+        padding: 18px;
+    }
+
+    .laporan-actions {
+        flex-direction: column;
+    }
+
+    .btn-laporan {
+        width: 100%;
+    }
+
+    .laporan-header h2 {
+        font-size: 24px;
+    }
+
+    .laporan-header p {
+        font-size: 14px;
+    }
+
+    .laporan-summary-card {
+        padding: 18px;
+    }
+
+    .laporan-summary-card strong {
+        font-size: 21px;
+    }
+
+    .laporan-table th,
+    .laporan-table td {
+        padding: 11px;
+        font-size: 13px;
+    }
+}

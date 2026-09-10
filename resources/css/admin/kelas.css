@@ -1,0 +1,223 @@
+/* =========================================================
+   DATA KELAS
+========================================================= */
+
+.kelas-page {
+    width: 100%;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.kelas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.kelas-header h2 {
+    color: #0f5132;
+    margin: 0 0 6px;
+    font-size: 25px;
+}
+
+.kelas-header p {
+    color: #777;
+    margin: 0;
+    font-size: 14px;
+}
+
+/* =========================================================
+   BUTTON TAMBAH
+========================================================= */
+
+.btn-tambah-kelas {
+    background: #0f5132;
+    color: white;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.btn-tambah-kelas:hover {
+    background: #0b3d25;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   PESAN SUCCESS
+========================================================= */
+
+.alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.kelas-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.kelas-table-wrapper {
+    overflow-x: auto;
+}
+
+.kelas-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.kelas-table thead tr {
+    background: #0f5132;
+    color: white;
+}
+
+.kelas-table th {
+    padding: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.kelas-table th:first-child {
+    text-align: center;
+    width: 70px;
+}
+
+.kelas-table th:nth-child(3) {
+    text-align: center;
+}
+
+.kelas-table th:last-child {
+    text-align: center;
+    width: 180px;
+}
+
+.kelas-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.kelas-table tbody tr {
+    transition: 0.2s;
+}
+
+.kelas-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+.kelas-table td:first-child {
+    text-align: center;
+}
+
+.kelas-table td:nth-child(3) {
+    text-align: center;
+}
+
+/* =========================================================
+   AKSI
+========================================================= */
+
+.kelas-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-edit-kelas {
+    background: #ffc107;
+    color: #212529;
+    padding: 8px 12px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.btn-edit-kelas:hover {
+    background: #e0a800;
+    color: #212529;
+}
+
+.btn-hapus-kelas {
+    background: #dc3545;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-hapus-kelas:hover {
+    background: #bb2d3b;
+}
+
+/* =========================================================
+   DATA KOSONG
+========================================================= */
+
+.kelas-empty {
+    text-align: center;
+    padding: 40px !important;
+    color: #777;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .kelas-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .kelas-header h2 {
+        font-size: 21px;
+    }
+
+    .btn-tambah-kelas {
+        width: 100%;
+        text-align: center;
+    }
+
+    .kelas-card {
+        padding: 18px;
+    }
+
+    .kelas-table th,
+    .kelas-table td {
+        padding: 10px;
+    }
+
+}

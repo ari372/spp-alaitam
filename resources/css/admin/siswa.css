@@ -1,0 +1,181 @@
+.siswa-container {
+    width: 100%;
+}
+
+.siswa-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.siswa-header h2 {
+    color: #0f5132;
+    margin: 0 0 5px 0;
+    font-size: 26px;
+}
+
+.siswa-header p {
+    color: #777;
+    margin: 0;
+    font-size: 15px;
+}
+
+.btn-tambah {
+    background: #0f5132;
+    color: white;
+    text-decoration: none;
+    padding: 11px 18px;
+    border-radius: 8px;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-tambah:hover {
+    background: #146c43;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.alert {
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert.success {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.alert.error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.siswa-table-card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.siswa-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.siswa-table thead tr {
+    background: #0f5132;
+    color: white;
+}
+
+.siswa-table th {
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.siswa-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s ease;
+}
+
+.siswa-table tbody tr:hover {
+    background: #f8faf9;
+}
+
+.siswa-table td {
+    padding: 14px;
+    font-size: 14px;
+    color: #333;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.aksi {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.aksi a,
+.aksi button {
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-detail {
+    background: #0d6efd;
+    color: white;
+}
+
+.btn-detail:hover {
+    background: #0b5ed7;
+    color: white;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-edit:hover {
+    background: #ffca2c;
+    color: #212529;
+}
+
+.aksi form {
+    margin: 0;
+}
+
+.btn-hapus {
+    background: #dc3545;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-hapus:hover {
+    background: #bb2d3b;
+}
+
+.empty {
+    padding: 40px !important;
+    text-align: center;
+    color: #777 !important;
+}
+
+@media (max-width: 768px) {
+
+    .siswa-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .btn-tambah {
+        width: 100%;
+        text-align: center;
+    }
+
+    .siswa-table-card {
+        padding: 15px;
+    }
+
+}
