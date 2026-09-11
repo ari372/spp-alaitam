@@ -118,7 +118,7 @@ class OrangTuaController extends Controller
 
 
         return redirect()
-            ->route('orang-tua.index')
+            ->route('admin.orang-tua.index')
             ->with(
                 'success',
                 'Data orang tua dan akun login berhasil dibuat.'
@@ -254,7 +254,7 @@ class OrangTuaController extends Controller
 
 
         return redirect()
-            ->route('orang-tua.index')
+            ->route('admin.orang-tua.index')
             ->with(
                 'success',
                 'Data orang tua berhasil diperbarui.'
@@ -291,7 +291,7 @@ class OrangTuaController extends Controller
 
 
         return redirect()
-            ->route('orang-tua.index')
+            ->route('admin.orang-tua.index')
             ->with(
                 'success',
                 'Data orang tua berhasil dihapus.'

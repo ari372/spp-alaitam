@@ -116,8 +116,8 @@
                             </td>
 
                             <td>
-                                {{ $item->email ?? '-' }}
-                            </td>
+    {{ $item->user?->email ?? '-' }}
+</td>
 
                             <td>
                                 {{ $item->no_hp ?? '-' }}

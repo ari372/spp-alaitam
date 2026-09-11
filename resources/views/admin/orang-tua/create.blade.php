@@ -222,29 +222,56 @@
 
         <!-- PASSWORD -->
 
-        <div class="form-group">
+{{-- PASSWORD --}}
 
-            <label>
-                Password Login
-            </label>
+<div class="form-group">
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Minimal 6 karakter"
-                required
-            >
+    <label>
+        Password Login
+    </label>
 
-            @error('password')
+    <input
+        type="password"
+        name="password"
+        placeholder="Minimal 6 karakter"
+        required
+    >
 
-                <div class="error">
-                    {{ $message }}
-                </div>
+    @error('password')
 
-            @enderror
-
+        <div class="error">
+            {{ $message }}
         </div>
 
+    @enderror
+
+</div>
+
+
+{{-- KONFIRMASI PASSWORD --}}
+
+<div class="form-group">
+
+    <label>
+        Konfirmasi Password
+    </label>
+
+    <input
+        type="password"
+        name="password_confirmation"
+        placeholder="Ulangi password"
+        required
+    >
+
+    @error('password_confirmation')
+
+        <div class="error">
+            {{ $message }}
+        </div>
+
+    @enderror
+
+</div>
 
         <!-- NO HP -->
 

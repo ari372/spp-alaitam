@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Tagihan;
+use App\Models\PembayaranTagihan;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -12,51 +12,104 @@ class LaporanExport implements
     WithHeadings,
     WithMapping
 {
-    protected $tahunAjaranId;
-    protected $kategoriId;
+    protected $bulan;
+    protected $tahun;
 
     public function __construct(
-        $tahunAjaranId = null,
-        $kategoriId = null
+        $bulan = null,
+        $tahun = null
     ) {
-        $this->tahunAjaranId = $tahunAjaranId;
-        $this->kategoriId = $kategoriId;
+        $this->bulan = $bulan;
+        $this->tahun = $tahun;
     }
 
 
     /**
-     * Ambil data
+     * Daftar bulan Indonesia
+     */
+    private function bulanIndonesia()
+    {
+        return [
+            'Januari'   => 1,
+            'Februari'  => 2,
+            'Maret'     => 3,
+            'April'     => 4,
+            'Mei'       => 5,
+            'Juni'      => 6,
+            'Juli'      => 7,
+            'Agustus'   => 8,
+            'September' => 9,
+            'Oktober'   => 10,
+            'November'  => 11,
+            'Desember'  => 12,
+        ];
+    }
+
+
+    /**
+     * Ambil data pembayaran
      */
     public function collection()
     {
-        $query = Tagihan::with([
-            'siswa.kelas',
-            'tahunAjaran',
-            'kategori',
-            'pembayaran'
-        ]);
+        $query = PembayaranTagihan::with([
+            'tagihan.siswa.kelas',
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+            'user',
+        ])
+
+        /*
+        |--------------------------------------------------------------------------
+        | Hanya pembayaran yang sudah dibayar
+        |--------------------------------------------------------------------------
+        */
+
+        ->where('status', 'dibayar');
 
 
-        if ($this->tahunAjaranId) {
+        /*
+        |--------------------------------------------------------------------------
+        | Filter tahun
+        |--------------------------------------------------------------------------
+        */
 
-            $query->where(
-                'tahun_ajaran_id',
-                $this->tahunAjaranId
+        if (!empty($this->tahun)) {
+
+            $query->whereYear(
+                'tanggal_kirim',
+                $this->tahun
             );
         }
 
 
-        if ($this->kategoriId) {
+        /*
+        |--------------------------------------------------------------------------
+        | Filter bulan
+        |--------------------------------------------------------------------------
+        */
 
-            $query->where(
-                'kategori_tagihan_id',
-                $this->kategoriId
-            );
+        if (!empty($this->bulan)) {
+
+            $bulanMap = $this->bulanIndonesia();
+
+            if (isset($bulanMap[$this->bulan])) {
+
+                $query->whereMonth(
+                    'tanggal_kirim',
+                    $bulanMap[$this->bulan]
+                );
+            }
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Urutkan dari pembayaran terbaru
+        |--------------------------------------------------------------------------
+        */
 
         return $query
-            ->latest()
+            ->orderByDesc('tanggal_kirim')
             ->get();
     }
 
@@ -69,36 +122,73 @@ class LaporanExport implements
         return [
             'No',
             'Siswa',
+            'NIS',
             'Kelas',
             'Tahun Ajaran',
             'Kategori',
             'Tagihan',
             'Dibayar',
             'Sisa',
+            'Metode',
             'Status',
+            'Tanggal Bayar',
         ];
     }
 
 
     /**
-     * Isi setiap baris
+     * Isi setiap baris Excel
      */
     public function map($item): array
     {
-        $dibayar = $item->pembayaran
-            ->where('status', 'disetujui')
-            ->sum('nominal');
+        $tagihan = $item->tagihan;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nominal tagihan
+        |--------------------------------------------------------------------------
+        */
+
+        $nominalTagihan = $tagihan?->nominal ?? 0;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nominal yang dibayar
+        |--------------------------------------------------------------------------
+        */
+
+        $dibayar = $item->nominal ?? 0;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sisa
+        |--------------------------------------------------------------------------
+        */
 
         $sisa = max(
             0,
-            $item->nominal - $dibayar
+            $nominalTagihan - $dibayar
         );
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Status
+        |--------------------------------------------------------------------------
+        */
 
         $status = $sisa <= 0
             ? 'Lunas'
             : 'Belum Lunas';
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nomor urut
+        |--------------------------------------------------------------------------
+        */
 
         static $no = 0;
 
@@ -106,15 +196,44 @@ class LaporanExport implements
 
 
         return [
+
+            // No
             $no,
-            $item->siswa->nama ?? '-',
-            $item->siswa->kelas->nama_kelas ?? '-',
-            $item->tahunAjaran->nama ?? '-',
-            $item->kategori->nama ?? '-',
-            $item->nominal,
+
+            // Siswa
+            $tagihan?->siswa?->nama ?? '-',
+
+            // NIS
+            $tagihan?->siswa?->nis ?? '-',
+
+            // Kelas
+            $tagihan?->siswa?->kelas?->nama_kelas ?? '-',
+
+            // Tahun Ajaran
+            $tagihan?->tahunAjaran?->nama ?? '-',
+
+            // Kategori
+            $tagihan?->kategori?->nama ?? '-',
+
+            // Total tagihan
+            $nominalTagihan,
+
+            // Dibayar
             $dibayar,
+
+            // Sisa
             $sisa,
+
+            // Metode pembayaran
+            $item->metode ?? '-',
+
+            // Status pembayaran
             $status,
+
+            // Tanggal pembayaran
+            $item->tanggal_kirim
+                ? $item->tanggal_kirim->format('d-m-Y H:i')
+                : '-',
         ];
     }
 }

@@ -5,20 +5,20 @@
 
     <meta charset="UTF-8">
 
-    <title>
-        Laporan Pembayaran
-    </title>
+    <title>Laporan Pembayaran</title>
 
     <style>
 
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 10px;
+            color: #333;
         }
 
         h2 {
             text-align: center;
             margin-bottom: 5px;
+            color: #0f5132;
         }
 
         p {
@@ -38,6 +38,7 @@
             color: white;
             padding: 7px;
             border: 1px solid #ddd;
+            text-align: center;
         }
 
         td {
@@ -45,14 +46,12 @@
             border: 1px solid #ddd;
         }
 
-        .summary {
-            margin-top: 20px;
-            width: 100%;
+        .text-center {
+            text-align: center;
         }
 
-        .summary td {
-            border: none;
-            padding: 5px;
+        .text-right {
+            text-align: right;
         }
 
         .lunas {
@@ -63,6 +62,17 @@
         .belum {
             color: #dc3545;
             font-weight: bold;
+        }
+
+        .summary {
+            margin-top: 20px;
+            width: 50%;
+            margin-left: auto;
+        }
+
+        .summary td {
+            border: none;
+            padding: 5px;
         }
 
     </style>
@@ -90,6 +100,8 @@
 
                 <th>Siswa</th>
 
+                <th>NIS</th>
+
                 <th>Kelas</th>
 
                 <th>Tahun Ajaran</th>
@@ -111,54 +123,71 @@
 
         <tbody>
 
-            @forelse($tagihan as $item)
+            @forelse($pembayaran as $item)
 
                 @php
 
-                    $dibayar = $item->pembayaran
-                        ->where('status', 'disetujui')
-                        ->sum('nominal');
+                    $tagihan = $item->tagihan;
+
+                    $nominalTagihan = $tagihan?->nominal ?? 0;
+
+                    $dibayar = $item->nominal ?? 0;
 
                     $sisa = max(
                         0,
-                        $item->nominal - $dibayar
+                        $nominalTagihan - $dibayar
                     );
 
                 @endphp
 
+
                 <tr>
 
-                    <td>
+                    <td class="text-center">
                         {{ $loop->iteration }}
                     </td>
 
-                    <td>
-                        {{ $item->siswa->nama ?? '-' }}
-                    </td>
 
                     <td>
-                        {{ $item->siswa->kelas->nama_kelas ?? '-' }}
+                        {{ $tagihan?->siswa?->nama ?? '-' }}
                     </td>
 
-                    <td>
-                        {{ $item->tahunAjaran->nama ?? '-' }}
-                    </td>
 
                     <td>
-                        {{ $item->kategori->nama ?? '-' }}
+                        {{ $tagihan?->siswa?->nis ?? '-' }}
                     </td>
 
+
                     <td>
+                        {{ $tagihan?->siswa?->kelas?->nama_kelas ?? '-' }}
+                    </td>
+
+
+                    <td>
+                        {{ $tagihan?->tahunAjaran?->nama ?? '-' }}
+                    </td>
+
+
+                    <td>
+                        {{ $tagihan?->kategori?->nama ?? '-' }}
+                    </td>
+
+
+                    <td class="text-right">
+
                         Rp
                         {{ number_format(
-                            $item->nominal,
+                            $nominalTagihan,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
-                    <td>
+
+                    <td class="text-right">
+
                         Rp
                         {{ number_format(
                             $dibayar,
@@ -166,9 +195,12 @@
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
-                    <td>
+
+                    <td class="text-right">
+
                         Rp
                         {{ number_format(
                             $sisa,
@@ -176,9 +208,11 @@
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
-                    <td>
+
+                    <td class="text-center">
 
                         @if($sisa <= 0)
 
@@ -198,13 +232,14 @@
 
                 </tr>
 
+
             @empty
 
                 <tr>
 
                     <td
-                        colspan="9"
-                        style="text-align:center;"
+                        colspan="10"
+                        class="text-center"
                     >
                         Belum ada data laporan.
                     </td>
@@ -228,17 +263,20 @@
                 </strong>
             </td>
 
-            <td>
+            <td class="text-right">
+
                 Rp
                 {{ number_format(
-                    $totalTagihan,
+                    $totalTagihan ?? 0,
                     0,
                     ',',
                     '.'
                 ) }}
+
             </td>
 
         </tr>
+
 
         <tr>
 
@@ -248,17 +286,20 @@
                 </strong>
             </td>
 
-            <td>
+            <td class="text-right">
+
                 Rp
                 {{ number_format(
-                    $totalPembayaran,
+                    $totalPembayaran ?? 0,
                     0,
                     ',',
                     '.'
                 ) }}
+
             </td>
 
         </tr>
+
 
         <tr>
 
@@ -268,14 +309,16 @@
                 </strong>
             </td>
 
-            <td>
+            <td class="text-right">
+
                 Rp
                 {{ number_format(
-                    $sisaTagihan,
+                    $sisaTagihan ?? 0,
                     0,
                     ',',
                     '.'
                 ) }}
+
             </td>
 
         </tr>
