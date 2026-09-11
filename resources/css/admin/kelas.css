@@ -20,7 +20,9 @@
 .kelas-header h2 {
     color: #0f5132;
     margin: 0 0 6px;
-    font-size: 25px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
 .kelas-header p {
@@ -34,21 +36,25 @@
 ========================================================= */
 
 .btn-tambah-kelas {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     background: #0f5132;
-    color: white;
+    color: #ffffff;
     text-decoration: none;
     padding: 11px 18px;
-    border-radius: 8px;
+    border-radius: 9px;
     font-size: 14px;
     font-weight: 600;
-    display: inline-block;
-    transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(15, 81, 50, 0.18);
+    transition: all 0.2s ease;
 }
 
 .btn-tambah-kelas:hover {
     background: #0b3d25;
-    color: white;
-    transform: translateY(-1px);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(15, 81, 50, 0.24);
 }
 
 /* =========================================================
@@ -59,8 +65,11 @@
     background: #d1e7dd;
     color: #0f5132;
     padding: 14px 18px;
-    border-radius: 8px;
+    border: 1px solid #badbcc;
+    border-radius: 9px;
     margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 /* =========================================================
@@ -68,10 +77,12 @@
 ========================================================= */
 
 .kelas-card {
-    background: white;
-    padding: 25px;
+    background: #ffffff;
+    padding: 0;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+    border: 1px solid #eeeeee;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
 }
 
 /* =========================================================
@@ -79,6 +90,7 @@
 ========================================================= */
 
 .kelas-table-wrapper {
+    width: 100%;
     overflow-x: auto;
 }
 
@@ -87,16 +99,21 @@
     border-collapse: collapse;
 }
 
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
 .kelas-table thead tr {
     background: #0f5132;
-    color: white;
+    color: #ffffff;
 }
 
 .kelas-table th {
-    padding: 14px;
-    font-size: 14px;
+    padding: 15px 16px;
+    font-size: 13px;
     font-weight: 600;
     text-align: left;
+    white-space: nowrap;
 }
 
 .kelas-table th:first-child {
@@ -113,26 +130,47 @@
     width: 180px;
 }
 
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
 .kelas-table td {
-    padding: 14px;
-    border-bottom: 1px solid #eee;
+    padding: 15px 16px;
+    border-bottom: 1px solid #eeeeee;
     font-size: 14px;
+    color: #333333;
+    background: #ffffff;
 }
 
 .kelas-table tbody tr {
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
-.kelas-table tbody tr:hover {
-    background: #f8faf9;
+.kelas-table tbody tr:hover td {
+    background: #f7fbf9;
+}
+
+.kelas-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .kelas-table td:first-child {
     text-align: center;
+    color: #777;
+    font-weight: 500;
 }
 
 .kelas-table td:nth-child(3) {
     text-align: center;
+}
+
+/* =========================================================
+   NAMA KELAS
+========================================================= */
+
+.kelas-table td:nth-child(2) {
+    color: #212529;
+    font-weight: 600;
 }
 
 /* =========================================================
@@ -143,41 +181,57 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
 }
 
+.btn-edit-kelas,
+.btn-hapus-kelas {
+    min-width: 65px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+/* =========================================================
+   BUTTON EDIT
+========================================================= */
+
 .btn-edit-kelas {
-    background: #ffc107;
-    color: #212529;
-    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff3cd;
+    color: #856404;
     text-decoration: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    display: inline-block;
-    transition: 0.2s;
+    border: 1px solid #ffe69c;
 }
 
 .btn-edit-kelas:hover {
-    background: #e0a800;
+    background: #ffc107;
     color: #212529;
+    border-color: #ffc107;
+    transform: translateY(-1px);
 }
 
+/* =========================================================
+   BUTTON HAPUS
+========================================================= */
+
 .btn-hapus-kelas {
-    background: #dc3545;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
+    background: #fff0f1;
+    color: #dc3545;
+    border: 1px solid #f1b0b7;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: 0.2s;
 }
 
 .btn-hapus-kelas:hover {
-    background: #bb2d3b;
+    background: #dc3545;
+    color: #ffffff;
+    border-color: #dc3545;
+    transform: translateY(-1px);
 }
 
 /* =========================================================
@@ -186,8 +240,17 @@
 
 .kelas-empty {
     text-align: center;
-    padding: 40px !important;
+    padding: 55px 20px !important;
     color: #777;
+    background: #ffffff;
+}
+
+.kelas-empty::before {
+    content: "📚";
+    display: block;
+    font-size: 38px;
+    margin-bottom: 10px;
+    opacity: 0.7;
 }
 
 /* =========================================================
@@ -203,21 +266,38 @@
     }
 
     .kelas-header h2 {
-        font-size: 21px;
+        font-size: 22px;
+    }
+
+    .kelas-header p {
+        font-size: 13px;
     }
 
     .btn-tambah-kelas {
         width: 100%;
-        text-align: center;
+        justify-content: center;
     }
 
     .kelas-card {
-        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .kelas-table {
+        min-width: 650px;
     }
 
     .kelas-table th,
     .kelas-table td {
-        padding: 10px;
+        padding: 11px 12px;
     }
 
+    .kelas-actions {
+        gap: 6px;
+    }
+
+    .btn-edit-kelas,
+    .btn-hapus-kelas {
+        height: 34px;
+        padding: 0 10px;
+    }
 }

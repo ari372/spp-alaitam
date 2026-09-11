@@ -12,12 +12,13 @@ use App\Http\Controllers\PembayaranAdminController;
 use App\Http\Controllers\KategoriTagihanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LaporanController;
-use Illuminate\Support\Facades\Auth;
 
 
-// =====================================================
-// LOGIN
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| LOGIN
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -34,9 +35,11 @@ Route::post('/login', [
 ])->name('login.process');
 
 
-// =====================================================
-// LOGOUT
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| LOGOUT
+|--------------------------------------------------------------------------
+*/
 
 Route::post('/logout', [
     AuthController::class,
@@ -46,9 +49,11 @@ Route::post('/logout', [
 ->name('logout');
 
 
-// =====================================================
-// ADMIN
-// =====================================================
+/*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware([
     'auth',
@@ -57,36 +62,43 @@ Route::middleware([
 ->prefix('admin')
 ->group(function () {
 
-
-    // =================================================
-    // DASHBOARD ADMIN
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD ADMIN
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/dashboard', [
         DashboardController::class,
         'admin'
     ])->name('admin.dashboard');
 
-// =================================================
-// PROFIL ADMIN
-// =================================================
 
-Route::get('/profil', function () {
-    return view('admin.profil.index');
-})->name('admin.profil');
+    /*
+    |--------------------------------------------------------------------------
+    | PROFIL ADMIN
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/profil/edit', function () {
-    return view('admin.profil.edit');
-})->name('admin.profil.edit');
+    Route::get('/profil', function () {
+        return view('admin.profil.index');
+    })->name('admin.profil');
 
-Route::put('/profil', [
-    AuthController::class,
-    'updateProfil'
-])->name('admin.profil.update');
+    Route::get('/profil/edit', function () {
+        return view('admin.profil.edit');
+    })->name('admin.profil.edit');
 
-    // =================================================
-    // DATA SISWA
-    // =================================================
+    Route::put('/profil', [
+        AuthController::class,
+        'updateProfil'
+    ])->name('admin.profil.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA SISWA
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource(
         'siswa',
@@ -102,9 +114,11 @@ Route::put('/profil', [
     ]);
 
 
-    // =================================================
-    // DATA ORANG TUA
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | DATA ORANG TUA
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource(
         'orang-tua',
@@ -120,9 +134,11 @@ Route::put('/profil', [
     ]);
 
 
-    // =================================================
-    // DATA KELAS
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | DATA KELAS
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource(
         'kelas',
@@ -137,9 +153,11 @@ Route::put('/profil', [
     ]);
 
 
-    // =================================================
-    // DATA TAGIHAN
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | DATA TAGIHAN
+    |--------------------------------------------------------------------------
+    */
 
     Route::resource(
         'tagihan',
@@ -163,125 +181,116 @@ Route::put('/profil', [
     ]);
 
 
-    // =================================================
-    // PEMBAYARAN ADMIN
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | PEMBAYARAN ADMIN
+    |--------------------------------------------------------------------------
+    */
 
-    Route::get(
-        '/pembayaran',
-        [
-            PembayaranAdminController::class,
-            'index'
-        ]
-    )->name('admin.pembayaran.index');
+    Route::get('/pembayaran', [
+        PembayaranAdminController::class,
+        'index'
+    ])->name('admin.pembayaran.index');
 
 
-    // =================================================
-// LAPORAN
-// =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | PEMBAYARAN MANUAL
+    |--------------------------------------------------------------------------
+    */
 
-Route::get(
-    '/laporan',
-    [
+    Route::get('/pembayaran/manual', [
+        PembayaranAdminController::class,
+        'createManual'
+    ])->name('admin.pembayaran.manual');
+
+    Route::post('/pembayaran/manual', [
+        PembayaranAdminController::class,
+        'storeManual'
+    ])->name('admin.pembayaran.manual.store');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFIKASI PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/pembayaran/notifikasi', [
+        PembayaranAdminController::class,
+        'notifikasi'
+    ])->name('admin.pembayaran.notifikasi');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SETUJUI PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::patch('/pembayaran/{pembayaran}/setujui', [
+        PembayaranAdminController::class,
+        'setujui'
+    ])->name('admin.pembayaran.setujui');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TOLAK PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::patch('/pembayaran/{pembayaran}/tolak', [
+        PembayaranAdminController::class,
+        'tolak'
+    ])->name('admin.pembayaran.tolak');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/laporan', [
         LaporanController::class,
         'index'
-    ]
-)->name('admin.laporan.index');
+    ])->name('admin.laporan.index');
 
-
-Route::get(
-    '/laporan/pdf',
-    [
+    Route::get('/laporan/pdf', [
         LaporanController::class,
         'pdf'
-    ]
-)->name('admin.laporan.pdf');
+    ])->name('admin.laporan.pdf');
 
-
-Route::get(
-    '/laporan/excel',
-    [
+    Route::get('/laporan/excel', [
         LaporanController::class,
         'excel'
-    ]
-)->name('admin.laporan.excel');
+    ])->name('admin.laporan.excel');
 
 
-    // =================================================
-    // NOTIFIKASI PEMBAYARAN
-    // =================================================
+    /*
+    |--------------------------------------------------------------------------
+    | KATEGORI TAGIHAN
+    |--------------------------------------------------------------------------
+    */
 
-    Route::get(
-        '/pembayaran/notifikasi',
-        [
-            PembayaranAdminController::class,
-            'notifikasi'
-        ]
-    )->name('admin.pembayaran.notifikasi');
+    Route::get('/kategori', [
+        KategoriTagihanController::class,
+        'index'
+    ])->name('admin.kategori');
 
+    Route::post('/kategori', [
+        KategoriTagihanController::class,
+        'store'
+    ])->name('admin.kategori.store');
 
-    // =================================================
-    // SETUJUI PEMBAYARAN
-    // =================================================
-
-    Route::patch(
-        '/pembayaran/{pembayaran}/setujui',
-        [
-            PembayaranAdminController::class,
-            'setujui'
-        ]
-    )->name('admin.pembayaran.setujui');
-
-
-    // =================================================
-    // TOLAK PEMBAYARAN
-    // =================================================
-
-    Route::patch(
-        '/pembayaran/{pembayaran}/tolak',
-        [
-            PembayaranAdminController::class,
-            'tolak'
-        ]
-    )->name('admin.pembayaran.tolak');
-
-
-    // =================================================
-    // KATEGORI TAGIHAN
-    // =================================================
-
-    Route::get(
-        '/kategori',
-        [
-            KategoriTagihanController::class,
-            'index'
-        ]
-    )->name('admin.kategori');
-
-
-    Route::post(
-        '/kategori',
-        [
-            KategoriTagihanController::class,
-            'store'
-        ]
-    )->name('admin.kategori.store');
-
-
-    Route::delete(
-        '/kategori/{kategori}',
-        [
-            KategoriTagihanController::class,
-            'destroy'
-        ]
-    )->name('admin.kategori.destroy');
+    Route::delete('/kategori/{kategori}', [
+        KategoriTagihanController::class,
+        'destroy'
+    ])->name('admin.kategori.destroy');
 
 });
 
-
-// =====================================================
-// ORANG TUA
-// =====================================================
 
 Route::middleware([
     'auth',
@@ -290,56 +299,21 @@ Route::middleware([
 ->prefix('orangtua')
 ->group(function () {
 
-
-    // =================================================
-    // DASHBOARD ORANG TUA
-    // =================================================
-
-    Route::get(
-        '/dashboard',
-        [
-            DashboardController::class,
-            'orangTua'
-        ]
-    )->name('orangtua.dashboard');
+    Route::get('/dashboard', [
+        DashboardController::class,
+        'orangTua'
+    ])->name('orangtua.dashboard');
 
 
-    // =================================================
-    // HALAMAN PEMBAYARAN
-    // =================================================
-
-    Route::get(
-        '/pembayaran',
-        [
-            PembayaranOrangTuaController::class,
-            'index'
-        ]
-    )->name('orangtua.pembayaran.index');
+    Route::get('/pembayaran/{tagihan}/bayar', [
+        PembayaranOrangTuaController::class,
+        'create'
+    ])->name('orangtua.pembayaran.create');
 
 
-    // =================================================
-    // FORM BAYAR TAGIHAN
-    // =================================================
-
-    Route::get(
-        '/pembayaran/{tagihan}/bayar',
-        [
-            PembayaranOrangTuaController::class,
-            'create'
-        ]
-    )->name('orangtua.pembayaran.create');
-
-
-    // =================================================
-    // PROSES KIRIM PEMBAYARAN
-    // =================================================
-
-    Route::post(
-        '/pembayaran/{tagihan}',
-        [
-            PembayaranOrangTuaController::class,
-            'store'
-        ]
-    )->name('orangtua.pembayaran.store');
+    Route::post('/pembayaran/{tagihan}', [
+        PembayaranOrangTuaController::class,
+        'store'
+    ])->name('orangtua.pembayaran.store');
 
 });

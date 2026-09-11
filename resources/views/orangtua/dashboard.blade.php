@@ -3,13 +3,35 @@
 @section('title', 'Dashboard Orang Tua')
 
 @section('content')
+@if(session('error'))
+    <div style="
+        background:#f8d7da;
+        color:#842029;
+        padding:15px 20px;
+        border-radius:10px;
+        margin-bottom:20px;
+        border:1px solid #f5c2c7;
+        font-weight:600;
+    ">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div style="
+        background:#d1e7dd;
+        color:#0f5132;
+        padding:15px 20px;
+        border-radius:10px;
+        margin-bottom:20px;
+        border:1px solid #badbcc;
+        font-weight:600;
+    ">
+        {{ session('success') }}
+    </div>
+@endif
 
 <style>
-
-    /* ========================================
-       JUDUL
-    ======================================== */
-
     .page-title {
         margin-bottom: 30px;
     }
@@ -23,25 +45,26 @@
     .page-title p {
         color: #777;
         font-size: 18px;
+        margin-bottom: 0;
     }
 
-
-    /* ========================================
-       DATA ANAK
-    ======================================== */
-
-    .anak-card {
+    .anak-card,
+    .summary-card,
+    .table-card {
         background: white;
         border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+    }
+
+    .anak-card {
         padding: 28px;
         margin-bottom: 25px;
-
-        box-shadow: 0 5px 20px rgba(0,0,0,.06);
     }
 
     .section-title {
         color: #0f5132;
         font-size: 22px;
+        font-weight: 600;
         margin-bottom: 22px;
     }
 
@@ -69,11 +92,6 @@
         font-size: 17px;
     }
 
-
-    /* ========================================
-       RINGKASAN
-    ======================================== */
-
     .summary {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -82,11 +100,7 @@
     }
 
     .summary-card {
-        background: white;
-        border-radius: 16px;
         padding: 25px;
-
-        box-shadow: 0 5px 20px rgba(0,0,0,.06);
     }
 
     .summary-card span {
@@ -101,18 +115,9 @@
         color: #0f5132;
     }
 
-
-    /* ========================================
-       TABLE
-    ======================================== */
-
     .table-card {
-        background: white;
-        border-radius: 16px;
         padding: 28px;
         margin-bottom: 25px;
-
-        box-shadow: 0 5px 20px rgba(0,0,0,.06);
     }
 
     .table-wrapper {
@@ -143,11 +148,6 @@
         border-bottom: none;
     }
 
-
-    /* ========================================
-       STATUS
-    ======================================== */
-
     .status {
         display: inline-block;
         padding: 7px 12px;
@@ -177,30 +177,16 @@
         color: #842029;
     }
 
-
-    /* ========================================
-       TOMBOL
-    ======================================== */
-
     .btn {
         display: inline-block;
-
         padding: 9px 15px;
-
         border-radius: 8px;
-
         text-decoration: none;
-
         font-size: 13px;
-
         font-weight: bold;
-
         border: none;
-
         cursor: pointer;
-
         white-space: nowrap;
-
         transition: .2s;
     }
 
@@ -211,18 +197,8 @@
 
     .btn-bayar:hover {
         background: #157347;
-    }
-
-    .btn-disabled {
-        background: #adb5bd;
         color: white;
-        cursor: not-allowed;
     }
-
-
-    /* ========================================
-       KOSONG
-    ======================================== */
 
     .empty {
         text-align: center;
@@ -230,13 +206,7 @@
         color: #777;
     }
 
-
-    /* ========================================
-       RESPONSIVE
-    ======================================== */
-
-    @media(max-width: 768px) {
-
+    @media (max-width: 768px) {
         .anak-info,
         .summary {
             grid-template-columns: 1fr;
@@ -254,15 +224,9 @@
         .anak-card {
             padding: 20px;
         }
-
     }
-
 </style>
 
-
-<!-- ========================================
-     JUDUL
-======================================== -->
 
 <div class="page-title">
 
@@ -277,19 +241,12 @@
 </div>
 
 
-
-@if(!$siswa)
-
-    <!-- ========================================
-         JIKA DATA ANAK BELUM ADA
-    ======================================== -->
+@if (!$siswa)
 
     <div class="table-card">
 
         <div class="empty">
-
             Data siswa belum ditemukan.
-
         </div>
 
     </div>
@@ -297,9 +254,7 @@
 @else
 
 
-    <!-- ========================================
-         DATA ANAK
-    ======================================== -->
+    {{-- DATA ANAK --}}
 
     <div class="anak-card">
 
@@ -308,7 +263,6 @@
         </h2>
 
         <div class="anak-info">
-
 
             <div class="anak-item">
 
@@ -322,7 +276,6 @@
 
             </div>
 
-
             <div class="anak-item">
 
                 <span>
@@ -334,7 +287,6 @@
                 </strong>
 
             </div>
-
 
             <div class="anak-item">
 
@@ -348,21 +300,14 @@
 
             </div>
 
-
         </div>
 
     </div>
 
 
-
-    <!-- ========================================
-         RINGKASAN TAGIHAN
-    ======================================== -->
+    {{-- RINGKASAN --}}
 
     <div class="summary">
-
-
-        <!-- TOTAL TAGIHAN -->
 
         <div class="summary-card">
 
@@ -382,8 +327,6 @@
         </div>
 
 
-        <!-- SUDAH DIBAYAR -->
-
         <div class="summary-card">
 
             <span>
@@ -402,8 +345,6 @@
         </div>
 
 
-        <!-- SISA TAGIHAN -->
-
         <div class="summary-card">
 
             <span>
@@ -421,21 +362,16 @@
 
         </div>
 
-
     </div>
 
 
-
-    <!-- ========================================
-         DAFTAR TAGIHAN
-    ======================================== -->
+    {{-- DAFTAR TAGIHAN --}}
 
     <div class="table-card">
 
         <h2 class="section-title">
             Daftar Tagihan
         </h2>
-
 
         <div class="table-wrapper">
 
@@ -477,204 +413,167 @@
 
                 </thead>
 
-
                 <tbody>
 
+                    @forelse ($tagihan as $index => $item)
 
-                    @forelse($tagihan as $index => $item)
+                        @php
 
+                            $sudahDibayar = \App\Models\PembayaranTagihan::where(
+                                'tagihan_id',
+                                $item->id
+                            )
+                            ->where('status', 'dibayar')
+                            ->sum('nominal');
 
-@php
+                            $sisa = max(
+                                $item->nominal - $sudahDibayar,
+                                0
+                            );
 
-    // Total pembayaran yang SUDAH DISETUJUI
-    $sudahDibayar = \App\Models\PembayaranTagihan::where(
-        'tagihan_id',
-        $item->id
-    )
-    ->where('status', 'dibayar')
-    ->sum('nominal');
+                            $sedangDiproses = \App\Models\PembayaranTagihan::where(
+                                'tagihan_id',
+                                $item->id
+                            )
+                            ->where('status', 'menunggu')
+                            ->exists();
 
+                            $ditolak = \App\Models\PembayaranTagihan::where(
+                                'tagihan_id',
+                                $item->id
+                            )
+                            ->where('status', 'ditolak')
+                            ->exists();
 
-    // Sisa tagihan
-    $sisa = max(
-        $item->nominal - $sudahDibayar,
-        0
-    );
-
-
-    // Cek apakah ada pembayaran yang masih menunggu
-    $sedangDiproses = \App\Models\PembayaranTagihan::where(
-        'tagihan_id',
-        $item->id
-    )
-    ->where('status', 'menunggu')
-    ->exists();
-
-
-    // Cek apakah pembayaran ditolak
-    $ditolak = \App\Models\PembayaranTagihan::where(
-        'tagihan_id',
-        $item->id
-    )
-    ->where('status', 'ditolak')
-    ->exists();
-
-@endphp
+                        @endphp
 
                         <tr>
 
-
-                            <!-- NO -->
+                            {{-- NO --}}
 
                             <td>
                                 {{ $index + 1 }}
                             </td>
 
 
-                            <!-- KATEGORI -->
+                            {{-- KATEGORI --}}
 
                             <td>
-
                                 {{ $item->kategori->nama ?? '-' }}
-
                             </td>
 
 
-                            <!-- TAHUN AJARAN -->
+                            {{-- TAHUN AJARAN --}}
 
                             <td>
-
                                 {{ $item->tahunAjaran->nama ?? '-' }}
-
                             </td>
 
 
-                            <!-- NOMINAL -->
+                            {{-- NOMINAL --}}
 
                             <td>
 
                                 <strong>
-
                                     Rp {{ number_format(
                                         $item->nominal,
                                         0,
                                         ',',
                                         '.'
                                     ) }}
-
                                 </strong>
 
                             </td>
 
 
-                            <!-- JATUH TEMPO -->
+                            {{-- JATUH TEMPO --}}
 
                             <td>
 
-                                {{ $item->jatuh_tempo
-                                    ? \Carbon\Carbon::parse(
+                                @if ($item->jatuh_tempo)
+
+                                    {{ \Carbon\Carbon::parse(
                                         $item->jatuh_tempo
-                                    )->format('d-m-Y')
-                                    : '-'
-                                }}
+                                    )->format('d-m-Y') }}
+
+                                @else
+
+                                    -
+
+                                @endif
 
                             </td>
 
 
-                            <!-- STATUS -->
+                            {{-- STATUS --}}
 
                             <td>
 
-
-                                @if($sisa <= 0)
+                                @if ($sisa <= 0)
 
                                     <span class="status status-lunas">
-
                                         Lunas
-
                                     </span>
 
-
-                                @elseif($sedangDiproses)
+                                @elseif ($sedangDiproses)
 
                                     <span class="status status-menunggu">
-
                                         Menunggu Persetujuan
-
                                     </span>
 
-
-                                @elseif($ditolak)
+                                @elseif ($ditolak)
 
                                     <span class="status status-ditolak">
-
                                         Ditolak
-
                                     </span>
-
 
                                 @else
 
                                     <span class="status status-belum">
-
                                         Belum Bayar
-
                                     </span>
 
                                 @endif
 
-
                             </td>
 
 
-                            <!-- AKSI -->
+                            {{-- AKSI --}}
 
-                            <td>
+<td>
 
+    @if($sisa <= 0)
 
-                                @if($sisa <= 0)
+        <span class="status status-lunas">
+            Selesai
+        </span>
 
-                                    <span class="status status-lunas">
+    @elseif($sedangDiproses)
 
-                                        Selesai
+        <span class="status status-menunggu">
+            Diproses
+        </span>
 
-                                    </span>
+@else
 
+    <form
+        action="{{ route('orangtua.pembayaran.create', ['tagihan' => $item->id]) }}"
+        method="GET"
+        style="display:inline;"
+    >
+        <button
+            type="submit"
+            class="btn btn-bayar"
+        >
+            Bayar
+        </button>
+    </form>
 
-                                @elseif($sedangDiproses)
-
-                                    <span class="status status-menunggu">
-
-                                        Diproses
-
-                                    </span>
-
-
-                                @else
-
-                                    <a
-                                        href="{{ route(
-                                            'orangtua.pembayaran.create',
-                                            $item->id
-                                        ) }}"
-                                        class="btn btn-bayar"
-                                    >
-
-                                        Bayar
-
-                                    </a>
-
-                                @endif
-
-
-                            </td>
-
-
+@endif
+</td>
                         </tr>
 
-
                     @empty
-
 
                         <tr>
 
@@ -682,16 +581,12 @@
                                 colspan="7"
                                 class="empty"
                             >
-
                                 Belum ada tagihan.
-
                             </td>
 
                         </tr>
 
-
                     @endforelse
-
 
                 </tbody>
 
@@ -702,186 +597,184 @@
     </div>
 
 
+    {{-- RIWAYAT PEMBAYARAN --}}
 
-<!-- ========================================
-     RIWAYAT PEMBAYARAN
-======================================== -->
+    <div class="table-card">
 
-<div class="table-card">
+        <h2 class="section-title">
+            Riwayat Pembayaran
+        </h2>
 
-    <h2 class="section-title">
-        Riwayat Pembayaran
-    </h2>
+        <div class="table-wrapper">
 
-    <div class="table-wrapper">
+            <table>
 
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>
-                        No
-                    </th>
-
-                    <th>
-                        Tanggal
-                    </th>
-
-                    <th>
-                        Kategori
-                    </th>
-
-                    <th>
-                        Nominal
-                    </th>
-
-                    <th>
-                        Metode
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                @forelse($pembayaran as $index => $item)
+                <thead>
 
                     <tr>
 
-                        <!-- NO -->
-                        <td>
-                            {{ $index + 1 }}
-                        </td>
+                        <th>
+                            No
+                        </th>
 
+                        <th>
+                            Tanggal
+                        </th>
 
-                        <!-- TANGGAL -->
-                        <td>
+                        <th>
+                            Kategori
+                        </th>
 
-                            @if($item->tanggal_kirim)
+                        <th>
+                            Nominal
+                        </th>
 
-                                {{ \Carbon\Carbon::parse(
-                                    $item->tanggal_kirim
-                                )->format('d-m-Y') }}
+                        <th>
+                            Metode
+                        </th>
 
-                            @else
-
-                                -
-
-                            @endif
-
-                        </td>
-
-
-                        <!-- KATEGORI -->
-                        <td>
-
-                            {{ $item->tagihan->kategori->nama ?? '-' }}
-
-                        </td>
-
-
-                        <!-- NOMINAL -->
-                        <td>
-
-                            <strong>
-                                Rp
-                                {{ number_format(
-                                    $item->nominal,
-                                    0,
-                                    ',',
-                                    '.'
-                                ) }}
-                            </strong>
-
-                        </td>
-
-
-                        <!-- METODE -->
-                        <td>
-
-                            @if($item->metode === 'transfer')
-
-                                Transfer Bank
-
-                            @elseif($item->metode === 'qris')
-
-                                QRIS
-
-                            @else
-
-                                {{ $item->metode ?? '-' }}
-
-                            @endif
-
-                        </td>
-
-
-                        <!-- STATUS -->
-                        <td>
-
-                            @if($item->status === 'dibayar')
-
-                                <span class="status status-lunas">
-                                    Disetujui
-                                </span>
-
-
-                            @elseif($item->status === 'menunggu')
-
-                                <span class="status status-belum">
-                                    Menunggu
-                                </span>
-
-
-                            @elseif($item->status === 'ditolak')
-
-                                <span class="status status-belum">
-                                    Ditolak
-                                </span>
-
-
-                            @else
-
-                                <span class="status status-belum">
-                                    {{ ucfirst($item->status) }}
-                                </span>
-
-                            @endif
-
-                        </td>
+                        <th>
+                            Status
+                        </th>
 
                     </tr>
 
-                @empty
+                </thead>
 
-                    <tr>
+                <tbody>
 
-                        <td
-                            colspan="6"
-                            class="empty"
-                        >
-                            Belum ada riwayat pembayaran.
-                        </td>
+                    @forelse ($pembayaran as $index => $item)
 
-                    </tr>
+                        <tr>
 
-                @endforelse
+                            {{-- NO --}}
 
-            </tbody>
+                            <td>
+                                {{ $index + 1 }}
+                            </td>
 
-        </table>
+
+                            {{-- TANGGAL --}}
+
+                            <td>
+
+                                @if ($item->tanggal_kirim)
+
+                                    {{ \Carbon\Carbon::parse(
+                                        $item->tanggal_kirim
+                                    )->format('d-m-Y') }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- KATEGORI --}}
+
+                            <td>
+
+                                {{ $item->tagihan->kategori->nama ?? '-' }}
+
+                            </td>
+
+
+                            {{-- NOMINAL --}}
+
+                            <td>
+
+                                <strong>
+                                    Rp {{ number_format(
+                                        $item->nominal,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+                                </strong>
+
+                            </td>
+
+
+                            {{-- METODE --}}
+
+                            <td>
+
+                                @if ($item->metode === 'transfer')
+
+                                    Transfer Bank
+
+                                @elseif ($item->metode === 'qris')
+
+                                    QRIS
+
+                                @else
+
+                                    {{ $item->metode ?? '-' }}
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- STATUS --}}
+
+                            <td>
+
+                                @if ($item->status === 'dibayar')
+
+                                    <span class="status status-lunas">
+                                        Disetujui
+                                    </span>
+
+                                @elseif ($item->status === 'menunggu')
+
+                                    <span class="status status-menunggu">
+                                        Menunggu
+                                    </span>
+
+                                @elseif ($item->status === 'ditolak')
+
+                                    <span class="status status-ditolak">
+                                        Ditolak
+                                    </span>
+
+                                @else
+
+                                    <span class="status status-belum">
+                                        {{ ucfirst($item->status) }}
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="empty"
+                            >
+                                Belum ada riwayat pembayaran.
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
-
-</div>
 
 @endif
 

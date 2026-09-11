@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pembayaran;
+use App\Models\PembayaranTagihan;
 use App\Models\Tagihan;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -12,23 +12,42 @@ use Illuminate\Http\Request;
 class LaporanController extends Controller
 {
     /**
-     * Menampilkan laporan pembayaran
+     * Daftar bulan Indonesia
      */
-    public function index(Request $request)
+    private function bulanIndonesia()
+    {
+        return [
+            'Januari'   => 1,
+            'Februari'  => 2,
+            'Maret'     => 3,
+            'April'     => 4,
+            'Mei'       => 5,
+            'Juni'      => 6,
+            'Juli'      => 7,
+            'Agustus'   => 8,
+            'September' => 9,
+            'Oktober'   => 10,
+            'November'  => 11,
+            'Desember'  => 12,
+        ];
+    }
+
+
+    /**
+     * Query pembayaran
+     */
+    private function getPembayaranQuery(Request $request)
     {
         $bulan = $request->bulan;
-        $tahun = $request->tahun ?? date('Y');
+        $tahun = $request->tahun;
 
-        /*
-        |--------------------------------------------------------------------------
-        | DATA PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
-        $query = Pembayaran::with([
-            'siswa.kelas',
-            'tagihan'
+        $query = PembayaranTagihan::with([
+            'tagihan.siswa.kelas',
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+            'user',
         ]);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -36,12 +55,14 @@ class LaporanController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($tahun) {
+        if (!empty($tahun)) {
+
             $query->whereYear(
-                'tanggal_pembayaran',
+                'tanggal_kirim',
                 $tahun
             );
         }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -49,34 +70,49 @@ class LaporanController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        if ($bulan) {
+        if (!empty($bulan)) {
 
-            $bulanIndonesia = [
-                'Januari'   => 1,
-                'Februari'  => 2,
-                'Maret'     => 3,
-                'April'     => 4,
-                'Mei'       => 5,
-                'Juni'      => 6,
-                'Juli'      => 7,
-                'Agustus'   => 8,
-                'September' => 9,
-                'Oktober'   => 10,
-                'November'  => 11,
-                'Desember'  => 12,
-            ];
+            $bulanMap = $this->bulanIndonesia();
 
-            if (isset($bulanIndonesia[$bulan])) {
+            if (isset($bulanMap[$bulan])) {
 
                 $query->whereMonth(
-                    'tanggal_pembayaran',
-                    $bulanIndonesia[$bulan]
+                    'tanggal_kirim',
+                    $bulanMap[$bulan]
                 );
             }
         }
 
-        $pembayaran = $query
-            ->latest('tanggal_pembayaran')
+
+        /*
+        |--------------------------------------------------------------------------
+        | URUTKAN
+        |--------------------------------------------------------------------------
+        */
+
+        return $query->orderByDesc(
+            'tanggal_kirim'
+        );
+    }
+
+
+    /**
+     * Menampilkan laporan pembayaran
+     */
+    public function index(Request $request)
+    {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL DATA PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        $pembayaran = $this
+            ->getPembayaranQuery($request)
             ->get();
 
 
@@ -84,28 +120,34 @@ class LaporanController extends Controller
         |--------------------------------------------------------------------------
         | TOTAL PEMBAYARAN
         |--------------------------------------------------------------------------
+        |
+        | Hanya pembayaran dengan status "dibayar"
+        |
         */
 
         $totalPembayaran = $pembayaran
-            ->where('status', 'disetujui')
+            ->where('status', 'dibayar')
             ->sum('nominal');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL ID TAGIHAN
+        |--------------------------------------------------------------------------
+        */
+
+        $tagihanIds = $pembayaran
+            ->pluck('tagihan_id')
+            ->filter()
+            ->unique()
+            ->values();
 
 
         /*
         |--------------------------------------------------------------------------
         | TOTAL TAGIHAN
         |--------------------------------------------------------------------------
-        |
-        | Ambil tagihan yang berkaitan dengan pembayaran yang ditampilkan.
-        | distinct digunakan agar satu tagihan tidak dihitung berkali-kali
-        | apabila memiliki beberapa pembayaran.
-        |
         */
-
-        $tagihanIds = $pembayaran
-            ->pluck('tagihan_id')
-            ->filter()
-            ->unique();
 
         $totalTagihan = Tagihan::whereIn(
             'id',
@@ -124,6 +166,12 @@ class LaporanController extends Controller
             $totalTagihan - $totalPembayaran
         );
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | VIEW
+        |--------------------------------------------------------------------------
+        */
 
         return view(
             'admin.laporan.index',
@@ -145,72 +193,43 @@ class LaporanController extends Controller
     public function pdf(Request $request)
     {
         $bulan = $request->bulan;
-        $tahun = $request->tahun ?? date('Y');
+        $tahun = $request->tahun;
 
-        $query = Pembayaran::with([
-            'siswa.kelas',
-            'tagihan'
-        ]);
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER TAHUN
+        | DATA
         |--------------------------------------------------------------------------
         */
 
-        if ($tahun) {
-            $query->whereYear(
-                'tanggal_pembayaran',
-                $tahun
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER BULAN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($bulan) {
-
-            $bulanIndonesia = [
-                'Januari'   => 1,
-                'Februari'  => 2,
-                'Maret'     => 3,
-                'April'     => 4,
-                'Mei'       => 5,
-                'Juni'      => 6,
-                'Juli'      => 7,
-                'Agustus'   => 8,
-                'September' => 9,
-                'Oktober'   => 10,
-                'November'  => 11,
-                'Desember'  => 12,
-            ];
-
-            if (isset($bulanIndonesia[$bulan])) {
-
-                $query->whereMonth(
-                    'tanggal_pembayaran',
-                    $bulanIndonesia[$bulan]
-                );
-            }
-        }
-
-        $pembayaran = $query
-            ->latest('tanggal_pembayaran')
+        $pembayaran = $this
+            ->getPembayaranQuery($request)
             ->get();
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
         $totalPembayaran = $pembayaran
-            ->where('status', 'disetujui')
+            ->where('status', 'dibayar')
             ->sum('nominal');
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL TAGIHAN
+        |--------------------------------------------------------------------------
+        */
 
         $tagihanIds = $pembayaran
             ->pluck('tagihan_id')
             ->filter()
-            ->unique();
+            ->unique()
+            ->values();
+
 
         $totalTagihan = Tagihan::whereIn(
             'id',
@@ -218,11 +237,23 @@ class LaporanController extends Controller
         )->sum('nominal');
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | SISA TAGIHAN
+        |--------------------------------------------------------------------------
+        */
+
         $sisaTagihan = max(
             0,
             $totalTagihan - $totalPembayaran
         );
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE PDF
+        |--------------------------------------------------------------------------
+        */
 
         $pdf = Pdf::loadView(
             'admin.laporan.pdf',
@@ -236,10 +267,12 @@ class LaporanController extends Controller
             )
         );
 
+
         $pdf->setPaper(
-            'a4',
+            'A4',
             'landscape'
         );
+
 
         return $pdf->download(
             'laporan-pembayaran.pdf'

@@ -15,11 +15,9 @@
     {{-- =====================================================
          HEADER
     ====================================================== --}}
-
     <div class="laporan-header">
 
         <div>
-
             <h2>
                 Laporan Pembayaran
             </h2>
@@ -27,7 +25,6 @@
             <p>
                 Melihat dan mencetak laporan pembayaran siswa
             </p>
-
         </div>
 
     </div>
@@ -36,40 +33,52 @@
     {{-- =====================================================
          PESAN SUCCESS
     ====================================================== --}}
-
     @if(session('success'))
 
         <div class="laporan-success">
-
             {{ session('success') }}
-
         </div>
 
     @endif
 
 
     {{-- =====================================================
-         FILTER
+         PESAN ERROR
     ====================================================== --}}
+    @if(session('error'))
 
+        <div class="laporan-error">
+            {{ session('error') }}
+        </div>
+
+    @endif
+
+
+    {{-- =====================================================
+         FILTER LAPORAN
+    ====================================================== --}}
     <div class="laporan-filter">
 
         <h3>
             Filter Laporan
         </h3>
 
+        <form
+            method="GET"
+            action="{{ route('admin.laporan.index') }}"
+        >
 
-        <form method="GET">
-
-            {{-- BULAN --}}
-
+            {{-- ================= BULAN ================= --}}
             <div class="laporan-form-group">
 
-                <label>
+                <label for="bulan">
                     Bulan
                 </label>
 
-                <select name="bulan">
+                <select
+                    name="bulan"
+                    id="bulan"
+                >
 
                     <option value="">
                         Semua Bulan
@@ -104,59 +113,72 @@
             </div>
 
 
-            {{-- TAHUN --}}
-
+            {{-- ================= TAHUN ================= --}}
             <div class="laporan-form-group">
 
-                <label>
+                <label for="tahun">
                     Tahun
                 </label>
 
                 <input
                     type="number"
                     name="tahun"
-                    value="{{ request('tahun', date('Y')) }}"
+                    id="tahun"
+                    value="{{ request('tahun') }}"
                     min="2000"
                     max="2100"
+                    placeholder="Semua Tahun"
                 >
 
             </div>
 
 
-<div class="laporan-actions">
+            {{-- ================= BUTTON ================= --}}
+            <div class="laporan-actions">
 
-    {{-- TAMPILKAN --}}
-    <button
-        type="submit"
-        class="btn-laporan btn-laporan-green"
-    >
-        Tampilkan
-    </button>
+                {{-- TAMPILKAN --}}
+                <button
+                    type="submit"
+                    class="btn-laporan btn-laporan-green"
+                >
+                    Tampilkan
+                </button>
 
-    {{-- CETAK PDF --}}
-    <a
-        href="{{ route('admin.laporan.pdf', [
-            'bulan' => request('bulan'),
-            'tahun' => request('tahun', date('Y'))
-        ]) }}"
-        target="_blank"
-        class="btn-laporan btn-laporan-print"
-    >
-        Cetak PDF
-    </a>
 
-    {{-- EXPORT EXCEL --}}
-    <a
-        href="{{ route('admin.laporan.excel', [
-            'bulan' => request('bulan'),
-            'tahun' => request('tahun', date('Y'))
-        ]) }}"
-        class="btn-laporan btn-laporan-excel"
-    >
-        Export Excel
-    </a>
+                {{-- RESET --}}
+                <a
+                    href="{{ route('admin.laporan.index') }}"
+                    class="btn-laporan btn-laporan-reset"
+                >
+                    Reset
+                </a>
 
-</div>
+
+                {{-- PDF --}}
+                <a
+                    href="{{ route('admin.laporan.pdf', [
+                        'bulan' => request('bulan'),
+                        'tahun' => request('tahun')
+                    ]) }}"
+                    target="_blank"
+                    class="btn-laporan btn-laporan-print"
+                >
+                    Cetak PDF
+                </a>
+
+
+                {{-- EXCEL --}}
+                <a
+                    href="{{ route('admin.laporan.excel', [
+                        'bulan' => request('bulan'),
+                        'tahun' => request('tahun')
+                    ]) }}"
+                    class="btn-laporan btn-laporan-excel"
+                >
+                    Export Excel
+                </a>
+
+            </div>
 
         </form>
 
@@ -166,11 +188,10 @@
     {{-- =====================================================
          RINGKASAN
     ====================================================== --}}
-
     <div class="laporan-summary">
 
-        {{-- TOTAL PEMBAYARAN --}}
 
+        {{-- TOTAL PEMBAYARAN --}}
         <div class="laporan-summary-card">
 
             <h4>
@@ -190,7 +211,6 @@
 
 
         {{-- TOTAL TAGIHAN --}}
-
         <div class="laporan-summary-card">
 
             <h4>
@@ -210,7 +230,6 @@
 
 
         {{-- SISA TAGIHAN --}}
-
         <div class="laporan-summary-card">
 
             <h4>
@@ -234,14 +253,39 @@
     {{-- =====================================================
          DATA PEMBAYARAN
     ====================================================== --}}
-
     <div class="laporan-card">
 
-        <h3>
-            Data Pembayaran
-        </h3>
+
+        {{-- ================= HEADER CARD ================= --}}
+        <div class="laporan-card-header">
+
+            <div>
+
+                <h3>
+                    Data Pembayaran
+                </h3>
+
+                <p>
+                    Daftar pembayaran siswa yang tercatat dalam sistem.
+                </p>
+
+            </div>
 
 
+            <div class="laporan-total-data">
+
+                {{ $pembayaran->count() }}
+
+                Data
+
+            </div>
+
+        </div>
+
+
+        {{-- =====================================================
+             TABLE
+        ====================================================== --}}
         <div class="laporan-table-wrapper">
 
             <table class="laporan-table">
@@ -250,23 +294,45 @@
 
                     <tr>
 
-                        <th>No</th>
+                        <th>
+                            No
+                        </th>
 
-                        <th>Siswa</th>
+                        <th>
+                            Siswa
+                        </th>
 
-                        <th>Kelas</th>
+                        <th>
+                            NIS
+                        </th>
 
-                        <th>Bulan</th>
+                        <th>
+                            Kelas
+                        </th>
 
-                        <th>Tahun</th>
+                        <th>
+                            Bulan
+                        </th>
 
-                        <th>Nominal</th>
+                        <th>
+                            Tahun
+                        </th>
 
-                        <th>Metode</th>
+                        <th>
+                            Nominal
+                        </th>
 
-                        <th>Status</th>
+                        <th>
+                            Metode
+                        </th>
 
-                        <th>Tanggal Bayar</th>
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Tanggal Bayar
+                        </th>
 
                     </tr>
 
@@ -279,58 +345,184 @@
 
                         <tr>
 
+
+                            {{-- =================================================
+                                 NO
+                            ================================================== --}}
                             <td class="text-center">
+
                                 {{ $index + 1 }}
+
                             </td>
 
 
+                            {{-- =================================================
+                                 SISWA
+                            ================================================== --}}
                             <td>
-                                {{ $item->siswa->nama ?? '-' }}
+
+                                <div class="siswa-cell">
+
+                                    <strong>
+                                        {{ $item->tagihan?->siswa?->nama ?? '-' }}
+                                    </strong>
+
+                                </div>
+
                             </td>
 
 
+                            {{-- =================================================
+                                 NIS
+                            ================================================== --}}
                             <td>
-                                {{ $item->siswa->kelas->nama_kelas ?? '-' }}
+
+                                {{ $item->tagihan?->siswa?->nis ?? '-' }}
+
                             </td>
 
 
+                            {{-- =================================================
+                                 KELAS
+                            ================================================== --}}
                             <td>
-                                {{ $item->bulan ?? '-' }}
+
+                                {{ $item->tagihan?->siswa?->kelas?->nama_kelas ?? '-' }}
+
                             </td>
 
 
+                            {{-- =================================================
+                                 BULAN
+                                 Menggunakan tanggal pembayaran
+                            ================================================== --}}
                             <td>
-                                {{ $item->tahun ?? '-' }}
+
+                                @php
+
+                                    $bulanIndonesia = [
+                                        1  => 'Januari',
+                                        2  => 'Februari',
+                                        3  => 'Maret',
+                                        4  => 'April',
+                                        5  => 'Mei',
+                                        6  => 'Juni',
+                                        7  => 'Juli',
+                                        8  => 'Agustus',
+                                        9  => 'September',
+                                        10 => 'Oktober',
+                                        11 => 'November',
+                                        12 => 'Desember',
+                                    ];
+
+                                @endphp
+
+
+                                @if($item->tanggal_disetujui)
+
+                                    {{ $bulanIndonesia[
+                                        $item->tanggal_disetujui->month
+                                    ] ?? '-' }}
+
+                                @elseif($item->tanggal_kirim)
+
+                                    {{ $bulanIndonesia[
+                                        $item->tanggal_kirim->month
+                                    ] ?? '-' }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
                             </td>
 
 
+                            {{-- =================================================
+                                 TAHUN
+                            ================================================== --}}
                             <td>
-                                Rp {{ number_format(
-                                    $item->nominal ?? 0,
-                                    0,
-                                    ',',
-                                    '.'
-                                ) }}
+
+                                @if($item->tanggal_disetujui)
+
+                                    {{ $item->tanggal_disetujui->format('Y') }}
+
+                                @elseif($item->tanggal_kirim)
+
+                                    {{ $item->tanggal_kirim->format('Y') }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
                             </td>
 
 
+                            {{-- =================================================
+                                 NOMINAL
+                            ================================================== --}}
                             <td>
-                                {{ $item->metode_pembayaran ?? '-' }}
+
+                                <strong class="nominal">
+
+                                    Rp {{ number_format(
+                                        $item->nominal ?? 0,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </strong>
+
                             </td>
 
 
+                            {{-- =================================================
+                                 METODE
+                            ================================================== --}}
                             <td>
 
-                                @if(($item->status ?? '') == 'disetujui')
+                                <span class="metode-badge">
+
+                                    {{ strtoupper(
+                                        $item->metode ?? '-'
+                                    ) }}
+
+                                </span>
+
+                            </td>
+
+
+                            {{-- =================================================
+                                 STATUS
+                            ================================================== --}}
+                            <td>
+
+                                @if($item->status === 'dibayar')
 
                                     <span class="status-lunas">
-                                        Disetujui
+                                        Dibayar
+                                    </span>
+
+                                @elseif($item->status === 'ditolak')
+
+                                    <span class="status-belum">
+                                        Ditolak
+                                    </span>
+
+                                @elseif($item->status === 'menunggu')
+
+                                    <span class="status-menunggu">
+                                        Menunggu
                                     </span>
 
                                 @else
 
                                     <span class="status-belum">
-                                        {{ $item->status ?? 'Belum' }}
+                                        {{ $item->status ?? '-' }}
                                     </span>
 
                                 @endif
@@ -338,21 +530,59 @@
                             </td>
 
 
+                            {{-- =================================================
+                                 TANGGAL BAYAR
+                            ================================================== --}}
                             <td>
-                                {{ $item->tanggal_bayar ?? '-' }}
+
+                                @if($item->tanggal_disetujui)
+
+                                    {{ $item->tanggal_disetujui->format(
+                                        'd-m-Y H:i'
+                                    ) }}
+
+                                @elseif($item->tanggal_kirim)
+
+                                    {{ $item->tanggal_kirim->format(
+                                        'd-m-Y H:i'
+                                    ) }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
                             </td>
 
                         </tr>
 
+
                     @empty
 
+                        {{-- =================================================
+                             DATA KOSONG
+                        ================================================== --}}
                         <tr>
 
                             <td
-                                colspan="9"
+                                colspan="10"
                                 class="laporan-empty"
                             >
-                                Belum ada data pembayaran.
+
+                                <div class="empty-icon">
+                                    📄
+                                </div>
+
+                                <strong>
+                                    Belum ada data pembayaran
+                                </strong>
+
+                                <p>
+                                    Data pembayaran akan muncul
+                                    setelah pembayaran tercatat.
+                                </p>
+
                             </td>
 
                         </tr>

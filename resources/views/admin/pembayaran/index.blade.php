@@ -6,19 +6,30 @@
 
 @section('content')
 
+@vite('resources/css/admin/pembayaran.css')
+
 <div class="pembayaran-container">
 
     {{-- HEADER --}}
 
     <div class="pembayaran-header">
 
-        <h2>
-            Persetujuan Pembayaran
-        </h2>
+        <div>
+            <h2>
+                Persetujuan Pembayaran
+            </h2>
 
-        <p>
-            Periksa dan proses pembayaran yang dikirim oleh orang tua siswa.
-        </p>
+            <p>
+                Periksa dan proses pembayaran yang dikirim oleh orang tua siswa.
+            </p>
+        </div>
+
+        <a
+            href="{{ route('admin.pembayaran.manual') }}"
+            class="btn-manual"
+        >
+            + Pembayaran Manual
+        </a>
 
     </div>
 
@@ -56,11 +67,9 @@
             <div class="pembayaran-card-header">
 
                 <div>
-
                     <h3>
                         Pembayaran Baru
                     </h3>
-
                 </div>
 
                 <span class="pembayaran-status">

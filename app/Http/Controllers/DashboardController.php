@@ -35,27 +35,39 @@ class DashboardController extends Controller
 
         $tagihan = Tagihan::with([
             'siswa',
-            'pembayaran',
             'kategori',
-            'tahunAjaran'
+            'tahunAjaran',
+            'pembayaran'
         ])->get();
 
 
         // =================================================
-        // TOTAL NOMINAL TAGIHAN
+        // TOTAL SELURUH TAGIHAN
         // =================================================
 
-        $totalTagihan = $tagihan->sum('nominal');
+        $totalTagihan = $tagihan->sum(function ($item) {
+            return (float) $item->nominal;
+        });
 
 
         // =================================================
-        // TOTAL PEMBAYARAN YANG SUDAH DISETUJUI
+        // TOTAL PEMBAYARAN
+        // =================================================
+        //
+        // dibayar   = pembayaran yang sudah disetujui
+        // disetujui = jika ada status tersebut
+        //
         // =================================================
 
-        $totalPembayaran = PembayaranTagihan::where(
+        $totalPembayaran = PembayaranTagihan::whereIn(
             'status',
-            'disetujui'
+            [
+                'dibayar',
+                'disetujui'
+            ]
         )->sum('nominal');
+
+        $totalPembayaran = (float) $totalPembayaran;
 
 
         // =================================================
@@ -69,7 +81,7 @@ class DashboardController extends Controller
 
 
         // =================================================
-        // STATUS PEMBAYARAN SISWA
+        // STATUS SISWA
         // =================================================
 
         $lunas = 0;
@@ -79,53 +91,175 @@ class DashboardController extends Controller
         $terlambat = 0;
 
 
-        foreach ($tagihan as $item) {
+        // =================================================
+        // TANGGAL HARI INI
+        // =================================================
 
-            // Total pembayaran tagihan ini
-            $dibayar = $item->pembayaran
-                ->where('status', 'disetujui')
-                ->sum('nominal');
-
-
-            // Sisa tagihan
-            $sisa = max(
-                $item->nominal - $dibayar,
-                0
-            );
+        $hariIni = Carbon::today();
 
 
-            // =============================================
-            // LUNAS
-            // =============================================
+        // =================================================
+        // KELOMPOKKAN TAGIHAN BERDASARKAN SISWA
+        // =================================================
 
-            if ($sisa <= 0) {
+        $tagihanPerSiswa = $tagihan->groupBy('siswa_id');
+
+
+        // =================================================
+        // CEK STATUS SETIAP SISWA
+        // =================================================
+
+        foreach ($tagihanPerSiswa as $siswaId => $tagihanSiswa) {
+
+            // Awalnya dianggap lunas
+            $semuaLunas = true;
+
+            // Ada tagihan belum lunas
+            $adaBelumLunas = false;
+
+            // Ada tagihan yang benar-benar terlambat
+            $adaTerlambat = false;
+
+
+            // =================================================
+            // CEK SETIAP TAGIHAN
+            // =================================================
+
+            foreach ($tagihanSiswa as $item) {
+
+                // ---------------------------------------------
+                // NOMINAL TAGIHAN
+                // ---------------------------------------------
+
+                $nominalTagihan = (float) $item->nominal;
+
+
+                // ---------------------------------------------
+                // TOTAL PEMBAYARAN YANG SUDAH SAH
+                // ---------------------------------------------
+
+                $dibayar = $item->pembayaran
+                    ->filter(function ($pembayaran) {
+
+                        $status = strtolower(
+                            trim(
+                                (string) $pembayaran->status
+                            )
+                        );
+
+                        return in_array(
+                            $status,
+                            [
+                                'dibayar',
+                                'disetujui'
+                            ]
+                        );
+
+                    })
+                    ->sum(function ($pembayaran) {
+
+                        return (float) $pembayaran->nominal;
+
+                    });
+
+
+                // ---------------------------------------------
+                // HITUNG SISA
+                // ---------------------------------------------
+
+                $sisa = max(
+                    $nominalTagihan - $dibayar,
+                    0
+                );
+
+
+                // =================================================
+                // JIKA TAGIHAN MASIH MEMILIKI SISA
+                // =================================================
+
+                if ($sisa > 0) {
+
+                    $semuaLunas = false;
+
+                    $adaBelumLunas = true;
+
+
+                    // =================================================
+                    // CEK JATUH TEMPO
+                    // =================================================
+
+                    if (!empty($item->jatuh_tempo)) {
+
+                        try {
+
+                            $jatuhTempo = Carbon::parse(
+                                $item->jatuh_tempo
+                            )->startOfDay();
+
+
+                            // =================================================
+                            // TERLAMBAT HANYA JIKA:
+                            //
+                            // JATUH TEMPO < HARI INI
+                            //
+                            // Contoh:
+                            //
+                            // Hari ini       : 09-09-2026
+                            // Jatuh tempo    : 05-10-2026
+                            //
+                            // Maka:
+                            // Belum Lunas
+                            //
+                            // BUKAN:
+                            // Terlambat
+                            // =================================================
+
+                            if ($jatuhTempo->lt($hariIni)) {
+
+                                $adaTerlambat = true;
+
+                            }
+
+                        } catch (\Exception $e) {
+
+                            // Jika format tanggal tidak valid,
+                            // jangan dianggap terlambat.
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+            // =================================================
+            // TENTUKAN STATUS SISWA
+            // =================================================
+
+            if ($semuaLunas) {
+
+                // Semua tagihan siswa sudah lunas
 
                 $lunas++;
 
-                continue;
-            }
+            } elseif ($adaTerlambat) {
 
-
-            // =============================================
-            // TERLAMBAT
-            // =============================================
-
-            if (
-                $item->jatuh_tempo &&
-                Carbon::parse($item->jatuh_tempo)->isPast()
-            ) {
+                // Ada tagihan belum lunas
+                // yang sudah melewati jatuh tempo
 
                 $terlambat++;
 
-                continue;
+            } elseif ($adaBelumLunas) {
+
+                // Ada tagihan belum lunas
+                // tetapi belum melewati jatuh tempo
+
+                $belumLunas++;
+
             }
 
-
-            // =============================================
-            // BELUM LUNAS
-            // =============================================
-
-            $belumLunas++;
         }
 
 
@@ -148,7 +282,7 @@ class DashboardController extends Controller
             'tagihan.kategori',
             'tagihan.tahunAjaran'
         ])
-        ->latest('tanggal_kirim')
+        ->orderByDesc('tanggal_kirim')
         ->take(5)
         ->get();
 
@@ -178,9 +312,12 @@ class DashboardController extends Controller
 
         for ($bulan = 1; $bulan <= 12; $bulan++) {
 
-            $totalBulan = PembayaranTagihan::where(
+            $totalBulan = PembayaranTagihan::whereIn(
                 'status',
-                'disetujui'
+                [
+                    'dibayar',
+                    'disetujui'
+                ]
             )
             ->whereYear(
                 'tanggal_kirim',
@@ -193,12 +330,13 @@ class DashboardController extends Controller
             ->sum('nominal');
 
 
-            $dataGrafik[] = $totalBulan;
+            $dataGrafik[] = (float) $totalBulan;
+
         }
 
 
         // =================================================
-        // KIRIM DATA KE VIEW
+        // KIRIM DATA KE VIEW ADMIN
         // =================================================
 
         return view(
@@ -310,7 +448,11 @@ class DashboardController extends Controller
         // TOTAL TAGIHAN
         // =================================================
 
-        $totalTagihan = $tagihan->sum('nominal');
+        $totalTagihan = $tagihan->sum(function ($item) {
+
+            return (float) $item->nominal;
+
+        });
 
 
         // =================================================
@@ -339,8 +481,28 @@ class DashboardController extends Controller
         // =================================================
 
         $totalDibayar = $pembayaran
-            ->where('status', 'disetujui')
-            ->sum('nominal');
+            ->filter(function ($item) {
+
+                $status = strtolower(
+                    trim(
+                        (string) $item->status
+                    )
+                );
+
+                return in_array(
+                    $status,
+                    [
+                        'dibayar',
+                        'disetujui'
+                    ]
+                );
+
+            })
+            ->sum(function ($item) {
+
+                return (float) $item->nominal;
+
+            });
 
 
         // =================================================
@@ -354,7 +516,7 @@ class DashboardController extends Controller
 
 
         // =================================================
-        // KIRIM KE VIEW ORANG TUA
+        // KIRIM DATA KE VIEW
         // =================================================
 
         return view(

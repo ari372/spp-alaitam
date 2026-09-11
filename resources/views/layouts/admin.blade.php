@@ -14,18 +14,25 @@
         @yield('title', 'Admin')
     </title>
 
-    {{-- CSS ADMIN --}}
+
+    {{-- =====================================================
+         CSS ADMIN
+    ====================================================== --}}
 
     @vite([
-    'resources/css/admin/layout.css',
-    'resources/js/app.js'
-])
+        'resources/css/admin/layout.css',
+        'resources/js/app.js'
+    ])
 
-    {{-- CSS KHUSUS HALAMAN --}}
+
+    {{-- =====================================================
+         CSS KHUSUS HALAMAN
+    ====================================================== --}}
 
     @stack('styles')
 
 </head>
+
 
 <body>
 
@@ -36,7 +43,22 @@
 
     <aside class="sidebar">
 
+
+        {{-- =================================================
+             LOGO SEKOLAH
+        ================================================== --}}
+
         <div class="logo">
+
+            <div class="logo-image">
+
+                <img
+                    src="{{ asset('images/logo-alaitam.png.jpg') }}"
+                    alt="Logo SMP Plus Al-I'tam"
+                >
+
+            </div>
+
 
             <h2>
                 SMP Plus Al-I'tam
@@ -49,6 +71,11 @@
         </div>
 
 
+
+        {{-- =================================================
+             MENU UTAMA
+        ================================================== --}}
+
         <div class="menu-title">
             Menu Utama
         </div>
@@ -56,7 +83,10 @@
 
         <ul class="menu">
 
-            {{-- DASHBOARD --}}
+
+            {{-- =================================================
+                 DASHBOARD
+            ================================================== --}}
 
             <li>
 
@@ -66,7 +96,48 @@
                 >
 
                     <span class="menu-icon">
-                        🏠
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <rect
+                                x="3"
+                                y="3"
+                                width="7"
+                                height="7"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="14"
+                                y="3"
+                                width="7"
+                                height="7"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="3"
+                                y="14"
+                                width="7"
+                                height="7"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="14"
+                                y="14"
+                                width="7"
+                                height="7"
+                                rx="1"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -78,7 +149,10 @@
             </li>
 
 
-            {{-- TAGIHAN --}}
+
+            {{-- =================================================
+                 TAGIHAN
+            ================================================== --}}
 
             <li>
 
@@ -88,7 +162,32 @@
                 >
 
                     <span class="menu-icon">
-                        📋
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            />
+
+                            <path
+                                d="M14 2v6h6"
+                            />
+
+                            <path
+                                d="M8 13h8"
+                            />
+
+                            <path
+                                d="M8 17h5"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -100,7 +199,10 @@
             </li>
 
 
-            {{-- PEMBAYARAN --}}
+
+            {{-- =================================================
+                 PEMBAYARAN
+            ================================================== --}}
 
             <li>
 
@@ -110,7 +212,32 @@
                 >
 
                     <span class="menu-icon">
-                        💳
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <rect
+                                x="2"
+                                y="5"
+                                width="20"
+                                height="14"
+                                rx="2"
+                            />
+
+                            <path
+                                d="M2 10h20"
+                            />
+
+                            <path
+                                d="M6 15h4"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -122,7 +249,10 @@
             </li>
 
 
-            {{-- LAPORAN --}}
+
+            {{-- =================================================
+                 LAPORAN
+            ================================================== --}}
 
             <li>
 
@@ -132,7 +262,48 @@
                 >
 
                     <span class="menu-icon">
-                        📊
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M4 19V5"
+                            />
+
+                            <path
+                                d="M4 19h17"
+                            />
+
+                            <rect
+                                x="7"
+                                y="11"
+                                width="3"
+                                height="5"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="12"
+                                y="8"
+                                width="3"
+                                height="8"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="17"
+                                y="4"
+                                width="3"
+                                height="12"
+                                rx="1"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -143,12 +314,14 @@
 
             </li>
 
+
         </ul>
 
 
-        {{-- =================================================
+
+        {{-- =====================================================
              DATA MASTER
-        ================================================== --}}
+        ====================================================== --}}
 
         <div class="menu-title">
             Data Master
@@ -157,7 +330,10 @@
 
         <ul class="menu">
 
-            {{-- SISWA --}}
+
+            {{-- =================================================
+                 DATA SISWA
+            ================================================== --}}
 
             <li>
 
@@ -167,7 +343,28 @@
                 >
 
                     <span class="menu-icon">
-                        👨‍🎓
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M22 10 12 5 2 10l10 5 10-5z"
+                            />
+
+                            <path
+                                d="M6 12v5c3 2 9 2 12 0v-5"
+                            />
+
+                            <path
+                                d="M22 10v6"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -179,7 +376,10 @@
             </li>
 
 
-            {{-- ORANG TUA --}}
+
+            {{-- =================================================
+                 DATA ORANG TUA
+            ================================================== --}}
 
             <li>
 
@@ -189,7 +389,34 @@
                 >
 
                     <span class="menu-icon">
-                        👨‍👩‍👦
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"
+                            />
+
+                            <circle
+                                cx="9"
+                                cy="7"
+                                r="4"
+                            />
+
+                            <path
+                                d="M22 21v-2a4 4 0 0 0-3-3.87"
+                            />
+
+                            <path
+                                d="M16 3.13a4 4 0 0 1 0 7.75"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -201,7 +428,10 @@
             </li>
 
 
-            {{-- KELAS --}}
+
+            {{-- =================================================
+                 DATA KELAS
+            ================================================== --}}
 
             <li>
 
@@ -211,7 +441,44 @@
                 >
 
                     <span class="menu-icon">
-                        🏫
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M3 21h18"
+                            />
+
+                            <path
+                                d="M5 21V5l7-3 7 3v16"
+                            />
+
+                            <path
+                                d="M9 9h1"
+                            />
+
+                            <path
+                                d="M14 9h1"
+                            />
+
+                            <path
+                                d="M9 13h1"
+                            />
+
+                            <path
+                                d="M14 13h1"
+                            />
+
+                            <path
+                                d="M9 17h6"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -223,7 +490,10 @@
             </li>
 
 
-            {{-- KATEGORI --}}
+
+            {{-- =================================================
+                 KATEGORI PEMBAYARAN
+            ================================================== --}}
 
             <li>
 
@@ -233,7 +503,48 @@
                 >
 
                     <span class="menu-icon">
-                        📑
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <rect
+                                x="4"
+                                y="4"
+                                width="6"
+                                height="6"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="14"
+                                y="4"
+                                width="6"
+                                height="6"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="4"
+                                y="14"
+                                width="6"
+                                height="6"
+                                rx="1"
+                            />
+
+                            <rect
+                                x="14"
+                                y="14"
+                                width="6"
+                                height="6"
+                                rx="1"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -244,12 +555,14 @@
 
             </li>
 
+
         </ul>
 
 
-        {{-- =================================================
+
+        {{-- =====================================================
              SISTEM
-        ================================================== --}}
+        ====================================================== --}}
 
         <div class="menu-title">
             Sistem
@@ -257,6 +570,11 @@
 
 
         <ul class="menu">
+
+
+            {{-- =================================================
+                 PROFIL
+            ================================================== --}}
 
             <li>
 
@@ -266,7 +584,26 @@
                 >
 
                     <span class="menu-icon">
-                        👤
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <circle
+                                cx="12"
+                                cy="8"
+                                r="4"
+                            />
+
+                            <path
+                                d="M4 21a8 8 0 0 1 16 0"
+                            />
+
+                        </svg>
+
                     </span>
 
                     <span class="menu-text">
@@ -276,6 +613,7 @@
                 </a>
 
             </li>
+
 
         </ul>
 
@@ -296,6 +634,11 @@
 
         <header class="navbar">
 
+
+            {{-- =================================================
+                 JUDUL HALAMAN
+            ================================================== --}}
+
             <div class="navbar-title">
 
                 <h3>
@@ -309,10 +652,17 @@
             </div>
 
 
+
+            {{-- =================================================
+                 NAVBAR KANAN
+            ================================================== --}}
+
             <div class="navbar-right">
 
 
-                {{-- NOTIFIKASI --}}
+                {{-- =================================================
+                     NOTIFIKASI
+                ================================================== --}}
 
                 <div class="notification-wrapper">
 
@@ -322,7 +672,23 @@
                         title="Pembayaran Menunggu"
                     >
 
-                        🔔
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+                            />
+
+                            <path
+                                d="M10 21h4"
+                            />
+
+                        </svg>
+
 
                         <span
                             id="notification-badge"
@@ -337,13 +703,17 @@
                 </div>
 
 
-                {{-- ADMIN PROFILE --}}
+
+                {{-- =================================================
+                     ADMIN PROFILE
+                ================================================== --}}
 
                 <div class="admin-profile">
 
                     <div class="admin-avatar">
                         A
                     </div>
+
 
                     <div class="admin-info">
 
@@ -360,7 +730,10 @@
                 </div>
 
 
-                {{-- LOGOUT --}}
+
+                {{-- =================================================
+                     LOGOUT
+                ================================================== --}}
 
                 <form
                     action="{{ route('logout') }}"
@@ -373,11 +746,38 @@
                     <button
                         type="submit"
                         class="logout-btn"
+                        title="Keluar dari sistem"
                     >
-                        Logout
+
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            aria-hidden="true"
+                        >
+
+                            <path
+                                d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                            />
+
+                            <path
+                                d="m16 17 5-5-5-5"
+                            />
+
+                            <path
+                                d="M21 12H9"
+                            />
+
+                        </svg>
+
+                        <span>
+                            Logout
+                        </span>
+
                     </button>
 
                 </form>
+
 
             </div>
 
@@ -385,9 +785,9 @@
 
 
 
-        {{-- =================================================
+        {{-- =====================================================
              CONTENT
-        ================================================== --}}
+        ====================================================== --}}
 
         <section class="content">
 
@@ -400,7 +800,7 @@
 
 
     {{-- =====================================================
-         SCRIPT
+         NOTIFICATION SCRIPT
     ====================================================== --}}
 
     <script>
@@ -415,9 +815,11 @@
             .then(response => {
 
                 if (!response.ok) {
+
                     throw new Error(
                         'Gagal mengambil notifikasi'
                     );
+
                 }
 
                 return response.json();
@@ -466,9 +868,11 @@
         }
 
 
+        // Jalankan ketika halaman dibuka
         loadNotification();
 
 
+        // Periksa notifikasi setiap 10 detik
         setInterval(
             loadNotification,
             10000
@@ -477,7 +881,12 @@
     </script>
 
 
+    {{-- =====================================================
+         SCRIPT TAMBAHAN HALAMAN
+    ====================================================== --}}
+
     @stack('scripts')
+
 
 </body>
 

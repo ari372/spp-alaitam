@@ -25,7 +25,10 @@ class Tagihan extends Model
 
     public function siswa(): BelongsTo
     {
-        return $this->belongsTo(Siswa::class, 'siswa_id');
+        return $this->belongsTo(
+            Siswa::class,
+            'siswa_id'
+        );
     }
 
     public function tahunAjaran(): BelongsTo
@@ -47,8 +50,9 @@ class Tagihan extends Model
     public function pembayaran(): HasMany
     {
         return $this->hasMany(
-            Pembayaran::class,
-            'tagihan_id'
+            PembayaranTagihan::class,
+            'tagihan_id',
+            'id'
         );
     }
 }
