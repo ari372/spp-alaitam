@@ -22,6 +22,11 @@ export default defineConfig({
 
                 // CSS AUTH
                 'resources/css/auth/login.css',
+
+                // CSS ORANG TUA
+                'resources/css/orang-tua/layout.css',
+                'resources/css/orang-tua/dashboard.css',
+                'resources/css/orang-tua/pembayaran.css',
             ],
             refresh: true,
         }),

@@ -1,113 +1,27 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
+@section('title', 'Detail Siswa')
 
-    <meta charset="UTF-8">
+@section('page-title', 'Detail Siswa')
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+@push('styles')
+    @vite('resources/css/admin/siswa.css')
+@endpush
 
-    <title>Detail Siswa</title>
+@section('content')
 
-    <style>
+<div class="siswa-detail-content">
 
-        body {
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background: #f5f7f6;
-        }
-
-        .navbar {
-            background: #0f5132;
-
-            color: white;
-
-            padding: 16px 30px;
-
-            font-weight: bold;
-        }
-
-        .content {
-            max-width: 800px;
-
-            margin: 30px auto;
-
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 30px;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,.08);
-        }
-
-        h2 {
-            color: #0f5132;
-
-            margin-top: 0;
-        }
-
-        .row {
-            display: grid;
-
-            grid-template-columns: 180px 1fr;
-
-            padding: 12px 0;
-
-            border-bottom: 1px solid #eee;
-        }
-
-        .label {
-            font-weight: bold;
-        }
-
-        .btn {
-            display: inline-block;
-
-            margin-top: 25px;
-
-            padding: 10px 18px;
-
-            background: #6c757d;
-
-            color: white;
-
-            text-decoration: none;
-
-            border-radius: 7px;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="navbar">
-    SMP Plus Al-I'tam
-</div>
-
-
-<div class="content">
-
-    <div class="card">
+    <div class="siswa-detail-card">
 
         <h2>
             Detail Siswa
         </h2>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 NIS
             </div>
 
@@ -118,9 +32,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 Nama
             </div>
 
@@ -131,9 +45,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 Jenis Kelamin
             </div>
 
@@ -148,9 +62,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 Alamat
             </div>
 
@@ -161,9 +75,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 Kelas
             </div>
 
@@ -174,9 +88,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="siswa-detail-row">
 
-            <div class="label">
+            <div class="siswa-detail-label">
                 Orang Tua
             </div>
 
@@ -189,7 +103,7 @@
 
         <a
             href="{{ route('admin.siswa.index') }}"
-            class="btn"
+            class="siswa-detail-btn"
         >
             Kembali
         </a>
@@ -198,6 +112,4 @@
 
 </div>
 
-</body>
-
-</html>
+@endsection

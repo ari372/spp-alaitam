@@ -11,202 +11,83 @@
         @yield('title', 'Dashboard Orang Tua')
     </title>
 
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f5f7f6;
-            color: #333;
-        }
-
-        /* ========================================
-           NAVBAR
-        ======================================== */
-
-        .navbar {
-            height: 82px;
-
-            background: #0f5132;
-            color: white;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 35px;
-
-            box-shadow: 0 2px 8px rgba(0,0,0,.12);
-        }
-
-        .navbar-brand h2 {
-            font-size: 21px;
-            margin-bottom: 5px;
-        }
-
-        .navbar-brand p {
-            font-size: 12px;
-            opacity: .8;
-        }
-
-        /* ========================================
-           NAVBAR RIGHT
-        ======================================== */
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .parent-info {
-            text-align: right;
-        }
-
-        .parent-info strong {
-            display: block;
-            font-size: 14px;
-        }
-
-        .parent-info span {
-            display: block;
-            font-size: 12px;
-            opacity: .8;
-            margin-top: 3px;
-        }
-
-        .parent-avatar {
-            width: 42px;
-            height: 42px;
-
-            border-radius: 50%;
-
-            background: #d4a017;
-            color: white;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        /* ========================================
-           LOGOUT
-        ======================================== */
-
-        .logout-form {
-            margin-left: 5px;
-        }
-
-        .logout-btn {
-            border: none;
-
-            background: #dc3545;
-            color: white;
-
-            padding: 10px 17px;
-
-            border-radius: 7px;
-
-            font-size: 13px;
-            font-weight: bold;
-
-            cursor: pointer;
-
-            transition: .2s;
-        }
-
-        .logout-btn:hover {
-            background: #bb2d3b;
-        }
-
-        /* ========================================
-           CONTENT
-        ======================================== */
-
-        .content {
-            padding: 35px;
-            max-width: 1400px;
-            margin: auto;
-        }
-
-        /* ========================================
-           RESPONSIVE
-        ======================================== */
-
-        @media(max-width: 700px) {
-
-            .navbar {
-                padding: 0 18px;
-            }
-
-            .parent-info {
-                display: none;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-        }
-
-    </style>
+    @vite([
+        'resources/css/orang-tua/layout.css',
+        'resources/css/orang-tua/dashboard.css',
+        'resources/css/orang-tua/pembayaran.css'
+    ])
 
 </head>
 
 
 <body>
 
-    <!-- ========================================
+    <!-- =====================================================
          NAVBAR
-    ======================================== -->
+    ====================================================== -->
 
     <header class="navbar">
 
-        <div class="navbar-brand">
+        {{-- BRAND --}}
+<div class="navbar-title">
 
-            <h2>
-                SMP Plus Al-I'tam
-            </h2>
+    <img
+        src="{{ asset('images/logo-alaitam.png.jpg') }}"
+        alt="Logo SMP Plus Al-I'tam"
+        class="navbar-logo"
+    >
 
-            <p>
-                Sistem Pembayaran SPP
-            </p>
+    <div class="navbar-text">
 
-        </div>
+        <h3>
+            SMP Plus Al-I'tam
+        </h3>
 
+        <p>
+            Sistem Pembayaran SPP
+        </p>
 
+    </div>
+
+</div>
+
+        {{-- NAVBAR RIGHT --}}
         <div class="navbar-right">
 
-            <div class="parent-info">
+            {{-- PROFILE --}}
+            <div class="parent-profile">
 
-                <strong>
-                    {{ auth()->user()->name ?? 'Orang Tua' }}
-                </strong>
+                {{-- INFORMASI ORANG TUA --}}
+                <div class="parent-info">
 
-                <span>
-                    Orang Tua / Wali Murid
-                </span>
+                    <strong>
+                        {{ auth()->user()->name ?? 'Orang Tua' }}
+                    </strong>
+
+                    <span>
+                        Orang Tua / Wali Murid
+                    </span>
+
+                </div>
+
+
+                {{-- AVATAR --}}
+                <div class="parent-avatar">
+
+                    {{ strtoupper(
+                        substr(
+                            auth()->user()->name ?? 'O',
+                            0,
+                            1
+                        )
+                    ) }}
+
+                </div>
 
             </div>
 
 
-            <div class="parent-avatar">
-
-                {{ strtoupper(substr(auth()->user()->name ?? 'O', 0, 1)) }}
-
-            </div>
-
-
-            <!-- LOGOUT -->
-
+            {{-- LOGOUT --}}
             <form
                 action="{{ route('logout') }}"
                 method="POST"
@@ -219,7 +100,21 @@
                     type="submit"
                     class="logout-btn"
                 >
-                    Logout
+
+                    {{-- ICON LOGOUT --}}
+                    <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+
+                    <span>
+                        Logout
+                    </span>
+
                 </button>
 
             </form>
@@ -229,9 +124,9 @@
     </header>
 
 
-    <!-- ========================================
+    <!-- =====================================================
          CONTENT
-    ======================================== -->
+    ====================================================== -->
 
     <main class="content">
 

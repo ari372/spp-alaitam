@@ -160,3 +160,568 @@
     }
 
 }
+
+.tagihan-create-container {
+    max-width: 800px;
+}
+
+.tagihan-create-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+}
+
+.tagihan-create-title {
+    color: #0f5132;
+    margin-bottom: 8px;
+}
+
+.tagihan-create-subtitle {
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.tagihan-alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.tagihan-alert-error {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.tagihan-alert ul {
+    margin: 0;
+}
+
+.tagihan-info {
+    background: #e9f5ee;
+    color: #0f5132;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.tagihan-form-group {
+    margin-bottom: 20px;
+}
+
+.tagihan-form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.tagihan-form-control {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+}
+
+.tagihan-form-control:focus {
+    outline: none;
+    border-color: #0f5132;
+}
+
+.tagihan-readonly {
+    background: #f5f5f5;
+}
+
+.tagihan-target {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+.tagihan-button-area {
+    display: flex;
+    gap: 10px;
+}
+
+.tagihan-btn {
+    padding: 12px 22px;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+}
+
+.tagihan-btn-simpan {
+    background: #0f5132;
+    color: white;
+}
+
+.tagihan-btn-simpan:hover {
+    background: #0b3d26;
+}
+
+.tagihan-btn-kembali {
+    background: #6c757d;
+    color: white;
+}
+
+.tagihan-btn-kembali:hover {
+    background: #5a6268;
+}
+
+.tagihan-form-container {
+    max-width: 800px;
+}
+
+.tagihan-form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+}
+
+.tagihan-form-title {
+    color: #0f5132;
+    margin-bottom: 8px;
+}
+
+.tagihan-form-description {
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.tagihan-error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.tagihan-error ul {
+    margin: 0;
+}
+
+.tagihan-form-group {
+    margin-bottom: 20px;
+}
+
+.tagihan-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.tagihan-form-control {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.tagihan-form-control:focus {
+    outline: none;
+    border-color: #0f5132;
+}
+
+.tagihan-readonly {
+    background: #f5f5f5;
+}
+
+.tagihan-form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.tagihan-btn {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.tagihan-btn-update {
+    background: #0f5132;
+    color: white;
+}
+
+.tagihan-btn-update:hover {
+    background: #0b3d25;
+}
+
+.tagihan-btn-kembali {
+    background: #6c757d;
+    color: white;
+}
+
+.tagihan-btn-kembali:hover {
+    background: #5c636a;
+}
+
+/* =========================================
+   DETAIL TAGIHAN
+========================================= */
+
+.tagihan-detail-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.tagihan-detail-header {
+    margin-bottom: 25px;
+}
+
+.tagihan-detail-header h2 {
+    color: #0f5132;
+    margin: 0 0 5px 0;
+    font-size: 28px;
+}
+
+.tagihan-detail-header p {
+    color: #777;
+    margin: 0;
+    font-size: 14px;
+}
+
+.tagihan-detail-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, .08);
+    margin-bottom: 25px;
+}
+
+.tagihan-detail-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.tagihan-detail-card-header h3 {
+    color: #0f5132;
+    margin: 0;
+    font-size: 20px;
+}
+
+/* =========================================
+   STATUS
+========================================= */
+
+.tagihan-status {
+    display: inline-block;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.tagihan-status-lunas {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.tagihan-status-belum {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* =========================================
+   DETAIL DATA
+========================================= */
+
+.tagihan-detail-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    gap: 20px;
+}
+
+.tagihan-detail-row strong {
+    color: #555;
+}
+
+.tagihan-detail-row span {
+    color: #222;
+    font-weight: 500;
+}
+
+.tagihan-nominal {
+    font-weight: bold !important;
+    color: #0f5132 !important;
+    font-size: 20px;
+}
+
+.tagihan-total-dibayar {
+    font-weight: bold !important;
+    color: #198754 !important;
+    font-size: 18px;
+}
+
+.tagihan-sisa {
+    font-weight: bold !important;
+    font-size: 18px;
+}
+
+.tagihan-sisa-belum {
+    color: #dc3545 !important;
+}
+
+.tagihan-sisa-lunas {
+    color: #198754 !important;
+}
+
+/* =========================================
+   RIWAYAT PEMBAYARAN
+========================================= */
+
+.tagihan-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.tagihan-history-title h3 {
+    color: #0f5132;
+    margin: 0 0 5px 0;
+    font-size: 20px;
+}
+
+.tagihan-history-title p {
+    color: #777;
+    margin: 0;
+    font-size: 13px;
+}
+
+.tagihan-transaksi-count {
+    background: #e8f5ee;
+    color: #0f5132;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* =========================================
+   TABLE
+========================================= */
+
+.tagihan-table-wrapper {
+    overflow-x: auto;
+}
+
+.tagihan-detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.tagihan-detail-table thead tr {
+    background: #0f5132;
+    color: white;
+}
+
+.tagihan-detail-table th {
+    padding: 13px;
+    white-space: nowrap;
+}
+
+.tagihan-detail-table th:nth-child(1) {
+    text-align: center;
+}
+
+.tagihan-detail-table th:nth-child(2) {
+    text-align: left;
+}
+
+.tagihan-detail-table th:nth-child(3) {
+    text-align: right;
+}
+
+.tagihan-detail-table th:nth-child(4),
+.tagihan-detail-table th:nth-child(5) {
+    text-align: center;
+}
+
+.tagihan-detail-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.tagihan-detail-table td {
+    padding: 13px;
+}
+
+.tagihan-table-no {
+    text-align: center;
+}
+
+.tagihan-table-date {
+    font-weight: 600;
+    color: #333;
+}
+
+.tagihan-table-time {
+    font-size: 12px;
+    color: #888;
+    margin-top: 3px;
+}
+
+.tagihan-table-nominal {
+    text-align: right;
+    font-weight: bold;
+    color: #0f5132;
+    white-space: nowrap;
+}
+
+.tagihan-table-method {
+    text-align: center;
+}
+
+.tagihan-table-status {
+    text-align: center;
+}
+
+/* =========================================
+   STATUS PEMBAYARAN
+========================================= */
+
+.tagihan-payment-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.tagihan-payment-dibayar {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.tagihan-payment-menunggu {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.tagihan-payment-ditolak {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.tagihan-payment-default {
+    color: #777;
+}
+
+/* =========================================
+   TOTAL PEMBAYARAN
+========================================= */
+
+.tagihan-detail-table tfoot tr {
+    background: #f8f9fa;
+    border-top: 2px solid #0f5132;
+}
+
+.tagihan-total-label {
+    padding: 15px;
+    text-align: right;
+    font-weight: bold;
+    color: #555;
+}
+
+.tagihan-total-value {
+    padding: 15px;
+    text-align: right;
+    font-weight: bold;
+    color: #0f5132;
+    white-space: nowrap;
+}
+
+/* =========================================
+   BELUM ADA PEMBAYARAN
+========================================= */
+
+.tagihan-empty {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    color: #777;
+    text-align: center;
+    border: 1px dashed #ddd;
+}
+
+.tagihan-empty-icon {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.tagihan-empty-title {
+    display: block;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.tagihan-empty-description {
+    font-size: 13px;
+}
+
+/* =========================================
+   AKSI
+========================================= */
+
+.tagihan-detail-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.tagihan-detail-btn {
+    padding: 11px 20px;
+    border-radius: 7px;
+    font-weight: bold;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.tagihan-detail-btn-edit {
+    background: #ffc107;
+    color: #212529;
+}
+
+.tagihan-detail-btn-kembali {
+    background: #6c757d;
+    color: white;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+    .tagihan-detail-card {
+        padding: 20px;
+    }
+
+    .tagihan-detail-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .tagihan-detail-header h2 {
+        font-size: 24px;
+    }
+
+}

@@ -1,0 +1,411 @@
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* =====================================================
+   HTML & BODY
+===================================================== */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #f5f7f6;
+    color: #333;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+
+    height: 70px;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 30px;
+
+    border-bottom: 1px solid #dddddd;
+
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+
+/* =====================================================
+   NAVBAR TITLE
+===================================================== */
+
+.navbar-title {
+    min-width: 0;
+}
+
+.navbar-title h3 {
+    color: #0f5132;
+
+    font-size: 20px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.navbar-title p {
+    margin-top: 4px;
+
+    font-size: 12px;
+
+    color: #777777;
+}
+
+
+/* =====================================================
+   NAVBAR RIGHT
+===================================================== */
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+
+    gap: 0;
+}
+
+
+/* =====================================================
+   PARENT PROFILE
+===================================================== */
+
+.parent-profile {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* =====================================================
+   PARENT INFO
+===================================================== */
+
+.parent-info {
+    min-width: 90px;
+}
+
+.parent-info strong {
+    display: block;
+
+    color: #333333;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    text-align: right;
+}
+
+.parent-info span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #777777;
+
+    font-size: 12px;
+
+    text-align: right;
+}
+
+
+/* =====================================================
+   AVATAR
+===================================================== */
+
+.parent-avatar {
+    width: 40px;
+    height: 40px;
+
+    border-radius: 50%;
+
+    background: #0f5132;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    flex-shrink: 0;
+}
+
+
+/* =====================================================
+   LOGOUT FORM
+===================================================== */
+
+.logout-form {
+    margin-left: 18px;
+}
+
+
+/* =====================================================
+   LOGOUT BUTTON
+===================================================== */
+
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 40px;
+
+    padding: 8px 13px;
+
+    border: 1px solid #e0e0e0;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #555555;
+
+    font-family: inherit;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* =====================================================
+   LOGOUT ICON
+===================================================== */
+
+.logout-btn svg {
+    width: 18px;
+    height: 18px;
+
+    fill: none;
+
+    stroke: currentColor;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+/* =====================================================
+   LOGOUT HOVER
+===================================================== */
+
+.logout-btn:hover {
+    background: #fff1f2;
+
+    color: #dc3545;
+
+    border-color: #f1b0b7;
+
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content {
+    width: 100%;
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    padding: 30px;
+
+    min-height:
+        calc(100vh - 70px);
+}
+
+
+/* =====================================================
+   RESPONSIVE TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        padding: 0 20px;
+    }
+
+    .content {
+        padding: 22px;
+    }
+
+    .navbar-title h3 {
+        font-size: 18px;
+    }
+
+    .parent-info {
+        display: none;
+    }
+
+    .logout-form {
+        margin-left: 12px;
+    }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .navbar {
+        height: 64px;
+
+        padding: 0 12px;
+    }
+
+    .navbar-title h3 {
+        font-size: 16px;
+    }
+
+    .navbar-title p {
+        display: none;
+    }
+
+    .parent-avatar {
+        width: 36px;
+        height: 36px;
+
+        font-size: 14px;
+    }
+
+    .logout-form {
+        margin-left: 6px;
+    }
+
+    .logout-btn {
+        width: 38px;
+        height: 38px;
+
+        min-height: 38px;
+
+        padding: 0;
+
+        gap: 0;
+    }
+
+    .logout-btn span {
+        display: none;
+    }
+
+    .logout-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+}
+
+
+/* =====================================================
+   EXTRA SMALL MOBILE
+===================================================== */
+
+@media (max-width: 400px) {
+
+    .navbar-title h3 {
+        font-size: 14px;
+    }
+
+    .parent-avatar {
+        display: none;
+    }
+
+    .logout-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+}
+
+/* =====================================================
+   NAVBAR BRAND
+===================================================== */
+
+.navbar-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+/* =====================================================
+   LOGO SEKOLAH
+===================================================== */
+
+.navbar-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+
+/* =====================================================
+   TEXT BRAND
+===================================================== */
+
+.navbar-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar-text h3 {
+    margin: 0;
+}
+
+.navbar-text p {
+    margin: 3px 0 0;
+}

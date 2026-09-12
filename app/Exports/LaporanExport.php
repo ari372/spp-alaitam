@@ -6,11 +6,14 @@ use App\Models\PembayaranTagihan;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class LaporanExport implements
     FromCollection,
     WithHeadings,
-    WithMapping
+    WithMapping,
+    WithColumnFormatting
 {
     protected $bulan;
     protected $tahun;
@@ -57,19 +60,12 @@ class LaporanExport implements
             'tagihan.tahunAjaran',
             'user',
         ])
-
-        /*
-        |--------------------------------------------------------------------------
-        | Hanya pembayaran yang sudah dibayar
-        |--------------------------------------------------------------------------
-        */
-
         ->where('status', 'dibayar');
 
 
         /*
         |--------------------------------------------------------------------------
-        | Filter tahun
+        | Filter Tahun
         |--------------------------------------------------------------------------
         */
 
@@ -84,7 +80,7 @@ class LaporanExport implements
 
         /*
         |--------------------------------------------------------------------------
-        | Filter bulan
+        | Filter Bulan
         |--------------------------------------------------------------------------
         */
 
@@ -104,7 +100,7 @@ class LaporanExport implements
 
         /*
         |--------------------------------------------------------------------------
-        | Urutkan dari pembayaran terbaru
+        | Urutkan pembayaran terbaru
         |--------------------------------------------------------------------------
         */
 
@@ -137,28 +133,49 @@ class LaporanExport implements
 
 
     /**
+     * Format kolom Excel
+     */
+    public function columnFormats(): array
+    {
+        return [
+
+            // Tagihan
+            'G' => '#,##0',
+
+            // Dibayar
+            'H' => '#,##0',
+
+            // Sisa
+            'I' => '#,##0',
+
+        ];
+    }
+
+
+    /**
      * Isi setiap baris Excel
      */
     public function map($item): array
     {
         $tagihan = $item->tagihan;
 
-        /*
-        |--------------------------------------------------------------------------
-        | Nominal tagihan
-        |--------------------------------------------------------------------------
-        */
-
-        $nominalTagihan = $tagihan?->nominal ?? 0;
-
 
         /*
         |--------------------------------------------------------------------------
-        | Nominal yang dibayar
+        | Nominal Tagihan
         |--------------------------------------------------------------------------
         */
 
-        $dibayar = $item->nominal ?? 0;
+        $nominalTagihan = (float) ($tagihan?->nominal ?? 0);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Nominal Dibayar
+        |--------------------------------------------------------------------------
+        */
+
+        $dibayar = (float) ($item->nominal ?? 0);
 
 
         /*
@@ -186,7 +203,7 @@ class LaporanExport implements
 
         /*
         |--------------------------------------------------------------------------
-        | Nomor urut
+        | Nomor Urut
         |--------------------------------------------------------------------------
         */
 
@@ -215,7 +232,7 @@ class LaporanExport implements
             // Kategori
             $tagihan?->kategori?->nama ?? '-',
 
-            // Total tagihan
+            // Tagihan
             $nominalTagihan,
 
             // Dibayar
@@ -224,13 +241,13 @@ class LaporanExport implements
             // Sisa
             $sisa,
 
-            // Metode pembayaran
+            // Metode
             $item->metode ?? '-',
 
-            // Status pembayaran
+            // Status
             $status,
 
-            // Tanggal pembayaran
+            // Tanggal Bayar
             $item->tanggal_kirim
                 ? $item->tanggal_kirim->format('d-m-Y H:i')
                 : '-',

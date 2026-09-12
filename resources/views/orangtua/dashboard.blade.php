@@ -3,230 +3,18 @@
 @section('title', 'Dashboard Orang Tua')
 
 @section('content')
+
 @if(session('error'))
-    <div style="
-        background:#f8d7da;
-        color:#842029;
-        padding:15px 20px;
-        border-radius:10px;
-        margin-bottom:20px;
-        border:1px solid #f5c2c7;
-        font-weight:600;
-    ">
+    <div class="alert alert-error">
         {{ session('error') }}
     </div>
 @endif
 
 @if(session('success'))
-    <div style="
-        background:#d1e7dd;
-        color:#0f5132;
-        padding:15px 20px;
-        border-radius:10px;
-        margin-bottom:20px;
-        border:1px solid #badbcc;
-        font-weight:600;
-    ">
+    <div class="alert alert-success">
         {{ session('success') }}
     </div>
 @endif
-
-<style>
-    .page-title {
-        margin-bottom: 30px;
-    }
-
-    .page-title h1 {
-        color: #0f5132;
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-
-    .page-title p {
-        color: #777;
-        font-size: 18px;
-        margin-bottom: 0;
-    }
-
-    .anak-card,
-    .summary-card,
-    .table-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
-    }
-
-    .anak-card {
-        padding: 28px;
-        margin-bottom: 25px;
-    }
-
-    .section-title {
-        color: #0f5132;
-        font-size: 22px;
-        font-weight: 600;
-        margin-bottom: 22px;
-    }
-
-    .anak-info {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
-
-    .anak-item {
-        background: #f5f7f6;
-        border-radius: 10px;
-        padding: 18px;
-    }
-
-    .anak-item span {
-        display: block;
-        color: #777;
-        font-size: 14px;
-        margin-bottom: 7px;
-    }
-
-    .anak-item strong {
-        color: #333;
-        font-size: 17px;
-    }
-
-    .summary {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 25px;
-    }
-
-    .summary-card {
-        padding: 25px;
-    }
-
-    .summary-card span {
-        display: block;
-        color: #777;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .summary-card strong {
-        font-size: 25px;
-        color: #0f5132;
-    }
-
-    .table-card {
-        padding: 28px;
-        margin-bottom: 25px;
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 850px;
-    }
-
-    th {
-        background: #0f5132;
-        color: white;
-        padding: 15px;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        vertical-align: middle;
-    }
-
-    tr:last-child td {
-        border-bottom: none;
-    }
-
-    .status {
-        display: inline-block;
-        padding: 7px 12px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: bold;
-        white-space: nowrap;
-    }
-
-    .status-lunas {
-        background: #d1e7dd;
-        color: #0f5132;
-    }
-
-    .status-belum {
-        background: #fff3cd;
-        color: #856404;
-    }
-
-    .status-menunggu {
-        background: #cff4fc;
-        color: #055160;
-    }
-
-    .status-ditolak {
-        background: #f8d7da;
-        color: #842029;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 9px 15px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: .2s;
-    }
-
-    .btn-bayar {
-        background: #198754;
-        color: white;
-    }
-
-    .btn-bayar:hover {
-        background: #157347;
-        color: white;
-    }
-
-    .empty {
-        text-align: center;
-        padding: 30px;
-        color: #777;
-    }
-
-    @media (max-width: 768px) {
-        .anak-info,
-        .summary {
-            grid-template-columns: 1fr;
-        }
-
-        .page-title h1 {
-            font-size: 30px;
-        }
-
-        .page-title p {
-            font-size: 15px;
-        }
-
-        .table-card,
-        .anak-card {
-            padding: 20px;
-        }
-    }
-</style>
-
 
 <div class="page-title">
 
@@ -252,7 +40,6 @@
     </div>
 
 @else
-
 
     {{-- DATA ANAK --}}
 
@@ -540,37 +327,41 @@
 
                             {{-- AKSI --}}
 
-<td>
+                            <td>
 
-    @if($sisa <= 0)
+                                @if($sisa <= 0)
 
-        <span class="status status-lunas">
-            Selesai
-        </span>
+                                    <span class="status status-lunas">
+                                        Selesai
+                                    </span>
 
-    @elseif($sedangDiproses)
+                                @elseif($sedangDiproses)
 
-        <span class="status status-menunggu">
-            Diproses
-        </span>
+                                    <span class="status status-menunggu">
+                                        Diproses
+                                    </span>
 
-@else
+                                @else
 
-    <form
-        action="{{ route('orangtua.pembayaran.create', ['tagihan' => $item->id]) }}"
-        method="GET"
-        style="display:inline;"
-    >
-        <button
-            type="submit"
-            class="btn btn-bayar"
-        >
-            Bayar
-        </button>
-    </form>
+                                    <form
+                                        action="{{ route('orangtua.pembayaran.create', ['tagihan' => $item->id]) }}"
+                                        method="GET"
+                                        class="payment-form"
+                                    >
 
-@endif
-</td>
+                                        <button
+                                            type="submit"
+                                            class="btn btn-bayar"
+                                        >
+                                            Bayar
+                                        </button>
+
+                                    </form>
+
+                                @endif
+
+                            </td>
+
                         </tr>
 
                     @empty

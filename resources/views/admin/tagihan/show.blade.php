@@ -6,68 +6,36 @@
 
 @section('content')
 
-<div style="
-    max-width:1100px;
-    margin:0 auto;
-">
+<div class="tagihan-detail-container">
 
-    {{-- ===================================================== --}}
     {{-- HEADER --}}
-    {{-- ===================================================== --}}
 
-    <div style="
-        margin-bottom:25px;
-    ">
+    <div class="tagihan-detail-header">
 
-        <h2 style="
-            color:#0f5132;
-            margin:0 0 5px 0;
-            font-size:28px;
-        ">
+        <h2>
             Detail Tagihan
         </h2>
 
-        <p style="
-            color:#777;
-            margin:0;
-            font-size:14px;
-        ">
+        <p>
             Informasi lengkap tagihan dan riwayat pembayaran siswa
         </p>
 
     </div>
 
 
-    {{-- ===================================================== --}}
     {{-- INFORMASI TAGIHAN --}}
-    {{-- ===================================================== --}}
 
-    <div style="
-        background:white;
-        padding:30px;
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,.08);
-        margin-bottom:25px;
-    ">
+    <div class="tagihan-detail-card">
 
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:25px;
-            gap:15px;
-            flex-wrap:wrap;
-        ">
+        <div class="tagihan-detail-card-header">
 
-            <h3 style="
-                color:#0f5132;
-                margin:0;
-                font-size:20px;
-            ">
+            <h3>
                 Informasi Tagihan
             </h3>
 
+
             {{-- STATUS TAGIHAN --}}
+
             @php
 
                 $totalDibayar = $tagihan->pembayaran
@@ -84,29 +52,13 @@
 
             @if($sisaTagihan <= 0)
 
-                <span style="
-                    display:inline-block;
-                    background:#d1e7dd;
-                    color:#0f5132;
-                    padding:7px 14px;
-                    border-radius:20px;
-                    font-size:13px;
-                    font-weight:bold;
-                ">
+                <span class="tagihan-status tagihan-status-lunas">
                     Lunas
                 </span>
 
             @else
 
-                <span style="
-                    display:inline-block;
-                    background:#fff3cd;
-                    color:#856404;
-                    padding:7px 14px;
-                    border-radius:20px;
-                    font-size:13px;
-                    font-weight:bold;
-                ">
+                <span class="tagihan-status tagihan-status-belum">
                     Belum Lunas
                 </span>
 
@@ -115,169 +67,90 @@
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- SISWA --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Siswa
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
                 {{ $tagihan->siswa?->nama ?? '-' }}
             </span>
 
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- NIS --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 NIS
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
                 {{ $tagihan->siswa?->nis ?? '-' }}
             </span>
 
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- KELAS --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Kelas
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
                 {{ $tagihan->siswa?->kelas?->nama_kelas ?? '-' }}
             </span>
 
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- TAHUN AJARAN --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Tahun Ajaran
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
                 {{ $tagihan->tahunAjaran?->nama ?? '-' }}
             </span>
 
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- KATEGORI --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Kategori
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
                 {{ $tagihan->kategori?->nama ?? '-' }}
             </span>
 
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- NOMINAL TAGIHAN --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Nominal Tagihan
             </strong>
 
-            <span style="
-                font-weight:bold;
-                color:#0f5132;
-                font-size:20px;
-            ">
+            <span class="tagihan-nominal">
 
                 Rp {{ number_format(
                     $tagihan->nominal ?? 0,
@@ -291,29 +164,15 @@
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- TOTAL DIBAYAR --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Total Dibayar
             </strong>
 
-            <span style="
-                font-weight:bold;
-                color:#198754;
-                font-size:18px;
-            ">
+            <span class="tagihan-total-dibayar">
 
                 Rp {{ number_format(
                     $totalDibayar,
@@ -327,29 +186,18 @@
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- SISA TAGIHAN --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            border-bottom:1px solid #eee;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Sisa Tagihan
             </strong>
 
-            <span style="
-                font-weight:bold;
-                color:{{ $sisaTagihan > 0 ? '#dc3545' : '#198754' }};
-                font-size:18px;
-            ">
+            <span class="tagihan-sisa {{ $sisaTagihan > 0
+                ? 'tagihan-sisa-belum'
+                : 'tagihan-sisa-lunas'
+            }}">
 
                 Rp {{ number_format(
                     $sisaTagihan,
@@ -363,27 +211,15 @@
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- JATUH TEMPO --}}
-        {{-- ================================================= --}}
 
-        <div style="
-            display:grid;
-            grid-template-columns:200px 1fr;
-            padding:15px 0;
-            gap:20px;
-        ">
+        <div class="tagihan-detail-row">
 
-            <strong style="
-                color:#555;
-            ">
+            <strong>
                 Jatuh Tempo
             </strong>
 
-            <span style="
-                color:#222;
-                font-weight:500;
-            ">
+            <span>
 
                 @if($tagihan->jatuh_tempo)
 
@@ -402,59 +238,26 @@
     </div>
 
 
-
-    {{-- ===================================================== --}}
     {{-- RIWAYAT PEMBAYARAN --}}
-    {{-- ===================================================== --}}
 
-    <div style="
-        background:white;
-        padding:30px;
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,.08);
-        margin-bottom:25px;
-    ">
+    <div class="tagihan-detail-card">
 
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:20px;
-            gap:15px;
-            flex-wrap:wrap;
-        ">
+        <div class="tagihan-history-header">
 
-            <div>
+            <div class="tagihan-history-title">
 
-                <h3 style="
-                    color:#0f5132;
-                    margin:0 0 5px 0;
-                    font-size:20px;
-                ">
+                <h3>
                     Riwayat Pembayaran
                 </h3>
 
-                <p style="
-                    color:#777;
-                    margin:0;
-                    font-size:13px;
-                ">
+                <p>
                     Daftar pembayaran untuk tagihan ini
                 </p>
 
             </div>
 
 
-            {{-- JUMLAH TRANSAKSI --}}
-
-            <span style="
-                background:#e8f5ee;
-                color:#0f5132;
-                padding:7px 13px;
-                border-radius:20px;
-                font-size:13px;
-                font-weight:bold;
-            ">
+            <span class="tagihan-transaksi-count">
 
                 {{ $tagihan->pembayaran->count() }}
                 Transaksi
@@ -464,66 +267,35 @@
         </div>
 
 
-        {{-- ================================================= --}}
         {{-- ADA PEMBAYARAN --}}
-        {{-- ================================================= --}}
 
         @if($tagihan->pembayaran->count() > 0)
 
-            <div style="
-                overflow-x:auto;
-            ">
+            <div class="tagihan-table-wrapper">
 
-                <table style="
-                    width:100%;
-                    border-collapse:collapse;
-                    min-width:700px;
-                ">
+                <table class="tagihan-detail-table">
 
                     <thead>
 
-                        <tr style="
-                            background:#0f5132;
-                            color:white;
-                        ">
+                        <tr>
 
-                            <th style="
-                                padding:13px;
-                                text-align:center;
-                                white-space:nowrap;
-                            ">
+                            <th>
                                 No
                             </th>
 
-                            <th style="
-                                padding:13px;
-                                text-align:left;
-                                white-space:nowrap;
-                            ">
+                            <th>
                                 Tanggal Bayar
                             </th>
 
-                            <th style="
-                                padding:13px;
-                                text-align:right;
-                                white-space:nowrap;
-                            ">
+                            <th>
                                 Nominal
                             </th>
 
-                            <th style="
-                                padding:13px;
-                                text-align:center;
-                                white-space:nowrap;
-                            ">
+                            <th>
                                 Metode
                             </th>
 
-                            <th style="
-                                padding:13px;
-                                text-align:center;
-                                white-space:nowrap;
-                            ">
+                            <th>
                                 Status
                             </th>
 
@@ -539,41 +311,31 @@
                             as $index => $pembayaran
                         )
 
-                            <tr style="
-                                border-bottom:1px solid #eee;
-                            ">
+                            <tr>
 
                                 {{-- NO --}}
 
-                                <td style="
-                                    padding:13px;
-                                    text-align:center;
-                                ">
+                                <td class="tagihan-table-no">
                                     {{ $index + 1 }}
                                 </td>
 
 
                                 {{-- TANGGAL BAYAR --}}
 
-                                <td style="
-                                    padding:13px;
-                                ">
+                                <td>
 
                                     @if($pembayaran->tanggal_kirim)
 
-                                        <div style="
-                                            font-weight:600;
-                                            color:#333;
-                                        ">
+                                        <div class="tagihan-table-date">
+
                                             {{ $pembayaran->tanggal_kirim->format('d-m-Y') }}
+
                                         </div>
 
-                                        <div style="
-                                            font-size:12px;
-                                            color:#888;
-                                            margin-top:3px;
-                                        ">
+                                        <div class="tagihan-table-time">
+
                                             {{ $pembayaran->tanggal_kirim->format('H:i') }}
+
                                         </div>
 
                                     @else
@@ -587,13 +349,7 @@
 
                                 {{-- NOMINAL --}}
 
-                                <td style="
-                                    padding:13px;
-                                    text-align:right;
-                                    font-weight:bold;
-                                    color:#0f5132;
-                                    white-space:nowrap;
-                                ">
+                                <td class="tagihan-table-nominal">
 
                                     Rp {{ number_format(
                                         $pembayaran->nominal ?? 0,
@@ -607,10 +363,7 @@
 
                                 {{-- METODE --}}
 
-                                <td style="
-                                    padding:13px;
-                                    text-align:center;
-                                ">
+                                <td class="tagihan-table-method">
 
                                     @if($pembayaran->metode)
 
@@ -633,59 +386,32 @@
 
                                 {{-- STATUS --}}
 
-                                <td style="
-                                    padding:13px;
-                                    text-align:center;
-                                ">
+                                <td class="tagihan-table-status">
 
                                     @if($pembayaran->status === 'dibayar')
 
-                                        <span style="
-                                            display:inline-block;
-                                            background:#d1e7dd;
-                                            color:#0f5132;
-                                            padding:6px 12px;
-                                            border-radius:20px;
-                                            font-size:12px;
-                                            font-weight:bold;
-                                        ">
+                                        <span class="tagihan-payment-status tagihan-payment-dibayar">
                                             Dibayar
                                         </span>
 
                                     @elseif($pembayaran->status === 'menunggu')
 
-                                        <span style="
-                                            display:inline-block;
-                                            background:#fff3cd;
-                                            color:#856404;
-                                            padding:6px 12px;
-                                            border-radius:20px;
-                                            font-size:12px;
-                                            font-weight:bold;
-                                        ">
+                                        <span class="tagihan-payment-status tagihan-payment-menunggu">
                                             Menunggu
                                         </span>
 
                                     @elseif($pembayaran->status === 'ditolak')
 
-                                        <span style="
-                                            display:inline-block;
-                                            background:#f8d7da;
-                                            color:#842029;
-                                            padding:6px 12px;
-                                            border-radius:20px;
-                                            font-size:12px;
-                                            font-weight:bold;
-                                        ">
+                                        <span class="tagihan-payment-status tagihan-payment-ditolak">
                                             Ditolak
                                         </span>
 
                                     @else
 
-                                        <span style="
-                                            color:#777;
-                                        ">
+                                        <span class="tagihan-payment-default">
+
                                             {{ $pembayaran->status ?? '-' }}
+
                                         </span>
 
                                     @endif
@@ -699,36 +425,20 @@
                     </tbody>
 
 
-                    {{-- ================================================= --}}
                     {{-- TOTAL --}}
-                    {{-- ================================================= --}}
 
                     <tfoot>
 
-                        <tr style="
-                            background:#f8f9fa;
-                            border-top:2px solid #0f5132;
-                        ">
+                        <tr>
 
                             <td
                                 colspan="2"
-                                style="
-                                    padding:15px;
-                                    text-align:right;
-                                    font-weight:bold;
-                                    color:#555;
-                                "
+                                class="tagihan-total-label"
                             >
                                 Total Dibayar
                             </td>
 
-                            <td style="
-                                padding:15px;
-                                text-align:right;
-                                font-weight:bold;
-                                color:#0f5132;
-                                white-space:nowrap;
-                            ">
+                            <td class="tagihan-total-value">
 
                                 Rp {{ number_format(
                                     $totalDibayar,
@@ -739,12 +449,7 @@
 
                             </td>
 
-                            <td
-                                colspan="2"
-                                style="
-                                    padding:15px;
-                                "
-                            >
+                            <td colspan="2">
                             </td>
 
                         </tr>
@@ -757,37 +462,19 @@
 
         @else
 
-            {{-- ================================================= --}}
             {{-- BELUM ADA PEMBAYARAN --}}
-            {{-- ================================================= --}}
 
-            <div style="
-                background:#f8f9fa;
-                padding:25px;
-                border-radius:10px;
-                color:#777;
-                text-align:center;
-                border:1px dashed #ddd;
-            ">
+            <div class="tagihan-empty">
 
-                <div style="
-                    font-size:30px;
-                    margin-bottom:8px;
-                ">
+                <div class="tagihan-empty-icon">
                     —
                 </div>
 
-                <strong style="
-                    display:block;
-                    color:#555;
-                    margin-bottom:5px;
-                ">
+                <strong class="tagihan-empty-title">
                     Belum Ada Pembayaran
                 </strong>
 
-                <span style="
-                    font-size:13px;
-                ">
+                <span class="tagihan-empty-description">
                     Belum ada transaksi pembayaran untuk tagihan ini.
                 </span>
 
@@ -798,17 +485,9 @@
     </div>
 
 
-
-    {{-- ===================================================== --}}
     {{-- AKSI --}}
-    {{-- ===================================================== --}}
 
-    <div style="
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-        margin-bottom:20px;
-    ">
+    <div class="tagihan-detail-actions">
 
         {{-- EDIT --}}
 
@@ -817,15 +496,7 @@
                 'admin.tagihan.edit',
                 $tagihan->id
             ) }}"
-            style="
-                background:#ffc107;
-                color:#212529;
-                text-decoration:none;
-                padding:11px 20px;
-                border-radius:7px;
-                font-weight:bold;
-                display:inline-block;
-            "
+            class="tagihan-detail-btn tagihan-detail-btn-edit"
         >
             Edit
         </a>
@@ -837,15 +508,7 @@
             href="{{ route(
                 'admin.tagihan.index'
             ) }}"
-            style="
-                background:#6c757d;
-                color:white;
-                text-decoration:none;
-                padding:11px 20px;
-                border-radius:7px;
-                font-weight:bold;
-                display:inline-block;
-            "
+            class="tagihan-detail-btn tagihan-detail-btn-kembali"
         >
             Kembali
         </a>

@@ -1,150 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
+@section('title', 'Tambah Siswa')
 
-    <meta charset="UTF-8">
+@section('page-title', 'Tambah Siswa')
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+@push('styles')
+    @vite('resources/css/admin/siswa.css')
+@endpush
 
-    <title>Tambah Siswa</title>
+@section('content')
 
-    <style>
+<div class="siswa-create-content">
 
-        body {
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background: #f5f7f6;
-        }
-
-        .navbar {
-            background: #0f5132;
-
-            color: white;
-
-            padding: 16px 30px;
-
-            font-weight: bold;
-        }
-
-        .content {
-            max-width: 800px;
-
-            margin: 30px auto;
-
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 30px;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,.08);
-        }
-
-        h2 {
-            color: #0f5132;
-
-            margin-top: 0;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-
-            margin-bottom: 7px;
-
-            font-weight: bold;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-
-            padding: 11px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 7px;
-
-            font-size: 14px;
-        }
-
-        textarea {
-            min-height: 100px;
-
-            resize: vertical;
-        }
-
-        .error {
-            background: #f8d7da;
-
-            color: #842029;
-
-            padding: 12px;
-
-            border-radius: 7px;
-
-            margin-bottom: 20px;
-        }
-
-        .actions {
-            display: flex;
-
-            gap: 10px;
-
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 11px 18px;
-
-            border: none;
-
-            border-radius: 7px;
-
-            text-decoration: none;
-
-            cursor: pointer;
-        }
-
-        .btn-simpan {
-            background: #198754;
-
-            color: white;
-        }
-
-        .btn-kembali {
-            background: #6c757d;
-
-            color: white;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="navbar">
-    SMP Plus Al-I'tam
-</div>
-
-
-<div class="content">
-
-    <div class="card">
+    <div class="siswa-create-card">
 
         <h2>
             Tambah Data Siswa
@@ -153,7 +21,7 @@
 
         @if ($errors->any())
 
-            <div class="error">
+            <div class="siswa-create-error">
 
                 <ul>
 
@@ -180,7 +48,9 @@
             @csrf
 
 
-            <div class="form-group">
+            {{-- NIS --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     NIS
@@ -197,7 +67,9 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- NAMA --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     Nama Siswa
@@ -214,7 +86,9 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- JENIS KELAMIN --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     Jenis Kelamin
@@ -231,18 +105,14 @@
 
                     <option
                         value="L"
-                        {{ old('jenis_kelamin') == 'L'
-                            ? 'selected'
-                            : '' }}
+                        {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}
                     >
                         Laki-laki
                     </option>
 
                     <option
                         value="P"
-                        {{ old('jenis_kelamin') == 'P'
-                            ? 'selected'
-                            : '' }}
+                        {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}
                     >
                         Perempuan
                     </option>
@@ -252,7 +122,9 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- ALAMAT --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     Alamat
@@ -266,7 +138,9 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- KELAS --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     Kelas
@@ -285,9 +159,7 @@
 
                         <option
                             value="{{ $item->id }}"
-                            {{ old('kelas_id') == $item->id
-                                ? 'selected'
-                                : '' }}
+                            {{ old('kelas_id') == $item->id ? 'selected' : '' }}
                         >
                             {{ $item->nama_kelas }}
                         </option>
@@ -299,7 +171,9 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- ORANG TUA --}}
+
+            <div class="siswa-create-form-group">
 
                 <label>
                     Orang Tua / Wali
@@ -318,9 +192,7 @@
 
                         <option
                             value="{{ $item->id }}"
-                            {{ old('orang_tua_id') == $item->id
-                                ? 'selected'
-                                : '' }}
+                            {{ old('orang_tua_id') == $item->id ? 'selected' : '' }}
                         >
                             {{ $item->nama }}
                         </option>
@@ -332,18 +204,20 @@
             </div>
 
 
-            <div class="actions">
+            {{-- BUTTON --}}
+
+            <div class="siswa-create-actions">
 
                 <button
                     type="submit"
-                    class="btn btn-simpan"
+                    class="siswa-create-btn siswa-create-btn-simpan"
                 >
                     Simpan
                 </button>
 
                 <a
                     href="{{ route('admin.siswa.index') }}"
-                    class="btn btn-kembali"
+                    class="siswa-create-btn siswa-create-btn-kembali"
                 >
                     Kembali
                 </a>
@@ -356,6 +230,4 @@
 
 </div>
 
-</body>
-
-</html>
+@endsection

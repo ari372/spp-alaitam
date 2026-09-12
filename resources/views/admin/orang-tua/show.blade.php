@@ -1,137 +1,27 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
+@section('title', 'Detail Orang Tua')
 
-    <meta charset="UTF-8">
+@section('page-title', 'Detail Orang Tua')
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+@push('styles')
+    @vite('resources/css/admin/orang-tua.css')
+@endpush
 
-    <title>Detail Orang Tua</title>
+@section('content')
 
-    <style>
+<div class="orang-tua-detail-content">
 
-        body {
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background: #f5f7f6;
-        }
-
-        .navbar {
-            background: #0f5132;
-
-            color: white;
-
-            padding: 16px 30px;
-
-            font-weight: bold;
-        }
-
-        .content {
-            max-width: 900px;
-
-            margin: 30px auto;
-
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 30px;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,.08);
-
-            margin-bottom: 20px;
-        }
-
-        h2,
-        h3 {
-            color: #0f5132;
-        }
-
-        .row {
-            display: grid;
-
-            grid-template-columns: 180px 1fr;
-
-            padding: 12px 0;
-
-            border-bottom: 1px solid #eee;
-        }
-
-        .label {
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #0f5132;
-
-            color: white;
-
-            padding: 11px;
-
-            text-align: left;
-        }
-
-        td {
-            padding: 11px;
-
-            border-bottom: 1px solid #eee;
-        }
-
-        .btn {
-            display: inline-block;
-
-            margin-top: 10px;
-
-            padding: 10px 18px;
-
-            background: #6c757d;
-
-            color: white;
-
-            text-decoration: none;
-
-            border-radius: 7px;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="navbar">
-    SMP Plus Al-I'tam
-</div>
-
-
-<div class="content">
-
-
-    <div class="card">
+    <div class="orang-tua-detail-card">
 
         <h2>
             Detail Orang Tua
         </h2>
 
 
-        <div class="row">
+        <div class="orang-tua-detail-row">
 
-            <div class="label">
+            <div class="orang-tua-detail-label">
                 Nama
             </div>
 
@@ -142,9 +32,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="orang-tua-detail-row">
 
-            <div class="label">
+            <div class="orang-tua-detail-label">
                 Email
             </div>
 
@@ -155,9 +45,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="orang-tua-detail-row">
 
-            <div class="label">
+            <div class="orang-tua-detail-label">
                 No HP
             </div>
 
@@ -168,9 +58,9 @@
         </div>
 
 
-        <div class="row">
+        <div class="orang-tua-detail-row">
 
-            <div class="label">
+            <div class="orang-tua-detail-label">
                 Alamat
             </div>
 
@@ -183,7 +73,7 @@
     </div>
 
 
-    <div class="card">
+    <div class="orang-tua-detail-card">
 
         <h3>
             Anak / Siswa
@@ -192,61 +82,62 @@
 
         @if($orangTua->siswa->count() > 0)
 
-            <table>
+            <div class="orang-tua-detail-table-wrapper">
 
-                <thead>
+                <table class="orang-tua-detail-table">
 
-                    <tr>
-
-                        <th>
-                            NIS
-                        </th>
-
-                        <th>
-                            Nama
-                        </th>
-
-                        <th>
-                            Kelas
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    @foreach(
-                        $orangTua->siswa
-                        as $siswa
-                    )
+                    <thead>
 
                         <tr>
 
-                            <td>
-                                {{ $siswa->nis }}
-                            </td>
+                            <th>
+                                NIS
+                            </th>
 
-                            <td>
-                                {{ $siswa->nama }}
-                            </td>
+                            <th>
+                                Nama
+                            </th>
 
-                            <td>
-                                {{ $siswa->kelas->nama_kelas ?? '-' }}
-                            </td>
+                            <th>
+                                Kelas
+                            </th>
 
                         </tr>
 
-                    @endforeach
+                    </thead>
 
-                </tbody>
 
-            </table>
+                    <tbody>
+
+                        @foreach($orangTua->siswa as $siswa)
+
+                            <tr>
+
+                                <td>
+                                    {{ $siswa->nis }}
+                                </td>
+
+                                <td>
+                                    {{ $siswa->nama }}
+                                </td>
+
+                                <td>
+                                    {{ $siswa->kelas->nama_kelas ?? '-' }}
+                                </td>
+
+                            </tr>
+
+                        @endforeach
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         @else
 
-            <p>
+            <p class="orang-tua-detail-empty">
                 Orang tua ini belum memiliki
                 data siswa.
             </p>
@@ -258,13 +149,11 @@
 
     <a
         href="{{ route('admin.orang-tua.index') }}"
-        class="btn"
+        class="orang-tua-detail-btn"
     >
         Kembali
     </a>
 
 </div>
 
-</body>
-
-</html>
+@endsection

@@ -1,0 +1,374 @@
+/* =====================================================
+   DASHBOARD ORANG TUA
+===================================================== */
+
+.page-title {
+    margin-bottom: 28px;
+}
+
+.page-title h1 {
+    margin: 0 0 6px;
+    color: #173b2b;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.page-title p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+
+/* =====================================================
+   ALERT
+===================================================== */
+
+.alert {
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.alert-error {
+    background: #fff1f2;
+    color: #b42318;
+    border: 1px solid #fecdd3;
+}
+
+.alert-success {
+    background: #ecfdf3;
+    color: #087443;
+    border: 1px solid #bbf7d0;
+}
+
+
+/* =====================================================
+   CARD DASAR
+===================================================== */
+
+.anak-card,
+.summary-card,
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e6ece8;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(15, 81, 50, 0.05);
+}
+
+
+/* =====================================================
+   DATA ANAK
+===================================================== */
+
+.anak-card {
+    padding: 25px;
+    margin-bottom: 22px;
+}
+
+.section-title {
+    margin: 0 0 20px;
+    color: #0f5132;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.anak-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.anak-item {
+    padding: 18px;
+    background: #f7faf8;
+    border: 1px solid #e8efeb;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.anak-item:hover {
+    border-color: #c9ddd2;
+    transform: translateY(-1px);
+}
+
+.anak-item span {
+    display: block;
+    margin-bottom: 7px;
+    color: #7a827e;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.anak-item strong {
+    display: block;
+    color: #1f2937;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   RINGKASAN
+===================================================== */
+
+.summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.summary-card {
+    position: relative;
+    padding: 22px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 81, 50, 0.09);
+}
+
+.summary-card::after {
+    content: "";
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    top: -35px;
+    right: -35px;
+    background: #e8f5ed;
+    border-radius: 50%;
+}
+
+.summary-card span {
+    display: block;
+    margin-bottom: 9px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.summary-card strong {
+    position: relative;
+    z-index: 2;
+    display: block;
+    color: #0f5132;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   TABLE CARD
+===================================================== */
+
+.table-card {
+    padding: 25px;
+    margin-bottom: 22px;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-wrapper table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+.table-wrapper th {
+    padding: 14px 15px;
+    background: #0f5132;
+    color: #ffffff;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.table-wrapper th:first-child {
+    border-radius: 9px 0 0 0;
+}
+
+.table-wrapper th:last-child {
+    border-radius: 0 9px 0 0;
+}
+
+.table-wrapper td {
+    padding: 14px 15px;
+    background: #ffffff;
+    color: #374151;
+    border-bottom: 1px solid #edf1ef;
+    vertical-align: middle;
+}
+
+.table-wrapper tbody tr {
+    transition: background 0.15s ease;
+}
+
+.table-wrapper tbody tr:hover td {
+    background: #f7faf8;
+}
+
+.table-wrapper tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* =====================================================
+   NOMINAL
+===================================================== */
+
+.table-wrapper td strong {
+    color: #0f5132;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 6px 11px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-lunas {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-belum {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-menunggu {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.status-ditolak {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-bayar {
+    background: #198754;
+    color: #ffffff;
+}
+
+.btn-bayar:hover {
+    background: #157347;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(25, 135, 84, 0.2);
+}
+
+
+/* =====================================================
+   PAYMENT FORM
+===================================================== */
+
+.payment-form {
+    display: inline;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty {
+    padding: 35px 20px;
+    color: #8a938e;
+    text-align: center;
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .anak-info {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .page-title h1 {
+        font-size: 27px;
+    }
+
+    .page-title p {
+        font-size: 14px;
+    }
+
+    .anak-info {
+        grid-template-columns: 1fr;
+    }
+
+    .anak-card,
+    .table-card {
+        padding: 18px;
+    }
+
+    .summary-card {
+        padding: 18px;
+    }
+
+    .summary-card strong {
+        font-size: 21px;
+    }
+}

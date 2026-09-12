@@ -4,28 +4,21 @@
 
 @section('page-title', 'Edit Kelas')
 
+@push('styles')
+    @vite('resources/css/admin/kelas.css')
+@endpush
+
 @section('content')
 
-<div style="max-width:700px;">
+<div class="kelas-form-container">
 
-    <div style="
-        background:white;
-        padding:30px;
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,.08);
-    ">
+    <div class="kelas-form-card">
 
-        <h2 style="
-            color:#0f5132;
-            margin-bottom:8px;
-        ">
+        <h2>
             Edit Kelas
         </h2>
 
-        <p style="
-            color:#777;
-            margin-bottom:25px;
-        ">
+        <p class="kelas-form-description">
             Ubah data kelas
         </p>
 
@@ -34,15 +27,9 @@
 
         @if($errors->any())
 
-            <div style="
-                background:#f8d7da;
-                color:#842029;
-                padding:15px;
-                border-radius:8px;
-                margin-bottom:20px;
-            ">
+            <div class="kelas-error">
 
-                <ul style="margin:0;">
+                <ul>
 
                     @foreach($errors->all() as $error)
 
@@ -76,31 +63,21 @@
 
             {{-- NAMA KELAS --}}
 
-            <div style="margin-bottom:25px;">
+            <div class="kelas-form-group">
 
-                <label style="
-                    display:block;
-                    margin-bottom:7px;
-                    font-weight:bold;
-                ">
+                <label for="nama_kelas">
                     Nama Kelas
                 </label>
 
                 <input
                     type="text"
+                    id="nama_kelas"
                     name="nama_kelas"
                     value="{{ old(
                         'nama_kelas',
                         $kela->nama_kelas
                     ) }}"
                     required
-                    style="
-                        width:100%;
-                        padding:12px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                        box-sizing:border-box;
-                    "
                 >
 
             </div>
@@ -108,21 +85,11 @@
 
             {{-- BUTTON --}}
 
-            <div style="
-                display:flex;
-                gap:10px;
-            ">
+            <div class="kelas-form-actions">
 
                 <button
                     type="submit"
-                    style="
-                        background:#0f5132;
-                        color:white;
-                        border:none;
-                        padding:12px 22px;
-                        border-radius:7px;
-                        cursor:pointer;
-                    "
+                    class="kelas-btn-simpan"
                 >
                     Update Kelas
                 </button>
@@ -130,13 +97,7 @@
 
                 <a
                     href="{{ route('admin.kelas.index') }}"
-                    style="
-                        background:#6c757d;
-                        color:white;
-                        text-decoration:none;
-                        padding:12px 22px;
-                        border-radius:7px;
-                    "
+                    class="kelas-btn-kembali"
                 >
                     Kembali
                 </a>

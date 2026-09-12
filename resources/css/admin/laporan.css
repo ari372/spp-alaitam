@@ -416,3 +416,69 @@
         font-size: 13px;
     }
 }
+
+body {
+    font-family: DejaVu Sans, sans-serif;
+    font-size: 10px;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 5px;
+    color: #0f5132;
+}
+
+p {
+    text-align: center;
+    margin-top: 0;
+    color: #555;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th {
+    background: #0f5132;
+    color: white;
+    padding: 7px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+td {
+    padding: 7px;
+    border: 1px solid #ddd;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.lunas {
+    color: #198754;
+    font-weight: bold;
+}
+
+.belum {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.summary {
+    margin-top: 20px;
+    width: 50%;
+    margin-left: auto;
+}
+
+.summary td {
+    border: none;
+    padding: 5px;
+}

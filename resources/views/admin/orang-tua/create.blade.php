@@ -4,109 +4,9 @@
 
 @section('content')
 
-<style>
-
-    .page-title {
-        margin-bottom: 25px;
-    }
-
-    .page-title h1 {
-        color: #0f5132;
-        font-size: 30px;
-        margin-bottom: 5px;
-    }
-
-    .page-title p {
-        color: #777;
-    }
-
-    .card {
-        background: white;
-        border-radius: 16px;
-        padding: 30px;
-        max-width: 800px;
-        box-shadow: 0 5px 20px rgba(0,0,0,.06);
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 8px;
-        color: #333;
-    }
-
-    input,
-    textarea {
-        width: 100%;
-        padding: 12px 14px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-sizing: border-box;
-        font-size: 14px;
-    }
-
-    textarea {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    input:focus,
-    textarea:focus {
-        outline: none;
-        border-color: #0f5132;
-    }
-
-    .error {
-        color: #dc3545;
-        font-size: 13px;
-        margin-top: 5px;
-    }
-
-    .info {
-        background: #e9f5ee;
-        color: #0f5132;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 25px;
-        line-height: 1.6;
-    }
-
-    .button-area {
-        margin-top: 25px;
-        display: flex;
-        gap: 10px;
-    }
-
-    .btn {
-        display: inline-block;
-        padding: 11px 18px;
-        border-radius: 8px;
-        border: none;
-        text-decoration: none;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .btn-simpan {
-        background: #198754;
-        color: white;
-    }
-
-    .btn-simpan:hover {
-        background: #157347;
-    }
-
-    .btn-kembali {
-        background: #6c757d;
-        color: white;
-    }
-
-</style>
-
+@push('styles')
+    @vite('resources/css/admin/orang-tua.css')
+@endpush
 
 <div class="page-title">
 
@@ -121,9 +21,9 @@
 </div>
 
 
-<div class="card">
+<div class="orang-tua-card">
 
-    <div class="info">
+    <div class="orang-tua-info">
 
         <strong>
             Informasi
@@ -139,7 +39,7 @@
 
     @if($errors->any())
 
-        <div class="error" style="margin-bottom:20px;">
+        <div class="orang-tua-error orang-tua-error-list">
 
             <ul>
 
@@ -166,16 +66,17 @@
         @csrf
 
 
-        <!-- NAMA -->
+        {{-- NAMA --}}
 
-        <div class="form-group">
+        <div class="orang-tua-form-group">
 
-            <label>
+            <label for="nama">
                 Nama Orang Tua
             </label>
 
             <input
                 type="text"
+                id="nama"
                 name="nama"
                 value="{{ old('nama') }}"
                 placeholder="Masukkan nama orang tua"
@@ -184,7 +85,7 @@
 
             @error('nama')
 
-                <div class="error">
+                <div class="orang-tua-error">
                     {{ $message }}
                 </div>
 
@@ -193,16 +94,17 @@
         </div>
 
 
-        <!-- EMAIL -->
+        {{-- EMAIL --}}
 
-        <div class="form-group">
+        <div class="orang-tua-form-group">
 
-            <label>
+            <label for="email">
                 Email Login
             </label>
 
             <input
                 type="email"
+                id="email"
                 name="email"
                 value="{{ old('email') }}"
                 placeholder="contoh@email.com"
@@ -211,7 +113,7 @@
 
             @error('email')
 
-                <div class="error">
+                <div class="orang-tua-error">
                     {{ $message }}
                 </div>
 
@@ -220,69 +122,71 @@
         </div>
 
 
-        <!-- PASSWORD -->
+        {{-- PASSWORD --}}
 
-{{-- PASSWORD --}}
+        <div class="orang-tua-form-group">
 
-<div class="form-group">
+            <label for="password">
+                Password Login
+            </label>
 
-    <label>
-        Password Login
-    </label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Minimal 6 karakter"
+                required
+            >
 
-    <input
-        type="password"
-        name="password"
-        placeholder="Minimal 6 karakter"
-        required
-    >
+            @error('password')
 
-    @error('password')
+                <div class="orang-tua-error">
+                    {{ $message }}
+                </div>
 
-        <div class="error">
-            {{ $message }}
+            @enderror
+
         </div>
 
-    @enderror
 
-</div>
+        {{-- KONFIRMASI PASSWORD --}}
 
+        <div class="orang-tua-form-group">
 
-{{-- KONFIRMASI PASSWORD --}}
+            <label for="password_confirmation">
+                Konfirmasi Password
+            </label>
 
-<div class="form-group">
+            <input
+                type="password"
+                id="password_confirmation"
+                name="password_confirmation"
+                placeholder="Ulangi password"
+                required
+            >
 
-    <label>
-        Konfirmasi Password
-    </label>
+            @error('password_confirmation')
 
-    <input
-        type="password"
-        name="password_confirmation"
-        placeholder="Ulangi password"
-        required
-    >
+                <div class="orang-tua-error">
+                    {{ $message }}
+                </div>
 
-    @error('password_confirmation')
+            @enderror
 
-        <div class="error">
-            {{ $message }}
         </div>
 
-    @enderror
 
-</div>
+        {{-- NO HP --}}
 
-        <!-- NO HP -->
+        <div class="orang-tua-form-group">
 
-        <div class="form-group">
-
-            <label>
+            <label for="no_hp">
                 No. HP
             </label>
 
             <input
                 type="text"
+                id="no_hp"
                 name="no_hp"
                 value="{{ old('no_hp') }}"
                 placeholder="08xxxxxxxxxx"
@@ -290,7 +194,7 @@
 
             @error('no_hp')
 
-                <div class="error">
+                <div class="orang-tua-error">
                     {{ $message }}
                 </div>
 
@@ -299,22 +203,23 @@
         </div>
 
 
-        <!-- ALAMAT -->
+        {{-- ALAMAT --}}
 
-        <div class="form-group">
+        <div class="orang-tua-form-group">
 
-            <label>
+            <label for="alamat">
                 Alamat
             </label>
 
             <textarea
+                id="alamat"
                 name="alamat"
                 placeholder="Masukkan alamat orang tua"
             >{{ old('alamat') }}</textarea>
 
             @error('alamat')
 
-                <div class="error">
+                <div class="orang-tua-error">
                     {{ $message }}
                 </div>
 
@@ -323,13 +228,13 @@
         </div>
 
 
-        <!-- BUTTON -->
+        {{-- BUTTON --}}
 
-        <div class="button-area">
+        <div class="orang-tua-button-area">
 
             <button
                 type="submit"
-                class="btn btn-simpan"
+                class="orang-tua-btn orang-tua-btn-simpan"
             >
                 Simpan Orang Tua
             </button>
@@ -337,7 +242,7 @@
 
             <a
                 href="{{ route('admin.orang-tua.index') }}"
-                class="btn btn-kembali"
+                class="orang-tua-btn orang-tua-btn-kembali"
             >
                 Kembali
             </a>

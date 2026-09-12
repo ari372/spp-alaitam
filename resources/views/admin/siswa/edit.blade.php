@@ -1,155 +1,29 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
+@section('title', 'Edit Siswa')
 
-    <meta charset="UTF-8">
+@section('page-title', 'Edit Siswa')
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+@push('styles')
+    @vite('resources/css/admin/siswa.css')
+@endpush
 
-    <title>Edit Siswa</title>
+@section('content')
 
-    <style>
+<div class="siswa-edit-content">
 
-        body {
-            margin: 0;
-
-            font-family: Arial, sans-serif;
-
-            background: #f5f7f6;
-        }
-
-        .navbar {
-            background: #0f5132;
-
-            color: white;
-
-            padding: 16px 30px;
-
-            font-weight: bold;
-        }
-
-        .content {
-            max-width: 800px;
-
-            margin: 30px auto;
-
-            padding: 0 20px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 30px;
-
-            border-radius: 12px;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,.08);
-        }
-
-        h2 {
-            color: #0f5132;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-
-            margin-bottom: 7px;
-
-            font-weight: bold;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-
-            padding: 11px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 7px;
-
-            font-size: 14px;
-        }
-
-        textarea {
-            min-height: 100px;
-        }
-
-        .error {
-            background: #f8d7da;
-
-            color: #842029;
-
-            padding: 12px;
-
-            border-radius: 7px;
-
-            margin-bottom: 20px;
-        }
-
-        .actions {
-            display: flex;
-
-            gap: 10px;
-
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 11px 18px;
-
-            border: none;
-
-            border-radius: 7px;
-
-            text-decoration: none;
-
-            cursor: pointer;
-        }
-
-        .btn-simpan {
-            background: #198754;
-
-            color: white;
-        }
-
-        .btn-kembali {
-            background: #6c757d;
-
-            color: white;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-<div class="navbar">
-    SMP Plus Al-I'tam
-</div>
-
-
-<div class="content">
-
-    <div class="card">
+    <div class="siswa-edit-card">
 
         <h2>
             Edit Data Siswa
         </h2>
 
 
+        {{-- ERROR --}}
+
         @if ($errors->any())
 
-            <div class="error">
+            <div class="siswa-edit-error">
 
                 <ul>
 
@@ -168,6 +42,8 @@
         @endif
 
 
+        {{-- FORM --}}
+
         <form
             action="{{ route(
                 'admin.siswa.update',
@@ -181,9 +57,13 @@
             @method('PUT')
 
 
-            <div class="form-group">
+            {{-- NIS --}}
 
-                <label>NIS</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    NIS
+                </label>
 
                 <input
                     type="text"
@@ -198,9 +78,13 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- NAMA --}}
 
-                <label>Nama Siswa</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    Nama Siswa
+                </label>
 
                 <input
                     type="text"
@@ -215,16 +99,21 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- JENIS KELAMIN --}}
 
-                <label>Jenis Kelamin</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    Jenis Kelamin
+                </label>
 
                 <select
                     name="jenis_kelamin"
                     required
                 >
 
-                    <option value="L"
+                    <option
+                        value="L"
                         {{ old(
                             'jenis_kelamin',
                             $siswa->jenis_kelamin
@@ -235,7 +124,8 @@
                         Laki-laki
                     </option>
 
-                    <option value="P"
+                    <option
+                        value="P"
                         {{ old(
                             'jenis_kelamin',
                             $siswa->jenis_kelamin
@@ -251,9 +141,13 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- ALAMAT --}}
 
-                <label>Alamat</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    Alamat
+                </label>
 
                 <textarea
                     name="alamat"
@@ -265,9 +159,13 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- KELAS --}}
 
-                <label>Kelas</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    Kelas
+                </label>
 
                 <select
                     name="kelas_id"
@@ -295,9 +193,13 @@
             </div>
 
 
-            <div class="form-group">
+            {{-- ORANG TUA --}}
 
-                <label>Orang Tua / Wali</label>
+            <div class="siswa-edit-form-group">
+
+                <label>
+                    Orang Tua / Wali
+                </label>
 
                 <select
                     name="orang_tua_id"
@@ -325,18 +227,20 @@
             </div>
 
 
-            <div class="actions">
+            {{-- BUTTON --}}
+
+            <div class="siswa-edit-actions">
 
                 <button
                     type="submit"
-                    class="btn btn-simpan"
+                    class="siswa-edit-btn siswa-edit-btn-simpan"
                 >
                     Update
                 </button>
 
                 <a
                     href="{{ route('admin.siswa.index') }}"
-                    class="btn btn-kembali"
+                    class="siswa-edit-btn siswa-edit-btn-kembali"
                 >
                     Kembali
                 </a>
@@ -349,6 +253,4 @@
 
 </div>
 
-</body>
-
-</html>
+@endsection

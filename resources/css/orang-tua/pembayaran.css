@@ -1,0 +1,361 @@
+.payment-page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    color: #0f5132;
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: #777;
+    font-size: 16px;
+}
+
+.alert {
+    padding: 15px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid #f1aeb5;
+}
+
+.alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #a3cfbb;
+}
+
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+}
+
+.card-title {
+    color: #0f5132;
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+.detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    gap: 20px;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #777;
+    font-size: 14px;
+}
+
+.detail-value {
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.detail-value.green {
+    color: #0f5132;
+}
+
+.detail-value.nominal {
+    font-size: 20px;
+    color: #0f5132;
+}
+
+.payment-method-info {
+    background: #f5f7f6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid #0f5132;
+}
+
+.payment-method-info h3 {
+    color: #0f5132;
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+.bank-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.bank-box:last-child {
+    margin-bottom: 0;
+}
+
+.bank-name {
+    color: #0f5132;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.account-number {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #222;
+    margin-bottom: 5px;
+}
+
+.account-owner {
+    color: #666;
+    font-size: 13px;
+}
+
+.qris-box {
+    text-align: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 12px;
+}
+
+.qris-box img {
+    width: 190px;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.qris-title {
+    color: #0f5132;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.qris-description {
+    color: #777;
+    font-size: 13px;
+}
+
+.form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: .2s;
+    background: white;
+}
+
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 3px rgba(25, 135, 84, .12);
+}
+
+.form-help {
+    display: block;
+    color: #777;
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.nominal-wrapper {
+    position: relative;
+}
+
+.nominal-wrapper span {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+.nominal-input {
+    padding-left: 45px;
+}
+
+.method-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.method-option {
+    position: relative;
+}
+
+.method-option input {
+    position: absolute;
+    opacity: 0;
+}
+
+.method-option label {
+    display: block;
+    padding: 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s;
+    text-align: center;
+    font-weight: 700;
+    color: #555;
+}
+
+.method-option label:hover {
+    border-color: #198754;
+}
+
+.method-option input:checked + label {
+    border-color: #198754;
+    background: #eaf6ef;
+    color: #0f5132;
+}
+
+.method-icon {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.file-box {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    background: #fafafa;
+}
+
+.file-box input {
+    width: 100%;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 22px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-back {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-back:hover {
+    background: #5c636a;
+    color: white;
+}
+
+.btn-submit {
+    background: #198754;
+    color: white;
+}
+
+.btn-submit:hover {
+    background: #157347;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.blocked-info {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffecb5;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 800px) {
+    .payment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .method-options {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}

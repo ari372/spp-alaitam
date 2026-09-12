@@ -179,3 +179,261 @@
     }
 
 }
+
+/* =========================================
+   TAMBAH SISWA
+========================================= */
+
+.siswa-create-content {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.siswa-create-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+}
+
+.siswa-create-card h2 {
+    color: #0f5132;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.siswa-create-form-group {
+    margin-bottom: 18px;
+}
+
+.siswa-create-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    color: #333;
+}
+
+.siswa-create-form-group input,
+.siswa-create-form-group select,
+.siswa-create-form-group textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.siswa-create-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.siswa-create-form-group input:focus,
+.siswa-create-form-group select:focus,
+.siswa-create-form-group textarea:focus {
+    outline: none;
+    border-color: #0f5132;
+}
+
+.siswa-create-error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 12px;
+    border-radius: 7px;
+    margin-bottom: 20px;
+}
+
+.siswa-create-error ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.siswa-create-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.siswa-create-btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.siswa-create-btn-simpan {
+    background: #198754;
+    color: white;
+}
+
+.siswa-create-btn-simpan:hover {
+    background: #157347;
+}
+
+.siswa-create-btn-kembali {
+    background: #6c757d;
+    color: white;
+}
+
+.siswa-create-btn-kembali:hover {
+    background: #5c636a;
+}
+
+/* =========================================
+   EDIT SISWA
+========================================= */
+
+.siswa-edit-content {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.siswa-edit-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+}
+
+.siswa-edit-card h2 {
+    color: #0f5132;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.siswa-edit-form-group {
+    margin-bottom: 18px;
+}
+
+.siswa-edit-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+    color: #333;
+}
+
+.siswa-edit-form-group input,
+.siswa-edit-form-group select,
+.siswa-edit-form-group textarea {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.siswa-edit-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.siswa-edit-form-group input:focus,
+.siswa-edit-form-group select:focus,
+.siswa-edit-form-group textarea:focus {
+    outline: none;
+    border-color: #0f5132;
+}
+
+.siswa-edit-error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 12px;
+    border-radius: 7px;
+    margin-bottom: 20px;
+}
+
+.siswa-edit-error ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.siswa-edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.siswa-edit-btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 7px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.siswa-edit-btn-simpan {
+    background: #198754;
+    color: white;
+}
+
+.siswa-edit-btn-simpan:hover {
+    background: #157347;
+}
+
+.siswa-edit-btn-kembali {
+    background: #6c757d;
+    color: white;
+}
+
+.siswa-edit-btn-kembali:hover {
+    background: #5c636a;
+}
+
+/* =========================================
+   DETAIL SISWA
+========================================= */
+
+.siswa-detail-content {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.siswa-detail-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+}
+
+.siswa-detail-card h2 {
+    color: #0f5132;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+.siswa-detail-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.siswa-detail-label {
+    font-weight: bold;
+}
+
+.siswa-detail-btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 10px 18px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+}
+
+.siswa-detail-btn:hover {
+    background: #5c636a;
+}

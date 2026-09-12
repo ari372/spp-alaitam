@@ -6,41 +6,26 @@
 
 @section('content')
 
-<div style="max-width:800px;">
+<div class="tagihan-form-container">
 
-    <div style="
-        background:white;
-        padding:30px;
-        border-radius:15px;
-        box-shadow:0 4px 15px rgba(0,0,0,.08);
-    ">
+    <div class="tagihan-form-card">
 
-        <h2 style="
-            color:#0f5132;
-            margin-bottom:8px;
-        ">
+        <h2 class="tagihan-form-title">
             Edit Tagihan
         </h2>
 
-        <p style="
-            color:#777;
-            margin-bottom:25px;
-        ">
+        <p class="tagihan-form-description">
             Ubah data tagihan siswa.
         </p>
 
 
+        {{-- ERROR VALIDASI --}}
+
         @if($errors->any())
 
-            <div style="
-                background:#f8d7da;
-                color:#842029;
-                padding:15px;
-                border-radius:8px;
-                margin-bottom:20px;
-            ">
+            <div class="tagihan-error">
 
-                <ul style="margin:0;">
+                <ul>
 
                     @foreach($errors->all() as $error)
 
@@ -57,6 +42,8 @@
         @endif
 
 
+        {{-- FORM --}}
+
         <form
             method="POST"
             action="{{ route(
@@ -72,7 +59,7 @@
 
             {{-- SISWA --}}
 
-            <div style="margin-bottom:20px;">
+            <div class="tagihan-form-group">
 
                 <label>
                     Siswa
@@ -82,15 +69,7 @@
                     type="text"
                     value="{{ $tagihan->siswa->nama ?? '-' }}"
                     readonly
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-top:7px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                        background:#f5f5f5;
-                        box-sizing:border-box;
-                    "
+                    class="tagihan-form-control tagihan-readonly"
                 >
 
             </div>
@@ -98,7 +77,7 @@
 
             {{-- TAHUN AJARAN --}}
 
-            <div style="margin-bottom:20px;">
+            <div class="tagihan-form-group">
 
                 <label>
                     Tahun Ajaran
@@ -107,13 +86,7 @@
                 <select
                     name="tahun_ajaran_id"
                     required
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-top:7px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                    "
+                    class="tagihan-form-control"
                 >
 
                     @foreach($tahunAjaran as $tahun)
@@ -146,7 +119,7 @@
 
             {{-- KATEGORI --}}
 
-            <div style="margin-bottom:20px;">
+            <div class="tagihan-form-group">
 
                 <label>
                     Kategori Pembayaran
@@ -156,13 +129,7 @@
                     name="kategori_tagihan_id"
                     id="kategori"
                     required
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-top:7px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                    "
+                    class="tagihan-form-control"
                 >
 
                     @foreach($kategori as $item)
@@ -170,7 +137,6 @@
                         <option
                             value="{{ $item->id }}"
                             data-nominal="{{ $item->nominal }}"
-
                             {{ old(
                                 'kategori_tagihan_id',
                                 $tagihan->kategori_tagihan_id
@@ -183,6 +149,7 @@
                             {{ $item->nama }}
 
                             -
+
                             Rp
                             {{ number_format(
                                 $item->nominal,
@@ -202,7 +169,7 @@
 
             {{-- NOMINAL --}}
 
-            <div style="margin-bottom:20px;">
+            <div class="tagihan-form-group">
 
                 <label>
                     Nominal Tagihan
@@ -212,15 +179,7 @@
                     type="text"
                     id="nominal"
                     readonly
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-top:7px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                        background:#f5f5f5;
-                        box-sizing:border-box;
-                    "
+                    class="tagihan-form-control tagihan-readonly"
                 >
 
             </div>
@@ -228,7 +187,7 @@
 
             {{-- JATUH TEMPO --}}
 
-            <div style="margin-bottom:25px;">
+            <div class="tagihan-form-group">
 
                 <label>
                     Jatuh Tempo
@@ -243,14 +202,7 @@
                             ? $tagihan->jatuh_tempo->format('Y-m-d')
                             : ''
                     ) }}"
-                    style="
-                        width:100%;
-                        padding:12px;
-                        margin-top:7px;
-                        border:1px solid #ddd;
-                        border-radius:7px;
-                        box-sizing:border-box;
-                    "
+                    class="tagihan-form-control"
                 >
 
             </div>
@@ -258,35 +210,18 @@
 
             {{-- BUTTON --}}
 
-            <div style="
-                display:flex;
-                gap:10px;
-            ">
+            <div class="tagihan-form-actions">
 
                 <button
                     type="submit"
-                    style="
-                        background:#0f5132;
-                        color:white;
-                        border:none;
-                        padding:12px 22px;
-                        border-radius:7px;
-                        cursor:pointer;
-                    "
+                    class="tagihan-btn tagihan-btn-update"
                 >
                     Update Tagihan
                 </button>
 
-
                 <a
                     href="{{ route('admin.tagihan.index') }}"
-                    style="
-                        background:#6c757d;
-                        color:white;
-                        text-decoration:none;
-                        padding:12px 22px;
-                        border-radius:7px;
-                    "
+                    class="tagihan-btn tagihan-btn-kembali"
                 >
                     Kembali
                 </a>

@@ -301,3 +301,187 @@
         padding: 0 10px;
     }
 }
+
+/* =========================================
+   FORM TAMBAH KELAS
+========================================= */
+
+.kelas-form-container {
+    max-width: 700px;
+}
+
+.kelas-form-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.kelas-form-card h2 {
+    color: #0f5132;
+    margin: 0 0 8px;
+}
+
+.kelas-form-description {
+    color: #777;
+    margin: 0 0 25px;
+}
+
+.kelas-error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.kelas-error ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.kelas-form-group {
+    margin-bottom: 25px;
+}
+
+.kelas-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.kelas-form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.kelas-form-group input:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 2px rgba(15, 81, 50, 0.1);
+}
+
+.kelas-form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.kelas-btn-simpan {
+    background: #0f5132;
+    color: #ffffff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.kelas-btn-simpan:hover {
+    background: #0b3d25;
+}
+
+.kelas-btn-kembali {
+    background: #6c757d;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.kelas-btn-kembali:hover {
+    background: #5c636a;
+}
+
+.kelas-form-container {
+    max-width: 700px;
+}
+
+.kelas-form-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.kelas-form-card h2 {
+    color: #0f5132;
+    margin: 0 0 8px;
+}
+
+.kelas-form-description {
+    color: #777;
+    margin: 0 0 25px;
+}
+
+.kelas-error {
+    background: #f8d7da;
+    color: #842029;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.kelas-error ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.kelas-form-group {
+    margin-bottom: 25px;
+}
+
+.kelas-form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: bold;
+}
+
+.kelas-form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.kelas-form-group input:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 2px rgba(15, 81, 50, 0.1);
+}
+
+.kelas-form-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.kelas-btn-simpan {
+    background: #0f5132;
+    color: #ffffff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.kelas-btn-simpan:hover {
+    background: #0b3d25;
+}
+
+.kelas-btn-kembali {
+    background: #6c757d;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.kelas-btn-kembali:hover {
+    background: #5c636a;
+}
