@@ -1,98 +1,272 @@
+
+/* ==============================
+   RESET
+============================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+html,
 body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f8f6;
+    overflow-x: hidden;
+}
+
+
+/* ==============================
+   LAYOUT UTAMA
+============================== */
+
+.login-page {
+    width: 100%;
     min-height: 100vh;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(
-        135deg,
-        #0f5132 0%,
-        #146c43 50%,
-        #198754 100%
-    );
 }
 
 
 /* ==============================
-   CONTAINER
+   SISI KIRI - BRANDING
 ============================== */
 
-.login-container {
-    width: 100%;
-    max-width: 450px;
-}
-
-
-/* ==============================
-   CARD
-============================== */
-
-.login-card {
-    width: 100%;
-    background: #ffffff;
-    padding: 42px;
-    border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.20);
-}
-
-
-/* ==============================
-   HEADER
-============================== */
-
-.login-header {
-    text-align: center;
-    margin-bottom: 35px;
-}
-
-
-/* ==============================
-   LOGO
-============================== */
-
-.logo {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 18px;
+.login-brand {
+    position: relative;
+    width: 52%;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
+    padding: 60px 7.5%;
     overflow: hidden;
-    background: #e9f7ef;
-    border-radius: 50%;
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0b4930 0%,
+            #087443 55%,
+            #15965b 100%
+        );
 }
 
-.logo img {
+
+/* DEKORASI LINGKARAN */
+
+.login-brand::before {
+    content: "";
+    position: absolute;
+    width: 540px;
+    height: 540px;
+    top: -220px;
+    right: -180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+.login-brand::after {
+    content: "";
+    position: absolute;
+    width: 430px;
+    height: 430px;
+    bottom: -270px;
+    left: -200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.045);
+}
+
+
+/* KONTEN BRANDING */
+
+.brand-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+}
+
+
+/* ==============================
+   LOGO KIRI
+============================== */
+
+.brand-logo {
     width: 88px;
     height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    border-radius: 24px;
+
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    backdrop-filter: blur(8px);
+}
+
+.brand-logo img {
+    width: 73px;
+    height: 73px;
     display: block;
     object-fit: contain;
 }
 
 
 /* ==============================
-   JUDUL
+   JUDUL BRANDING
 ============================== */
 
-.login-header h2 {
-    margin-bottom: 8px;
-    color: #0f5132;
-    font-size: 26px;
-    line-height: 1.2;
+.brand-content h1 {
+    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: clamp(32px, 3.1vw, 48px);
     font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -1px;
+}
+
+.brand-content h1 span {
+    color: #a7e8c5;
+}
+
+
+/* DESKRIPSI */
+
+.brand-content p {
+    max-width: 500px;
+    margin-bottom: 40px;
+    color: #d5eee1;
+    font-size: 16px;
+    line-height: 1.85;
+}
+
+
+/* ==============================
+   KEUNGGULAN
+============================== */
+
+.brand-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: #e2f5ea;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.feature-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+
+    background: rgba(255, 255, 255, 0.14);
+
+    font-size: 18px;
+}
+
+
+/* ==============================
+   SISI KANAN - LOGIN
+============================== */
+
+.login-section {
+    width: 48%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 6%;
+
+    background: #f7faf8;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 440px;
+}
+
+
+/* ==============================
+   CARD LOGIN
+============================== */
+
+.login-card {
+    width: 100%;
+    padding: 42px 40px;
+
+    border: 1px solid #e3ebe6;
+    border-radius: 26px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 20px 60px rgba(15, 81, 50, 0.08);
+}
+
+
+/* ==============================
+   HEADER LOGIN
+============================== */
+
+.login-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+
+/* LOGO KANAN */
+
+.login-header .logo {
+    width: 82px;
+    height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 20px;
+
+    border-radius: 22px;
+    background: #e8f5ed;
+}
+
+.login-header .logo img {
+    width: 70px;
+    height: 70px;
+    display: block;
+    object-fit: contain;
+}
+
+
+/* JUDUL */
+
+.login-header h2 {
+    margin-bottom: 10px;
+    color: #123f2c;
+    font-size: 29px;
+    font-weight: 700;
+    line-height: 1.25;
 }
 
 .login-header p {
-    color: #777;
+    color: #829088;
     font-size: 15px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 
@@ -101,21 +275,16 @@ body {
 ============================== */
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 21px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 8px;
-    color: #333;
+    margin-bottom: 9px;
+    color: #34443b;
     font-size: 14px;
     font-weight: 600;
 }
-
-
-/* ==============================
-   INPUT WRAPPER
-============================== */
 
 .input-wrapper {
     position: relative;
@@ -123,30 +292,39 @@ body {
 }
 
 
-/* ==============================
-   INPUT
-============================== */
+/* INPUT */
 
 .form-group input {
     width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border: 1px solid #dcdcdc;
-    border-radius: 9px;
-    background: #ffffff;
-    color: #333;
-    font-size: 14px;
+    height: 52px;
+    padding: 0 15px;
+
+    border: 1px solid #dce6df;
+    border-radius: 12px;
+
     outline: none;
-    transition: 0.2s ease;
+    background: #fbfdfc;
+    color: #24382c;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 .form-group input::placeholder {
-    color: #999;
+    color: #a4afa8;
 }
 
 .form-group input:focus {
     border-color: #198754;
-    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.10);
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px rgba(25, 135, 84, 0.09);
 }
 
 
@@ -155,29 +333,40 @@ body {
 ============================== */
 
 .password-input {
-    padding-right: 48px !important;
+    padding-right: 52px !important;
 }
 
 .toggle-password {
     position: absolute;
     top: 50%;
-    right: 14px;
-    width: 30px;
-    height: 30px;
+    right: 11px;
+
+    width: 34px;
+    height: 34px;
+
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+
     transform: translateY(-50%);
+
     border: none;
+    border-radius: 8px;
+
     background: transparent;
-    color: #777;
+    color: #89968e;
+
     font-size: 17px;
     cursor: pointer;
-    padding: 0;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
 }
 
 .toggle-password:hover {
-    color: #0f5132;
+    background: #e8f5ed;
+    color: #198754;
 }
 
 
@@ -188,11 +377,14 @@ body {
 .error {
     margin-bottom: 20px;
     padding: 12px 14px;
+
     border-left: 4px solid #dc3545;
-    border-radius: 8px;
-    background: #fff0f1;
+    border-radius: 9px;
+
+    background: #fff1f2;
     color: #842029;
-    font-size: 14px;
+
+    font-size: 13px;
     line-height: 1.5;
 }
 
@@ -203,22 +395,48 @@ body {
 
 .btn-login {
     width: 100%;
-    height: 48px;
+    height: 52px;
+    margin-top: 8px;
+
     border: none;
-    border-radius: 9px;
-    background: #198754;
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #198754,
+            #0f6e40
+        );
+
     color: #ffffff;
+
+    font-family: inherit;
     font-size: 15px;
     font-weight: 600;
+
     cursor: pointer;
-    transition: 0.2s ease;
-    box-shadow: 0 5px 12px rgba(25, 135, 84, 0.20);
+
+    box-shadow:
+        0 8px 18px rgba(25, 135, 84, 0.18);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 .btn-login:hover {
-    background: #146c43;
-    transform: translateY(-1px);
-    box-shadow: 0 7px 16px rgba(25, 135, 84, 0.25);
+    background:
+        linear-gradient(
+            135deg,
+            #146c43,
+            #0b5832
+        );
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 11px 24px rgba(25, 135, 84, 0.23);
 }
 
 .btn-login:active {
@@ -231,49 +449,218 @@ body {
 ============================== */
 
 .login-footer {
-    margin-top: 25px;
+    margin-top: 26px;
+
     text-align: center;
-    color: #999;
+
+    color: #9aa69e;
     font-size: 12px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 
 /* ==============================
-   RESPONSIVE
+   RESPONSIVE TABLET
 ============================== */
 
-@media (max-width: 500px) {
+@media (max-width: 1100px) {
 
-    body {
-        padding: 15px;
+    .login-brand {
+        width: 50%;
+        padding: 50px 5%;
+    }
+
+    .login-section {
+        width: 50%;
+        padding: 30px;
+    }
+
+    .brand-content h1 {
+        font-size: 36px;
     }
 
     .login-card {
-        padding: 30px 25px;
-        border-radius: 16px;
+        padding: 36px 30px;
     }
 
-    .logo {
-        width: 85px;
-        height: 85px;
+    .brand-features {
+        gap: 18px;
+    }
+
+}
+
+
+/* ==============================
+   RESPONSIVE MOBILE
+============================== */
+
+@media (max-width: 700px) {
+
+    html,
+    body {
+        overflow-y: auto;
+    }
+
+    .login-page {
+        flex-direction: column;
+    }
+
+    /* BRANDING ATAS */
+
+    .login-brand {
+        width: 100%;
+        min-height: auto;
+        padding: 38px 28px 42px;
+    }
+
+    .brand-content {
+        max-width: 100%;
+    }
+
+    .brand-logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 22px;
+        border-radius: 19px;
+    }
+
+    .brand-logo img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .brand-content h1 {
         margin-bottom: 15px;
+        font-size: 30px;
+        letter-spacing: -0.5px;
     }
 
-    .logo img {
-        width: 75px;
-        height: 75px;
+    .brand-content p {
+        margin-bottom: 28px;
+        font-size: 14px;
+        line-height: 1.75;
+    }
+
+    .brand-features {
+        gap: 16px;
+    }
+
+    .feature-item {
+        font-size: 13px;
+    }
+
+    .feature-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 15px;
+    }
+
+
+    /* LOGIN BAWAH */
+
+    .login-section {
+        width: 100%;
+        min-height: auto;
+        padding: 35px 20px 40px;
+    }
+
+    .login-container {
+        max-width: 440px;
+    }
+
+    .login-card {
+        padding: 32px 25px;
+        border-radius: 21px;
     }
 
     .login-header {
         margin-bottom: 28px;
     }
 
+    .login-header .logo {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 17px;
+        border-radius: 19px;
+    }
+
+    .login-header .logo img {
+        width: 61px;
+        height: 61px;
+    }
+
     .login-header h2 {
-        font-size: 23px;
+        font-size: 25px;
     }
 
     .login-header p {
         font-size: 14px;
     }
-}       
+
+}
+
+
+/* ==============================
+   MOBILE KECIL
+============================== */
+
+@media (max-width: 380px) {
+
+    .login-brand {
+        padding: 30px 20px 35px;
+    }
+
+    .login-section {
+        padding: 25px 15px 30px;
+    }
+
+    .login-card {
+        padding: 28px 20px;
+    }
+
+    .brand-content h1 {
+        font-size: 27px;
+    }
+
+    .brand-features {
+        gap: 12px;
+    }
+
+}
+
+/* ==============================
+   PERBAIKAN TAMPILAN DESKTOP
+============================== */
+
+@media (min-width: 701px) {
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .login-page {
+        width: 100%;
+        height: 100vh;
+        min-height: 0;
+        display: flex;
+        overflow: hidden;
+    }
+
+    .login-brand,
+    .login-section {
+        height: 100vh;
+        min-height: 0;
+    }
+
+    .login-brand {
+        width: 52%;
+    }
+
+    .login-section {
+        width: 48%;
+    }
+
+}

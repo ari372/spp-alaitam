@@ -4,61 +4,96 @@
 
 @section('page-title', 'Detail Tagihan')
 
+@push('styles')
+    @vite('resources/css/admin/tagihan.css')
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+@endpush
+
 @section('content')
 
 <div class="tagihan-detail-container">
 
-    {{-- HEADER --}}
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
 
     <div class="tagihan-detail-header">
 
-        <h2>
-            Detail Tagihan
-        </h2>
+        <div>
+            <h2>
+                Detail Tagihan
+            </h2>
 
-        <p>
-            Informasi lengkap tagihan dan riwayat pembayaran siswa
-        </p>
+            <p>
+                Informasi lengkap tagihan dan riwayat pembayaran siswa
+            </p>
+        </div>
 
     </div>
 
 
-    {{-- INFORMASI TAGIHAN --}}
+    {{-- =====================================================
+         HITUNG PEMBAYARAN
+    ====================================================== --}}
+
+    @php
+
+        $totalDibayar = $tagihan->pembayaran
+            ->where('status', 'dibayar')
+            ->sum('nominal');
+
+        $sisaTagihan = max(
+            0,
+            ($tagihan->nominal ?? 0) - $totalDibayar
+        );
+
+    @endphp
+
+
+    {{-- =====================================================
+         INFORMASI TAGIHAN
+    ====================================================== --}}
 
     <div class="tagihan-detail-card">
 
         <div class="tagihan-detail-card-header">
 
-            <h3>
-                Informasi Tagihan
-            </h3>
+            <div class="tagihan-detail-heading">
+
+                <div class="tagihan-detail-heading-icon">
+                    <i class="bi bi-receipt"></i>
+                </div>
+
+                <div>
+                    <h3>
+                        Informasi Tagihan
+                    </h3>
+
+                    <p>
+                        Rincian data tagihan siswa
+                    </p>
+                </div>
+
+            </div>
 
 
             {{-- STATUS TAGIHAN --}}
 
-            @php
-
-                $totalDibayar = $tagihan->pembayaran
-                    ->where('status', 'dibayar')
-                    ->sum('nominal');
-
-                $sisaTagihan = max(
-                    0,
-                    $tagihan->nominal - $totalDibayar
-                );
-
-            @endphp
-
-
             @if($sisaTagihan <= 0)
 
                 <span class="tagihan-status tagihan-status-lunas">
+                    <i class="bi bi-check-circle"></i>
                     Lunas
                 </span>
 
             @else
 
                 <span class="tagihan-status tagihan-status-belum">
+                    <i class="bi bi-clock-history"></i>
                     Belum Lunas
                 </span>
 
@@ -194,10 +229,11 @@
                 Sisa Tagihan
             </strong>
 
-            <span class="tagihan-sisa {{ $sisaTagihan > 0
-                ? 'tagihan-sisa-belum'
-                : 'tagihan-sisa-lunas'
-            }}">
+            <span class="tagihan-sisa
+                {{ $sisaTagihan > 0
+                    ? 'tagihan-sisa-belum'
+                    : 'tagihan-sisa-lunas'
+                }}">
 
                 Rp {{ number_format(
                     $sisaTagihan,
@@ -223,7 +259,7 @@
 
                 @if($tagihan->jatuh_tempo)
 
-                    {{ $tagihan->jatuh_tempo->format('d-m-Y') }}
+                    {{ \Carbon\Carbon::parse($tagihan->jatuh_tempo)->format('d-m-Y') }}
 
                 @else
 
@@ -238,7 +274,9 @@
     </div>
 
 
-    {{-- RIWAYAT PEMBAYARAN --}}
+    {{-- =====================================================
+         RIWAYAT PEMBAYARAN
+    ====================================================== --}}
 
     <div class="tagihan-detail-card">
 
@@ -246,18 +284,30 @@
 
             <div class="tagihan-history-title">
 
-                <h3>
-                    Riwayat Pembayaran
-                </h3>
+                <div class="tagihan-history-heading">
 
-                <p>
-                    Daftar pembayaran untuk tagihan ini
-                </p>
+                    <div class="tagihan-detail-heading-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+
+                    <div>
+                        <h3>
+                            Riwayat Pembayaran
+                        </h3>
+
+                        <p>
+                            Daftar pembayaran untuk tagihan ini
+                        </p>
+                    </div>
+
+                </div>
 
             </div>
 
 
             <span class="tagihan-transaksi-count">
+
+                <i class="bi bi-wallet2"></i>
 
                 {{ $tagihan->pembayaran->count() }}
                 Transaksi
@@ -306,14 +356,11 @@
 
                     <tbody>
 
-                        @foreach(
-                            $tagihan->pembayaran
-                            as $index => $pembayaran
-                        )
+                        @foreach($tagihan->pembayaran as $index => $pembayaran)
 
                             <tr>
 
-                                {{-- NO --}}
+                                {{-- NOMOR --}}
 
                                 <td class="tagihan-table-no">
                                     {{ $index + 1 }}
@@ -328,13 +375,13 @@
 
                                         <div class="tagihan-table-date">
 
-                                            {{ $pembayaran->tanggal_kirim->format('d-m-Y') }}
+                                            {{ \Carbon\Carbon::parse($pembayaran->tanggal_kirim)->format('d-m-Y') }}
 
                                         </div>
 
                                         <div class="tagihan-table-time">
 
-                                            {{ $pembayaran->tanggal_kirim->format('H:i') }}
+                                            {{ \Carbon\Carbon::parse($pembayaran->tanggal_kirim)->format('H:i') }}
 
                                         </div>
 
@@ -391,27 +438,28 @@
                                     @if($pembayaran->status === 'dibayar')
 
                                         <span class="tagihan-payment-status tagihan-payment-dibayar">
+                                            <i class="bi bi-check-circle"></i>
                                             Dibayar
                                         </span>
 
                                     @elseif($pembayaran->status === 'menunggu')
 
                                         <span class="tagihan-payment-status tagihan-payment-menunggu">
+                                            <i class="bi bi-clock"></i>
                                             Menunggu
                                         </span>
 
                                     @elseif($pembayaran->status === 'ditolak')
 
                                         <span class="tagihan-payment-status tagihan-payment-ditolak">
+                                            <i class="bi bi-x-circle"></i>
                                             Ditolak
                                         </span>
 
                                     @else
 
                                         <span class="tagihan-payment-default">
-
                                             {{ $pembayaran->status ?? '-' }}
-
                                         </span>
 
                                     @endif
@@ -425,7 +473,7 @@
                     </tbody>
 
 
-                    {{-- TOTAL --}}
+                    {{-- TOTAL PEMBAYARAN --}}
 
                     <tfoot>
 
@@ -449,8 +497,7 @@
 
                             </td>
 
-                            <td colspan="2">
-                            </td>
+                            <td colspan="2"></td>
 
                         </tr>
 
@@ -467,7 +514,7 @@
             <div class="tagihan-empty">
 
                 <div class="tagihan-empty-icon">
-                    —
+                    <i class="bi bi-receipt"></i>
                 </div>
 
                 <strong class="tagihan-empty-title">
@@ -485,32 +532,31 @@
     </div>
 
 
-    {{-- AKSI --}}
+    {{-- =====================================================
+         TOMBOL AKSI
+    ====================================================== --}}
 
     <div class="tagihan-detail-actions">
-
-        {{-- EDIT --}}
-
-        <a
-            href="{{ route(
-                'admin.tagihan.edit',
-                $tagihan->id
-            ) }}"
-            class="tagihan-detail-btn tagihan-detail-btn-edit"
-        >
-            Edit
-        </a>
-
 
         {{-- KEMBALI --}}
 
         <a
-            href="{{ route(
-                'admin.tagihan.index'
-            ) }}"
+            href="{{ route('admin.tagihan.index') }}"
             class="tagihan-detail-btn tagihan-detail-btn-kembali"
         >
-            Kembali
+            <i class="bi bi-arrow-left"></i>
+            <span>Kembali</span>
+        </a>
+
+
+        {{-- EDIT --}}
+
+        <a
+            href="{{ route('admin.tagihan.edit', $tagihan->id) }}"
+            class="tagihan-detail-btn tagihan-detail-btn-edit"
+        >
+            <i class="bi bi-pencil-square"></i>
+            <span>Edit Tagihan</span>
         </a>
 
     </div>

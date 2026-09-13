@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -18,148 +19,307 @@
 
 <body>
 
-<div class="login-container">
-
-    <div class="login-card">
-
-        <div class="login-header">
-
-            <div class="login-logo">
-    <img
-        src="{{ asset('images/logo-alaitam.png.jpg') }}"
-        alt="Logo SMP Plus Al-I'tam"
-    >
-</div>
-
-            <h2>
-                SMP Plus Al-I'tam
-            </h2>
-
-            <p>
-                Sistem Pembayaran SPP
-            </p>
-
-        </div>
+    <div class="login-page">
 
 
-        @if ($errors->any())
+        {{-- ==============================
+             SISI KIRI - BRANDING
+        ============================== --}}
 
-            <div class="error">
-                {{ $errors->first() }}
-            </div>
+        <section class="login-brand">
 
-        @endif
-
-
-        <form
-            action="{{ route('login.process') }}"
-            method="POST"
-        >
-
-            @csrf
+            <div class="brand-content">
 
 
-            <div class="form-group">
+                {{-- LOGO SEKOLAH --}}
 
-                <label for="email">
-                    Email
-                </label>
+                <div class="brand-logo">
 
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    placeholder="Masukkan email"
-                    autocomplete="email"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="password">
-                    Password
-                </label>
-
-                <div class="input-wrapper">
-
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="password-input"
-                        placeholder="Masukkan password"
-                        autocomplete="current-password"
-                        required
+                    <img
+                        src="{{ asset('images/logo-alaitam.png.jpg') }}"
+                        alt="Logo SMP Plus Al-I'tam"
                     >
 
-                    <button
-                        type="button"
-                        class="toggle-password"
-                        onclick="togglePassword()"
-                        title="Tampilkan password"
-                    >
-                        👁
-                    </button>
+                </div>
+
+
+                {{-- JUDUL BRANDING --}}
+
+                <h1>
+                    Sistem Pembayaran <span>SPP</span>
+                </h1>
+
+
+                {{-- DESKRIPSI --}}
+
+                <p>
+                    Kelola pembayaran SPP dengan lebih mudah,
+                    cepat, transparan, dan aman untuk mendukung
+                    pendidikan yang lebih baik.
+                </p>
+
+
+                {{-- KEUNGGULAN --}}
+
+                <div class="brand-features">
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            ✓
+                        </div>
+
+                        <span>
+                            Aman
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            ⚡
+                        </div>
+
+                        <span>
+                            Mudah
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            ▣
+                        </div>
+
+                        <span>
+                            Transparan
+                        </span>
+
+                    </div>
+
 
                 </div>
 
             </div>
 
-
-            <button
-                type="submit"
-                class="btn-login"
-            >
-                Login
-            </button>
-
-        </form>
+        </section>
 
 
-        <div class="login-footer">
-            Sistem Pembayaran SPP SMP Plus Al-I'tam
-        </div>
+
+        {{-- ==============================
+             SISI KANAN - LOGIN
+        ============================== --}}
+
+        <section class="login-section">
+
+            <div class="login-container">
+
+                <div class="login-card">
+
+
+                    {{-- HEADER LOGIN --}}
+
+                    <div class="login-header">
+
+
+                        <div class="logo">
+
+                            <img
+                                src="{{ asset('images/logo-alaitam.png.jpg') }}"
+                                alt="Logo SMP Plus Al-I'tam"
+                            >
+
+                        </div>
+
+
+                        <h2>
+                            Selamat Datang!
+                        </h2>
+
+
+                        <p>
+                            Silakan login untuk melanjutkan
+                        </p>
+
+
+                    </div>
+
+
+
+                    {{-- PESAN ERROR --}}
+
+                    @if ($errors->any())
+
+                        <div class="error">
+
+                            {{ $errors->first() }}
+
+                        </div>
+
+                    @endif
+
+
+
+                    {{-- FORM LOGIN --}}
+
+                    <form
+                        action="{{ route('login.process') }}"
+                        method="POST"
+                    >
+
+                        @csrf
+
+
+
+                        {{-- INPUT EMAIL --}}
+
+                        <div class="form-group">
+
+                            <label for="email">
+                                Email
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    placeholder="Masukkan email"
+                                    autocomplete="username"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+
+                        {{-- INPUT PASSWORD --}}
+
+                        <div class="form-group">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <div class="input-wrapper">
+
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="password-input"
+                                    placeholder="Masukkan password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+
+
+                                <button
+                                    type="button"
+                                    class="toggle-password"
+                                    onclick="togglePassword()"
+                                    title="Tampilkan password"
+                                    aria-label="Tampilkan password"
+                                >
+                                    👁
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+
+                        {{-- TOMBOL LOGIN --}}
+
+                        <button
+                            type="submit"
+                            class="btn-login"
+                        >
+                            Login
+                        </button>
+
+
+                    </form>
+
+
+
+                    {{-- FOOTER --}}
+
+                    <div class="login-footer">
+
+                        Sistem Pembayaran SPP SMP Plus Al-I'tam
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
 
     </div>
 
-</div>
 
 
-<script>
+    {{-- ==============================
+         JAVASCRIPT TOGGLE PASSWORD
+    ============================== --}}
 
-    function togglePassword() {
+    <script>
 
-        const password =
-            document.getElementById('password');
+        function togglePassword() {
 
-        const button =
-            document.querySelector('.toggle-password');
+            const password =
+                document.getElementById('password');
 
-        if (password.type === 'password') {
+            const button =
+                document.querySelector('.toggle-password');
 
-            password.type = 'text';
 
-            button.innerText = '🙈';
+            if (password.type === 'password') {
 
-            button.title = 'Sembunyikan password';
+                password.type = 'text';
 
-        } else {
+                button.innerText = '🙈';
 
-            password.type = 'password';
+                button.title = 'Sembunyikan password';
 
-            button.innerText = '👁';
+                button.setAttribute(
+                    'aria-label',
+                    'Sembunyikan password'
+                );
 
-            button.title = 'Tampilkan password';
+            } else {
+
+                password.type = 'password';
+
+                button.innerText = '👁';
+
+                button.title = 'Tampilkan password';
+
+                button.setAttribute(
+                    'aria-label',
+                    'Tampilkan password'
+                );
+
+            }
 
         }
 
-    }
+    </script>
 
-</script>
 
 </body>
 
