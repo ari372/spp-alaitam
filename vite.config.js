@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/css/admin/siswa.css',
                 'resources/css/admin/tagihan.css',
                 'resources/css/admin/profil.css',
+                'resources/css/admin/tahun-ajaran.css',
 
                 // CSS AUTH
                 'resources/css/auth/login.css',

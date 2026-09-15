@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrangTua;
 use App\Models\Tagihan;
 use App\Models\PembayaranTagihan;
 use Illuminate\Http\Request;
@@ -599,4 +600,43 @@ class PembayaranOrangTuaController extends Controller
                 'Bukti pembayaran berhasil dikirim. Silakan menunggu persetujuan admin.'
             );
     }
+
+    public function downloadBukti(PembayaranTagihan $pembayaran)
+{
+    $user = Auth::user();
+
+    $orangTua = OrangTua::where('user_id', $user->id)->first();
+
+    if (!$orangTua) {
+        abort(403, 'Data orang tua tidak ditemukan.');
+    }
+
+    $pembayaran->load([
+        'tagihan.siswa.kelas',
+        'tagihan.kategori',
+        'tagihan.tahunAjaran',
+    ]);
+
+    if (!$pembayaran->tagihan) {
+        abort(404, 'Tagihan pembayaran tidak ditemukan.');
+    }
+
+    if (
+        !$pembayaran->tagihan->siswa ||
+        $pembayaran->tagihan->siswa->orang_tua_id != $orangTua->id
+    ) {
+        abort(403, 'Anda tidak memiliki akses ke pembayaran ini.');
+    }
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+        'orangtua.pembayaran.bukti-pdf',
+        compact('pembayaran')
+    );
+
+    $pdf->setPaper('A4', 'portrait');
+
+    return $pdf->download(
+        'bukti-pembayaran-' . $pembayaran->id . '.pdf'
+    );
+}
 }

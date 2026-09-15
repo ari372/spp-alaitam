@@ -12,6 +12,7 @@ use App\Http\Controllers\PembayaranAdminController;
 use App\Http\Controllers\KategoriTagihanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\TahunAjaranController;
 
 
 /*
@@ -267,6 +268,33 @@ Route::middleware([
         'excel'
     ])->name('admin.laporan.excel');
 
+    Route::resource('tahun-ajaran', TahunAjaranController::class)
+    ->except(['show']);
+
+/*
+|--------------------------------------------------------------------------
+| TAHUN AJARAN
+|--------------------------------------------------------------------------
+*/
+
+Route::resource(
+    'tahun-ajaran',
+    TahunAjaranController::class
+)
+->except(['show'])
+->names([
+    'index'   => 'admin.tahun-ajaran.index',
+    'create'  => 'admin.tahun-ajaran.create',
+    'store'   => 'admin.tahun-ajaran.store',
+    'edit'    => 'admin.tahun-ajaran.edit',
+    'update'  => 'admin.tahun-ajaran.update',
+    'destroy' => 'admin.tahun-ajaran.destroy',
+]);
+
+Route::patch(
+    'tahun-ajaran/{tahunAjaran}/aktifkan',
+    [TahunAjaranController::class, 'aktifkan']
+)->name('admin.tahun-ajaran.aktifkan');
 
     /*
     |--------------------------------------------------------------------------
@@ -315,5 +343,10 @@ Route::middleware([
         PembayaranOrangTuaController::class,
         'store'
     ])->name('orangtua.pembayaran.store');
+
+    Route::get(
+    '/pembayaran/{pembayaran}/download',
+    [PembayaranOrangTuaController::class, 'downloadBukti']
+)->name('orangtua.pembayaran.download');
 
 });

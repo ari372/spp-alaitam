@@ -1,0 +1,576 @@
+.tahun-ajaran-page {
+    width: 100%;
+}
+
+
+/* ==============================
+   HEADER
+================================ */
+
+.tahun-ajaran-page .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 38px;
+}
+
+.tahun-ajaran-page .page-header-text {
+    flex: 1;
+}
+
+.tahun-ajaran-page .page-header h1 {
+    margin: 0 0 10px;
+    color: #0f5132;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.tahun-ajaran-page .page-header p {
+    margin: 0;
+    color: #777;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+
+/* ==============================
+   TOMBOL TAMBAH
+================================ */
+
+.tahun-ajaran-page .btn-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-height: 48px;
+
+    padding: 0 20px;
+
+    background: #198754;
+    color: #fff;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: all .2s ease;
+}
+
+.tahun-ajaran-page .btn-add:hover {
+    background: #157347;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.tahun-ajaran-page .btn-add svg {
+    flex-shrink: 0;
+}
+
+
+/* ==============================
+   ALERT
+================================ */
+
+.tahun-ajaran-page .alert {
+    padding: 15px 18px;
+    margin-bottom: 20px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tahun-ajaran-page .alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.tahun-ajaran-page .alert-error {
+    background: #f8d7da;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+.tahun-ajaran-page .alert ul {
+    margin: 6px 0 0 20px;
+    padding: 0;
+}
+
+
+/* ==============================
+   TABLE CARD
+================================ */
+
+.tahun-ajaran-page .table-card {
+    width: 100%;
+
+    background: #fff;
+
+    border-radius: 16px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+
+    overflow: hidden;
+}
+
+.tahun-ajaran-page .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+
+/* ==============================
+   TABLE
+================================ */
+
+.tahun-ajaran-page table {
+    width: 100%;
+
+    min-width: 900px;
+
+    border-collapse: collapse;
+}
+
+.tahun-ajaran-page thead th {
+    height: 58px;
+
+    padding: 0 16px;
+
+    background: #0f5132;
+    color: #fff;
+
+    border-right: 1px solid rgba(255, 255, 255, .15);
+
+    text-align: left;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.tahun-ajaran-page thead th:last-child {
+    border-right: none;
+}
+
+.tahun-ajaran-page thead .col-no {
+    width: 70px;
+    text-align: center;
+}
+
+.tahun-ajaran-page thead .col-action {
+    width: 270px;
+    text-align: center;
+}
+
+
+/* ==============================
+   TABLE BODY
+================================ */
+
+.tahun-ajaran-page tbody td {
+    height: 94px;
+
+    padding: 16px;
+
+    color: #444;
+
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+
+    vertical-align: middle;
+
+    font-size: 14px;
+}
+
+.tahun-ajaran-page tbody td:last-child {
+    border-right: none;
+}
+
+.tahun-ajaran-page tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tahun-ajaran-page tbody tr:hover {
+    background: #f8faf9;
+}
+
+.tahun-ajaran-page .text-center {
+    text-align: center;
+}
+
+
+/* ==============================
+   NAMA TAHUN AJARAN
+================================ */
+
+.tahun-ajaran-page .tahun-nama {
+    color: #0f5132;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+/* ==============================
+   STATUS
+================================ */
+
+.tahun-ajaran-page .status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 82px;
+
+    padding: 8px 14px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.tahun-ajaran-page .status-active {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.tahun-ajaran-page .status-inactive {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+
+/* ==============================
+   ACTION BUTTONS
+================================ */
+
+.tahun-ajaran-page .action-buttons {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.tahun-ajaran-page .action-buttons form {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ==============================
+   ACTION BUTTON
+================================ */
+
+.tahun-ajaran-page .action-btn {
+    width: 54px;
+    height: 54px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border-radius: 12px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+
+    box-sizing: border-box;
+}
+
+.tahun-ajaran-page .action-btn svg {
+    width: 21px;
+    height: 21px;
+
+    display: block;
+
+    flex-shrink: 0;
+}
+
+
+/* ==============================
+   AKTIFKAN
+================================ */
+
+.tahun-ajaran-page .action-activate {
+    background: #0f5132;
+    color: #fff;
+
+    border: 1px solid #0f5132;
+}
+
+.tahun-ajaran-page .action-activate:hover {
+    background: #0b3d26;
+    border-color: #0b3d26;
+
+    color: #fff;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==============================
+   EDIT
+================================ */
+
+.tahun-ajaran-page .action-edit {
+    background: #fff8e1;
+    color: #b58100;
+
+    border: 1px solid #ffc107;
+}
+
+.tahun-ajaran-page .action-edit:hover {
+    background: #ffc107;
+
+    color: #212529;
+
+    border-color: #ffc107;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==============================
+   HAPUS
+================================ */
+
+.tahun-ajaran-page .action-delete {
+    background: #fff1f2;
+    color: #dc3545;
+
+    border: 1px solid #ffb3ba;
+}
+
+.tahun-ajaran-page .action-delete:hover {
+    background: #dc3545;
+
+    color: #fff;
+
+    border-color: #dc3545;
+
+    transform: translateY(-2px);
+}
+
+
+/* ==============================
+   EMPTY
+================================ */
+
+.tahun-ajaran-page .empty {
+    height: 150px !important;
+
+    padding: 40px !important;
+
+    color: #777 !important;
+
+    text-align: center !important;
+}
+
+
+/* ==============================
+   FORM
+================================ */
+
+.tahun-ajaran-page .form-card {
+    width: 100%;
+    max-width: 900px;
+
+    padding: 30px;
+
+    background: #fff;
+
+    border-radius: 16px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, .06);
+
+    box-sizing: border-box;
+}
+
+.tahun-ajaran-page .form-group {
+    margin-bottom: 22px;
+}
+
+.tahun-ajaran-page .form-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #333;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.tahun-ajaran-page .form-group input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    box-sizing: border-box;
+
+    border: 1px solid #d9d9d9;
+    border-radius: 9px;
+
+    background: #fff;
+
+    color: #333;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: .2s;
+}
+
+.tahun-ajaran-page .form-group input:focus {
+    border-color: #198754;
+
+    box-shadow:
+        0 0 0 3px rgba(25, 135, 84, .1);
+}
+
+.tahun-ajaran-page .form-group small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #777;
+
+    font-size: 12px;
+}
+
+
+/* ==============================
+   FORM ACTION
+================================ */
+
+.tahun-ajaran-page .form-actions {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 30px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #eee;
+}
+
+.tahun-ajaran-page .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+
+    padding: 0 18px;
+
+    background: #6c757d;
+    color: #fff;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    transition: .2s;
+}
+
+.tahun-ajaran-page .btn-secondary:hover {
+    background: #5c636a;
+    color: #fff;
+}
+
+
+/* ==============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 1000px) {
+
+    .tahun-ajaran-page .page-header {
+        align-items: flex-start;
+    }
+
+    .tahun-ajaran-page .page-header h1 {
+        font-size: 32px;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .tahun-ajaran-page .page-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+        margin-bottom: 25px;
+    }
+
+    .tahun-ajaran-page .page-header h1 {
+        font-size: 28px;
+    }
+
+    .tahun-ajaran-page .page-header p {
+        font-size: 14px;
+    }
+
+    .tahun-ajaran-page .btn-add {
+        width: 100%;
+    }
+
+    .tahun-ajaran-page .table-card {
+        border-radius: 12px;
+    }
+
+    .tahun-ajaran-page .action-buttons {
+        justify-content: flex-start;
+    }
+
+    .tahun-ajaran-page .form-card {
+        padding: 20px;
+    }
+
+    .tahun-ajaran-page .form-actions {
+        flex-direction: column;
+    }
+
+    .tahun-ajaran-page .form-actions a,
+    .tahun-ajaran-page .form-actions button {
+        width: 100%;
+    }
+
+}

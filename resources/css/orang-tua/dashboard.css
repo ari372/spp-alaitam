@@ -229,11 +229,6 @@
     border-bottom: none;
 }
 
-
-/* =====================================================
-   NOMINAL
-===================================================== */
-
 .table-wrapper td strong {
     color: #0f5132;
     font-weight: 700;
@@ -264,6 +259,11 @@
 .status-belum {
     background: #fef3c7;
     color: #92400e;
+}
+
+.status-sebagian {
+    background: #fef3c7;
+    color: #b45309;
 }
 
 .status-menunggu {
@@ -316,6 +316,39 @@
     display: inline;
 }
 
+.payment-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+
+/* =====================================================
+   BUTTON DETAIL
+===================================================== */
+
+.btn-detail {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: #f59e0b;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-detail:hover {
+    transform: scale(1.08);
+    background: #d97706;
+}
+
 
 /* =====================================================
    EMPTY
@@ -328,9 +361,1017 @@
     font-size: 14px;
 }
 
+.empty-payment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 35px 20px;
+}
+
+.empty-payment strong {
+    color: #0f5132;
+    font-size: 16px;
+}
+
+.empty-payment span {
+    color: #6b7280;
+    font-size: 14px;
+}
+
 
 /* =====================================================
-   RESPONSIVE
+   TAB
+===================================================== */
+
+.payment-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.payment-tab {
+    border: none;
+    background: transparent;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.payment-tab:hover {
+    color: #0f5132;
+}
+
+.payment-tab.active {
+    color: #0f5132;
+    border-bottom-color: #0f5132;
+}
+
+
+/* =====================================================
+   SECTION TAB
+===================================================== */
+
+.payment-section {
+    display: none;
+}
+
+.payment-section.active {
+    display: block;
+}
+
+
+/* =====================================================
+   MODAL DASAR
+===================================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.detail-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.detail-modal.show {
+    display: flex;
+}
+
+
+/* =====================================================
+   MODAL OVERLAY
+===================================================== */
+
+.detail-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(5px);
+}
+
+
+/* =====================================================
+   MODAL CONTENT
+===================================================== */
+
+.detail-modal-content {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100vw - 40px));
+    max-width: 1180px;
+    max-height: calc(100vh - 40px);
+    background: #ffffff;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+    animation: detailModalShow 0.22s ease-out;
+}
+
+@keyframes detailModalShow {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =====================================================
+   MODAL HEADER
+===================================================== */
+
+.detail-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 30px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.detail-modal-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.detail-modal-header h3 {
+    margin: 0;
+    color: #0f5132;
+    font-size: 25px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+}
+
+.detail-modal-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.detail-header-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: #e8f5ed;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+}
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+.detail-modal-close {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 13px;
+    background: #f3f4f6;
+    color: #64748b;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.detail-modal-close:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+
+/* =====================================================
+   MODAL BODY
+===================================================== */
+
+.detail-modal-body {
+    padding: 26px 30px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.detail-modal-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+.detail-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.detail-modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+
+/* =====================================================
+   DETAIL TAGIHAN
+===================================================== */
+
+.detail-pembayaran-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.detail-pembayaran-left,
+.detail-pembayaran-right {
+    min-width: 0;
+}
+
+.detail-pembayaran-left {
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e3ebe6;
+    border-radius: 14px;
+}
+
+.detail-card-heading {
+    margin-bottom: 8px;
+    color: #173b2b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.detail-pembayaran-left .detail-item {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #eef2f0;
+}
+
+.detail-pembayaran-left .detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item span:first-child {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.detail-item strong {
+    min-width: 0;
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.detail-item-sisa {
+    margin: 7px 0;
+    padding: 14px !important;
+    background: #f0fdf4;
+    border: 1px solid #dcfce7 !important;
+    border-radius: 10px;
+}
+
+.detail-item-sisa span:first-child {
+    color: #166534;
+    font-weight: 600;
+}
+
+.detail-item-sisa strong {
+    color: #15803d;
+    font-size: 16px;
+}
+
+.detail-pembayaran-right {
+    padding: 20px;
+    background: #f8faf9;
+    border: 1px solid #e3ebe6;
+    border-radius: 14px;
+}
+
+.detail-pembayaran-right-title {
+    margin: 0 0 15px;
+    color: #173b2b;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.detail-summary-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #ffffff;
+    border: 1px solid #e5ebe7;
+    border-radius: 10px;
+}
+
+.detail-summary-box span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.detail-summary-box strong {
+    color: #173b2b;
+    font-size: 15px;
+}
+
+.detail-summary-sisa {
+    background: #ecfdf3;
+    border-color: #ccefd9;
+}
+
+.detail-summary-sisa strong {
+    color: #15803d;
+}
+
+.detail-progress-box {
+    margin-top: 16px;
+    padding: 15px;
+    background: #ffffff;
+    border: 1px solid #e5ebe7;
+    border-radius: 10px;
+}
+
+.detail-progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 9px;
+}
+
+.detail-progress-header span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.detail-progress-header strong {
+    color: #0f5132;
+    font-size: 13px;
+}
+
+.detail-progress {
+    width: 100%;
+    height: 8px;
+    background: #e5ebe8;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.detail-progress-bar {
+    height: 100%;
+    background: #198754;
+    border-radius: 99px;
+    transition: width 0.3s ease;
+}
+
+.detail-status-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 14px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e5ebe7;
+    border-radius: 10px;
+}
+
+.detail-status-box span:first-child {
+    color: #64748b;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   DETAIL INFO
+===================================================== */
+
+.detail-payment-info {
+    margin-top: 18px;
+    padding: 16px 18px;
+    background: #f0fdf4;
+    border: 1px solid #dcfce7;
+    border-radius: 12px;
+}
+
+.detail-payment-info strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #166534;
+    font-size: 14px;
+}
+
+.detail-payment-info p {
+    margin: 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.detail-info-danger {
+    background: #fff1f2;
+    border-color: #fecdd3;
+}
+
+.detail-info-danger strong {
+    color: #b91c1c;
+}
+
+
+/* =====================================================
+   MODAL DETAIL PEMBAYARAN - HEADER
+===================================================== */
+
+.payment-detail-modal .payment-detail-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5ebe8;
+}
+
+.payment-detail-header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.payment-detail-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: #eaf7ef;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.payment-detail-modal .payment-detail-header h3 {
+    margin: 0;
+    color: #0f5132;
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.payment-detail-modal .payment-detail-header p {
+    margin: 6px 0 0;
+    color: #64748b;
+    font-size: 15px;
+}
+
+
+/* =====================================================
+   MODAL DETAIL PEMBAYARAN CONTENT
+===================================================== */
+
+.payment-detail-modal .payment-detail-modal-content {
+    width: min(1240px, calc(100vw - 40px));
+    max-width: 1240px;
+    height: min(900px, calc(100vh - 40px));
+    max-height: calc(100vh - 40px);
+    padding: 0;
+}
+
+.payment-detail-modal-content {
+    width: min(1240px, calc(100vw - 40px));
+    max-width: 1240px;
+    height: min(900px, calc(100vh - 40px));
+    max-height: calc(100vh - 40px);
+    padding: 0;
+}
+
+.payment-detail-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px 28px;
+    background: #ffffff;
+}
+
+.payment-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(390px, 0.95fr);
+    gap: 24px;
+    align-items: stretch;
+}
+
+.payment-detail-left {
+    min-width: 0;
+}
+
+.payment-detail-right {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =====================================================
+   DETAIL CARD KIRI
+===================================================== */
+
+.payment-detail-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 20px 20px;
+    background: #ffffff;
+    border: 1px solid #e2e9e5;
+    border-radius: 16px;
+}
+
+.payment-detail-card-title {
+    padding: 10px 0 8px;
+}
+
+.payment-detail-card-title h4 {
+    margin: 0;
+    color: #263238;
+    font-size: 20px;
+    font-weight: 650;
+}
+
+.payment-detail-row {
+    display: grid;
+    grid-template-columns: 205px minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+    min-height: 54px;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf2ef;
+}
+
+.payment-detail-row:last-of-type {
+    border-bottom: none;
+}
+
+.payment-detail-label {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.payment-detail-value {
+    color: #263238;
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.payment-amount {
+    color: #0b8a4a;
+    font-size: 18px;
+    font-weight: 750;
+}
+
+.payment-remaining {
+    color: #15803d;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   STATUS DETAIL
+===================================================== */
+
+.payment-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 82px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.payment-status-success {
+    background: #dcfce8;
+    color: #16803d;
+}
+
+.payment-status-pending {
+    background: #fff7d6;
+    color: #a16207;
+}
+
+.payment-status-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+
+/* =====================================================
+   INFO STATUS PEMBAYARAN
+===================================================== */
+
+.payment-info-box {
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 16px;
+    border-radius: 12px;
+}
+
+.payment-info-box strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.payment-info-box p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.payment-info-success {
+    background: #ecfdf3;
+    border: 1px solid #ccefd9;
+    color: #176b3a;
+}
+
+.payment-info-pending {
+    background: #fff9e8;
+    border: 1px solid #f5e4a9;
+    color: #8a6200;
+}
+
+.payment-info-danger {
+    background: #fff1f1;
+    border: 1px solid #f4cccc;
+    color: #a51d1d;
+}
+
+.payment-info-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: currentColor;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   CATATAN ADMIN
+===================================================== */
+
+.payment-admin-note {
+    margin-top: 15px;
+    padding: 15px 16px;
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 12px;
+}
+
+.payment-admin-note strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #9a3412;
+    font-size: 14px;
+}
+
+.payment-admin-note p {
+    margin: 0;
+    color: #7c2d12;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   BUKTI PEMBAYARAN
+===================================================== */
+
+.payment-proof-card {
+    min-width: 0;
+    padding: 20px;
+    background: #f7f9f8;
+    border: 1px solid #e1e9e5;
+    border-radius: 16px;
+}
+
+.payment-proof-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.payment-proof-header-icon {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: #e6f5ec;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-proof-header h4 {
+    margin: 0;
+    color: #263238;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.payment-proof-header p {
+    margin: 4px 0 0;
+    color: #718096;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   IMAGE BUKTI
+===================================================== */
+
+.payment-proof-image-wrapper {
+    width: 100%;
+    min-height: 370px;
+    box-sizing: border-box;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #dfe7e2;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.payment-proof-image-wrapper a {
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-proof-image {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 430px;
+    object-fit: contain;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.payment-proof-image:hover {
+    transform: scale(1.015);
+}
+
+
+/* =====================================================
+   BUKTI KOSONG
+===================================================== */
+
+.payment-proof-empty {
+    min-height: 300px;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px dashed #cbd5d0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+}
+
+.payment-proof-empty-icon {
+    font-size: 42px;
+    margin-bottom: 5px;
+}
+
+.payment-proof-empty strong {
+    color: #475569;
+    font-size: 15px;
+}
+
+.payment-proof-empty span {
+    color: #718096;
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   TOMBOL BUKTI
+===================================================== */
+
+.proof-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.btn-proof {
+    min-height: 44px;
+    padding: 10px 14px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-proof-view {
+    background: #ffffff;
+    color: #334155;
+    border: 1px solid #d8e1dc;
+}
+
+.btn-proof-view:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    transform: translateY(-1px);
+}
+
+.btn-proof-download {
+    background: #0f5132;
+    color: #ffffff;
+    border: 1px solid #0f5132;
+}
+
+.btn-proof-download:hover {
+    background: #0b3d26;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15, 81, 50, 0.18);
+}
+
+.btn-proof-pdf {
+    grid-column: 1 / -1;
+    background: #eaf7ef;
+    color: #0f5132;
+    border: 1px solid #c5dfcf;
+}
+
+.btn-proof-pdf:hover {
+    background: #dff2e7;
+    color: #0b3d26;
+    transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   RINGKASAN SAMPING
+===================================================== */
+
+.payment-side-summary {
+    padding: 18px 20px;
+    background: #ffffff;
+    border: 1px solid #e1e9e5;
+    border-radius: 15px;
+}
+
+.payment-side-summary-title {
+    margin-bottom: 12px;
+    color: #173b2b;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.payment-side-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #edf2ef;
+}
+
+.payment-side-summary-row:last-child {
+    border-bottom: none;
+}
+
+.payment-side-summary-row span {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.payment-side-summary-row strong {
+    color: #263238;
+    font-size: 14px;
+}
+
+.payment-side-summary-remaining {
+    margin-top: 4px;
+    padding: 12px;
+    background: #ecfdf3;
+    border: none;
+    border-radius: 9px;
+}
+
+.payment-side-summary-remaining span {
+    color: #166534;
+    font-weight: 600;
+}
+
+.payment-side-summary-remaining strong {
+    color: #15803d;
+    font-size: 15px;
+}
+
+
+/* =====================================================
+   MODAL FOOTER
+===================================================== */
+
+.detail-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 30px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+.btn-detail-tutup {
+    min-width: 120px;
+    padding: 11px 22px;
+    border: none;
+    border-radius: 10px;
+    background: #0f5132;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-detail-tutup:hover {
+    background: #0b3d26;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(15, 81, 50, 0.18);
+}
+
+
+/* =====================================================
+   RESPONSIVE 900
 ===================================================== */
 
 @media (max-width: 900px) {
@@ -342,8 +1383,155 @@
     .summary {
         grid-template-columns: 1fr;
     }
+
+    .detail-pembayaran-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-pembayaran-right {
+        order: 2;
+    }
+
+    .detail-pembayaran-left {
+        order: 1;
+    }
+
+    .payment-detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-detail-right {
+        order: 2;
+    }
+
+    .payment-detail-left {
+        order: 1;
+    }
+
+    .payment-proof-image-wrapper {
+        min-height: 300px;
+    }
+
 }
 
+
+/* =====================================================
+   RESPONSIVE 700
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .detail-modal {
+        padding: 12px;
+    }
+
+    .detail-modal-content {
+        width: calc(100vw - 24px);
+        max-height: calc(100vh - 24px);
+        border-radius: 14px;
+    }
+
+    .detail-modal-header {
+        padding: 17px 18px;
+    }
+
+    .detail-modal-header h3 {
+        font-size: 19px;
+    }
+
+    .detail-modal-body {
+        padding: 18px;
+    }
+
+    .detail-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 12px 0;
+    }
+
+    .detail-item span:first-child {
+        font-size: 12px;
+    }
+
+    .detail-item strong {
+        font-size: 14px;
+    }
+
+    .detail-modal-footer {
+        padding: 14px 18px;
+    }
+
+    .btn-detail-tutup {
+        width: 100%;
+    }
+
+    .detail-pembayaran-left,
+    .detail-pembayaran-right {
+        padding: 16px;
+    }
+
+    .payment-detail-modal-content {
+        width: calc(100vw - 24px);
+        height: calc(100vh - 24px);
+        max-height: calc(100vh - 24px);
+    }
+
+    .payment-detail-modal .payment-detail-header {
+        padding: 17px 18px;
+    }
+
+    .payment-detail-modal .payment-detail-header h3 {
+        font-size: 21px;
+    }
+
+    .payment-detail-modal .payment-detail-header p {
+        font-size: 12px;
+    }
+
+    .payment-detail-body {
+        padding: 18px;
+    }
+
+    .payment-detail-card {
+        padding: 8px 15px 17px;
+    }
+
+    .payment-detail-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        padding: 11px 0;
+    }
+
+    .payment-detail-label {
+        font-size: 12px;
+    }
+
+    .payment-detail-value {
+        font-size: 14px;
+    }
+
+    .payment-proof-card {
+        padding: 15px;
+    }
+
+    .payment-proof-image-wrapper {
+        min-height: 280px;
+    }
+
+    .payment-proof-image-wrapper a {
+        min-height: 250px;
+    }
+
+    .payment-proof-image {
+        max-height: 300px;
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE 600
+===================================================== */
 
 @media (max-width: 600px) {
 
@@ -371,4 +1559,145 @@
     .summary-card strong {
         font-size: 21px;
     }
+
+    .payment-tabs {
+        overflow-x: auto;
+    }
+
+    .payment-tab {
+        padding: 11px 15px;
+        white-space: nowrap;
+    }
+
+    .proof-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-proof {
+        width: 100%;
+    }
+
+    .btn-proof-pdf {
+        grid-column: auto;
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE 480
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .detail-modal-header {
+        padding: 15px;
+    }
+
+    .detail-modal-body {
+        padding: 15px;
+    }
+
+    .detail-modal-footer {
+        padding: 13px 15px;
+    }
+
+    .detail-modal-close {
+        width: 34px;
+        height: 34px;
+        font-size: 22px;
+    }
+
+    .detail-modal-header h3 {
+        font-size: 17px;
+    }
+
+    .detail-modal-header p {
+        font-size: 12px;
+    }
+
+    .detail-header-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .detail-payment-info {
+        padding: 14px;
+    }
+
+    .payment-proof-image-wrapper {
+        min-height: 230px;
+        padding: 8px;
+    }
+
+    .payment-proof-image-wrapper a {
+        min-height: 210px;
+    }
+
+    .payment-proof-image {
+        max-height: 240px;
+    }
+
+    .detail-pembayaran-left,
+    .detail-pembayaran-right {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .detail-pembayaran-right-title {
+        font-size: 15px;
+    }
+
+    .payment-detail-modal .payment-detail-header {
+        padding: 14px 15px;
+    }
+
+    .payment-detail-header-left {
+        gap: 10px;
+    }
+
+    .payment-detail-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .payment-detail-modal .payment-detail-header h3 {
+        font-size: 17px;
+    }
+
+    .payment-detail-modal .payment-detail-header p {
+        font-size: 11px;
+    }
+
+    .payment-detail-body {
+        padding: 15px;
+    }
+
+    .payment-detail-card {
+        padding: 8px 13px 15px;
+        border-radius: 12px;
+    }
+
+    .payment-proof-card {
+        padding: 13px;
+        border-radius: 12px;
+    }
+
+    .payment-proof-header h4 {
+        font-size: 16px;
+    }
+
+    .payment-proof-header p {
+        font-size: 11px;
+    }
+
+    .payment-side-summary {
+        padding: 15px;
+    }
+
+    .payment-info-box {
+        padding: 13px;
+    }
+
 }
