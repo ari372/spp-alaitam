@@ -13,35 +13,63 @@
     {{-- HEADER --}}
     <div class="koreksi-header">
 
-        <div>
-            <h2>
-                Koreksi Pembayaran
-            </h2>
+        <div class="koreksi-header-content">
 
-            <p>
-                Periksa bukti pembayaran dan tentukan nominal pembayaran
-                sebelum pembayaran disetujui.
-            </p>
+            <div class="koreksi-header-icon">
+                <i data-lucide="pencil"></i>
+            </div>
+
+            <div>
+                <h2>
+                    Koreksi Pembayaran
+                </h2>
+
+                <p>
+                    Periksa detail pembayaran dan sesuaikan nominal
+                    berdasarkan bukti pembayaran.
+                </p>
+            </div>
+
         </div>
+
+        <a
+            href="{{ route('admin.pembayaran.index') }}"
+            class="koreksi-header-back"
+        >
+            <i data-lucide="arrow-left"></i>
+            Kembali
+        </a>
 
     </div>
 
 
-    {{-- ERROR SESSION --}}
+    {{-- ALERT ERROR --}}
     @if(session('error'))
 
         <div class="pembayaran-alert pembayaran-alert-error">
-            {{ session('error') }}
+
+            <i data-lucide="circle-alert"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
         </div>
 
     @endif
 
 
-    {{-- SUCCESS SESSION --}}
+    {{-- ALERT SUCCESS --}}
     @if(session('success'))
 
         <div class="pembayaran-alert pembayaran-alert-success">
-            {{ session('success') }}
+
+            <i data-lucide="circle-check"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
         </div>
 
     @endif
@@ -52,27 +80,30 @@
 
         <div class="pembayaran-alert pembayaran-alert-error">
 
-            <ul style="margin: 0 0 0 18px;">
+            <i data-lucide="triangle-alert"></i>
 
-                @foreach($errors->all() as $error)
+            <div>
 
-                    <li>
-                        {{ $error }}
-                    </li>
+                <strong>
+                    Terdapat kesalahan:
+                </strong>
 
-                @endforeach
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>
+                            {{ $error }}
+                        </li>
+                    @endforeach
+                </ul>
 
-            </ul>
+            </div>
 
         </div>
 
     @endif
 
 
-    {{-- =========================================
-         INFORMASI + BUKTI
-    ========================================== --}}
-
+    {{-- INFORMASI + BUKTI --}}
     <div class="koreksi-grid">
 
 
@@ -81,19 +112,21 @@
 
             <div class="koreksi-card-header">
 
-                <div class="koreksi-icon">
-                    💳
-                </div>
+                <div class="koreksi-card-title">
 
-                <div>
+                    <div class="koreksi-icon">
+                        <i data-lucide="clipboard-list"></i>
+                    </div>
 
-                    <h3>
-                        Informasi Pembayaran
-                    </h3>
+                    <div>
+                        <h3>
+                            Informasi Pembayaran
+                        </h3>
 
-                    <p>
-                        Data pembayaran dari orang tua
-                    </p>
+                        <p>
+                            Detail pembayaran dari orang tua
+                        </p>
+                    </div>
 
                 </div>
 
@@ -107,6 +140,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="user-round"></i>
                         Nama Siswa
                     </span>
 
@@ -121,6 +155,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="badge"></i>
                         NIS
                     </span>
 
@@ -135,6 +170,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="calendar-days"></i>
                         Tahun Ajaran
                     </span>
 
@@ -149,6 +185,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="tag"></i>
                         Kategori
                     </span>
 
@@ -163,6 +200,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="receipt"></i>
                         Total Tagihan
                     </span>
 
@@ -184,6 +222,7 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="circle-check"></i>
                         Sudah Dibayar
                     </span>
 
@@ -205,6 +244,7 @@
                 <div class="koreksi-detail-item koreksi-sisa">
 
                     <span class="koreksi-label">
+                        <i data-lucide="wallet"></i>
                         Sisa Tagihan
                     </span>
 
@@ -226,24 +266,26 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="wallet-cards"></i>
                         Metode Pembayaran
                     </span>
 
                     <strong class="koreksi-value">
 
-                        {{ strtoupper(
-                            $pembayaran->metode ?? '-'
-                        ) }}
+                        <span class="metode-badge">
+                            {{ strtoupper($pembayaran->metode ?? '-') }}
+                        </span>
 
                     </strong>
 
                 </div>
 
 
-                {{-- TANGGAL --}}
+                {{-- WAKTU --}}
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+                        <i data-lucide="clock"></i>
                         Waktu Pengiriman
                     </span>
 
@@ -258,6 +300,7 @@
 
                 </div>
 
+
             </div>
 
         </div>
@@ -268,19 +311,21 @@
 
             <div class="koreksi-card-header">
 
-                <div class="koreksi-icon">
-                    🧾
-                </div>
+                <div class="koreksi-card-title">
 
-                <div>
+                    <div class="koreksi-icon">
+                        <i data-lucide="image"></i>
+                    </div>
 
-                    <h3>
-                        Bukti Pembayaran
-                    </h3>
+                    <div>
+                        <h3>
+                            Bukti Pembayaran
+                        </h3>
 
-                    <p>
-                        Periksa nominal pada bukti pembayaran
-                    </p>
+                        <p>
+                            Periksa bukti yang dikirim orang tua
+                        </p>
+                    </div>
 
                 </div>
 
@@ -291,14 +336,19 @@
 
                 @if($pembayaran->bukti_pembayaran)
 
-                    <img
-                        src="{{ asset(
-                            'storage/' .
-                            $pembayaran->bukti_pembayaran
-                        ) }}"
-                        alt="Bukti pembayaran"
-                        class="koreksi-bukti-image"
-                    >
+                    <div class="koreksi-bukti-image-wrapper">
+
+                        <img
+                            src="{{ asset(
+                                'storage/' .
+                                $pembayaran->bukti_pembayaran
+                            ) }}"
+                            alt="Bukti pembayaran"
+                            class="koreksi-bukti-image"
+                        >
+
+                    </div>
+
 
                     <a
                         href="{{ asset(
@@ -308,20 +358,25 @@
                         target="_blank"
                         class="koreksi-btn-bukti"
                     >
-                        🔍 Lihat Bukti Lebih Besar
+                        <i data-lucide="maximize-2"></i>
+                        Lihat Bukti Lebih Besar
                     </a>
 
                 @else
 
                     <div class="koreksi-bukti-empty">
 
-                        <div>
-                            📄
+                        <div class="koreksi-bukti-empty-icon">
+                            <i data-lucide="image-off"></i>
                         </div>
 
-                        <p>
-                            Bukti pembayaran tidak tersedia.
-                        </p>
+                        <strong>
+                            Bukti pembayaran tidak tersedia
+                        </strong>
+
+                        <span>
+                            Tidak ada file bukti pembayaran.
+                        </span>
 
                     </div>
 
@@ -334,37 +389,32 @@
     </div>
 
 
-    {{-- =========================================
-         FORM KOREKSI
-    ========================================== --}}
-
+    {{-- FORM KOREKSI --}}
     <div class="koreksi-form-card">
 
-
-        {{-- FORM HEADER --}}
         <div class="koreksi-form-header">
 
-            <div class="koreksi-icon">
-                ✏️
-            </div>
+            <div class="koreksi-card-title">
 
-            <div>
+                <div class="koreksi-icon">
+                    <i data-lucide="pencil-line"></i>
+                </div>
 
-                <h3>
-                    Koreksi Data Pembayaran
-                </h3>
+                <div>
+                    <h3>
+                        Koreksi Data Pembayaran
+                    </h3>
 
-                <p>
-                    Masukkan nominal sesuai dengan bukti pembayaran
-                    yang telah diperiksa.
-                </p>
+                    <p>
+                        Masukkan nominal sesuai dengan bukti pembayaran.
+                    </p>
+                </div>
 
             </div>
 
         </div>
 
 
-        {{-- FORM --}}
         <form
             action="{{ route(
                 'admin.pembayaran.update',
@@ -385,13 +435,11 @@
                     for="nominal"
                     class="koreksi-form-label"
                 >
-
                     Nominal Pembayaran
 
                     <span class="koreksi-required">
                         *
                     </span>
-
                 </label>
 
 
@@ -424,14 +472,12 @@
                     Maksimal nominal yang dapat dicatat:
 
                     <strong>
-
                         Rp {{ number_format(
                             $sisaTagihan,
                             0,
                             ',',
                             '.'
                         ) }}
-
                     </strong>
 
                 </small>
@@ -439,20 +485,18 @@
             </div>
 
 
-            {{-- METODE PEMBAYARAN --}}
+            {{-- METODE --}}
             <div class="koreksi-form-group">
 
                 <label
                     for="metode"
                     class="koreksi-form-label"
                 >
-
                     Metode Pembayaran
 
                     <span class="koreksi-required">
                         *
                     </span>
-
                 </label>
 
 
@@ -504,7 +548,7 @@
             <div class="koreksi-info">
 
                 <div class="koreksi-info-icon">
-                    ℹ
+                    <i data-lucide="info"></i>
                 </div>
 
                 <div>
@@ -514,14 +558,11 @@
                     </strong>
 
                     <p>
-
                         Pastikan nominal yang dimasukkan sesuai dengan
                         jumlah yang terlihat pada bukti pembayaran.
-
                         Setelah dikoreksi, pembayaran tetap berstatus
                         <strong>Menunggu Persetujuan</strong>
                         sampai admin menyetujuinya.
-
                     </p>
 
                 </div>
@@ -532,22 +573,21 @@
             {{-- ACTION --}}
             <div class="koreksi-actions">
 
-
-                {{-- KEMBALI --}}
                 <a
                     href="{{ route('admin.pembayaran.index') }}"
                     class="koreksi-btn koreksi-btn-back"
                 >
-                    ← Kembali
+                    <i data-lucide="arrow-left"></i>
+                    Kembali
                 </a>
 
 
-                {{-- SIMPAN --}}
                 <button
                     type="submit"
                     class="koreksi-btn koreksi-btn-save"
                 >
-                    ✓ Simpan Koreksi
+                    <i data-lucide="save"></i>
+                    Simpan Koreksi
                 </button>
 
             </div>
@@ -557,5 +597,15 @@
     </div>
 
 </div>
+
+
+{{-- LUCIDE --}}
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        lucide.createIcons();
+    });
+</script>
 
 @endsection
