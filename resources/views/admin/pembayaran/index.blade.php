@@ -20,7 +20,8 @@
             </h2>
 
             <p>
-                Periksa dan proses pembayaran yang dikirim oleh orang tua siswa.
+                Periksa bukti pembayaran dan proses pembayaran
+                yang dikirim oleh orang tua siswa.
             </p>
         </div>
 
@@ -67,9 +68,11 @@
             <div class="pembayaran-card-header">
 
                 <div>
+
                     <h3>
                         Pembayaran Baru
                     </h3>
+
                 </div>
 
                 <span class="pembayaran-status">
@@ -82,6 +85,7 @@
             {{-- INFORMASI --}}
 
             <div class="pembayaran-info">
+
 
                 {{-- SISWA --}}
 
@@ -137,7 +141,24 @@
                     </span>
 
                     <span class="pembayaran-info-value">
-                        Rp {{ number_format($item->nominal, 0, ',', '.') }}
+
+                        @if($item->nominal !== null)
+
+                            Rp {{ number_format(
+                                $item->nominal,
+                                0,
+                                ',',
+                                '.'
+                            ) }}
+
+                        @else
+
+                            <span class="nominal-belum">
+                                Belum ditentukan
+                            </span>
+
+                        @endif
+
                     </span>
 
                 </div>
@@ -152,7 +173,17 @@
                     </span>
 
                     <span class="pembayaran-info-value">
-                        {{ strtoupper($item->metode) }}
+
+                        @if($item->metode)
+
+                            {{ strtoupper($item->metode) }}
+
+                        @else
+
+                            -
+
+                        @endif
+
                     </span>
 
                 </div>
@@ -188,6 +219,7 @@
                     Bukti Pembayaran
                 </h4>
 
+
                 @if($item->bukti_pembayaran)
 
                     <img
@@ -210,10 +242,27 @@
 
             <div class="pembayaran-actions">
 
+
+                {{-- KOREKSI PEMBAYARAN --}}
+
+                <a
+                    href="{{ route(
+                        'admin.pembayaran.edit',
+                        $item->id
+                    ) }}"
+                    class="pembayaran-btn pembayaran-btn-koreksi"
+                >
+                    ✏ Koreksi Pembayaran
+                </a>
+
+
                 {{-- SETUJUI --}}
 
                 <form
-                    action="{{ route('admin.pembayaran.setujui', $item->id) }}"
+                    action="{{ route(
+                        'admin.pembayaran.setujui',
+                        $item->id
+                    ) }}"
                     method="POST"
                 >
 
@@ -224,7 +273,9 @@
                     <button
                         type="submit"
                         class="pembayaran-btn pembayaran-btn-setujui"
-                        onclick="return confirm('Yakin pembayaran ini benar dan ingin menyetujuinya?')"
+                        onclick="return confirm(
+                            'Yakin pembayaran ini benar dan ingin menyetujuinya?'
+                        )"
                     >
                         ✓ Setujui Pembayaran
                     </button>
@@ -235,7 +286,10 @@
                 {{-- TOLAK --}}
 
                 <form
-                    action="{{ route('admin.pembayaran.tolak', $item->id) }}"
+                    action="{{ route(
+                        'admin.pembayaran.tolak',
+                        $item->id
+                    ) }}"
                     method="POST"
                     class="pembayaran-tolak-form"
                 >
@@ -244,16 +298,20 @@
 
                     @method('PATCH')
 
+
                     <textarea
                         name="catatan"
                         placeholder="Alasan penolakan..."
                         required
                     ></textarea>
 
+
                     <button
                         type="submit"
                         class="pembayaran-btn pembayaran-btn-tolak"
-                        onclick="return confirm('Yakin ingin menolak pembayaran ini?')"
+                        onclick="return confirm(
+                            'Yakin ingin menolak pembayaran ini?'
+                        )"
                     >
                         ✕ Tolak Pembayaran
                     </button>
@@ -263,6 +321,7 @@
             </div>
 
         </div>
+
 
     @empty
 

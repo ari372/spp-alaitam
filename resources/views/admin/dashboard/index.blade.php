@@ -10,8 +10,6 @@
 
 @section('content')
 
-
-
 {{-- =========================================================
      HEADER
 ========================================================= --}}
@@ -19,7 +17,7 @@
 <div class="dashboard-header">
 
     <h2>
-        Selamat Datang, Admin 👋
+        Selamat Datang, Admin
     </h2>
 
     <p>
@@ -40,7 +38,7 @@
     <div class="stat-card">
 
         <div class="stat-icon">
-            👨‍🎓
+            <i data-lucide="users"></i>
         </div>
 
         <div class="stat-title">
@@ -59,7 +57,7 @@
     <div class="stat-card">
 
         <div class="stat-icon">
-            👨‍👩‍👧
+            <i data-lucide="user-round"></i>
         </div>
 
         <div class="stat-title">
@@ -78,7 +76,7 @@
     <div class="stat-card">
 
         <div class="stat-icon">
-            🧾
+            <i data-lucide="receipt"></i>
         </div>
 
         <div class="stat-title">
@@ -86,10 +84,7 @@
         </div>
 
         <div class="stat-value">
-
-            Rp
-            {{ number_format($totalTagihan, 0, ',', '.') }}
-
+            Rp {{ number_format($totalTagihan, 0, ',', '.') }}
         </div>
 
     </div>
@@ -100,7 +95,7 @@
     <div class="stat-card">
 
         <div class="stat-icon">
-            💰
+            <i data-lucide="wallet"></i>
         </div>
 
         <div class="stat-title">
@@ -108,10 +103,7 @@
         </div>
 
         <div class="stat-value">
-
-            Rp
-            {{ number_format($totalPembayaran, 0, ',', '.') }}
-
+            Rp {{ number_format($totalPembayaran, 0, ',', '.') }}
         </div>
 
     </div>
@@ -131,7 +123,11 @@
     <div class="status-card">
 
         <h4>
-            🟢 Lunas
+
+            <i data-lucide="circle-check"></i>
+
+            Lunas
+
         </h4>
 
         <div class="status-content">
@@ -154,7 +150,11 @@
     <div class="status-card">
 
         <h4>
-            🟡 Belum Lunas
+
+            <i data-lucide="clock-3"></i>
+
+            Belum Lunas
+
         </h4>
 
         <div class="status-content">
@@ -177,7 +177,11 @@
     <div class="status-card">
 
         <h4>
-            🔴 Terlambat
+
+            <i data-lucide="triangle-alert"></i>
+
+            Terlambat
+
         </h4>
 
         <div class="status-content">
@@ -209,7 +213,11 @@
     <div class="card">
 
         <h3>
-            📊 Grafik Pembayaran
+
+            <i data-lucide="chart-column"></i>
+
+            Grafik Pembayaran
+
         </h3>
 
         <div class="chart-container">
@@ -226,7 +234,11 @@
     <div class="card">
 
         <h3>
-            🔔 Menunggu Persetujuan
+
+            <i data-lucide="bell"></i>
+
+            Menunggu Persetujuan
+
         </h3>
 
         <div class="approval-number">
@@ -234,11 +246,11 @@
         </div>
 
         <div class="approval-text">
-            pembayaran menunggu persetujuan admin.
+            Pembayaran menunggu persetujuan admin.
         </div>
 
         <a
-            href="{{ route('admin.pembayaran.notifikasi') }}"
+            href="{{ route('admin.pembayaran.index') }}"
             class="btn btn-green"
         >
             Lihat Pembayaran
@@ -256,7 +268,11 @@
 <div class="card summary-card">
 
     <h3>
-        📋 Ringkasan Tagihan
+
+        <i data-lucide="clipboard-list"></i>
+
+        Ringkasan Tagihan
+
     </h3>
 
 
@@ -267,10 +283,7 @@
         </span>
 
         <span class="summary-value">
-
-            Rp
-            {{ number_format($totalTagihan, 0, ',', '.') }}
-
+            Rp {{ number_format($totalTagihan, 0, ',', '.') }}
         </span>
 
     </div>
@@ -283,10 +296,7 @@
         </span>
 
         <span class="summary-value">
-
-            Rp
-            {{ number_format($totalPembayaran, 0, ',', '.') }}
-
+            Rp {{ number_format($totalPembayaran, 0, ',', '.') }}
         </span>
 
     </div>
@@ -299,10 +309,7 @@
         </span>
 
         <span class="summary-value">
-
-            Rp
-            {{ number_format($sisaTagihan, 0, ',', '.') }}
-
+            Rp {{ number_format($sisaTagihan, 0, ',', '.') }}
         </span>
 
     </div>
@@ -317,8 +324,13 @@
 <div class="card payment-card">
 
     <h3>
-        💳 Pembayaran Terbaru
+
+        <i data-lucide="credit-card"></i>
+
+        Pembayaran Terbaru
+
     </h3>
+
 
     <div class="table-wrapper">
 
@@ -364,35 +376,47 @@
                         </td>
 
                         <td>
-
-                            Rp
-                            {{ number_format(
-                                $item->nominal,
+                            Rp {{ number_format(
+                                $item->nominal ?? 0,
                                 0,
                                 ',',
                                 '.'
                             ) }}
-
                         </td>
 
                         <td>
 
-                            @if($item->status === 'disetujui' || $item->status === 'dibayar')
+                            @if(
+                                $item->status === 'disetujui' ||
+                                $item->status === 'dibayar'
+                            )
 
                                 <span class="badge badge-success">
+
+                                    <i data-lucide="circle-check"></i>
+
                                     Disetujui
+
                                 </span>
 
                             @elseif($item->status === 'menunggu')
 
                                 <span class="badge badge-warning">
+
+                                    <i data-lucide="clock-3"></i>
+
                                     Menunggu
+
                                 </span>
 
                             @else
 
                                 <span class="badge badge-danger">
+
+                                    <i data-lucide="circle-x"></i>
+
                                     Ditolak
+
                                 </span>
 
                             @endif
@@ -408,9 +432,9 @@
                         <td
                             colspan="4"
                             style="
-                                text-align:center;
-                                padding:30px;
-                                color:#777;
+                                text-align: center;
+                                padding: 30px;
+                                color: #777;
                             "
                         >
                             Belum ada pembayaran.
@@ -436,8 +460,13 @@
 <div class="card quick-card">
 
     <h3>
-        ⚡ Aksi Cepat
+
+        <i data-lucide="zap"></i>
+
+        Aksi Cepat
+
     </h3>
+
 
     <div class="quick-actions">
 
@@ -445,7 +474,11 @@
             href="{{ route('admin.siswa.create') }}"
             class="quick-action"
         >
-            ➕ Tambah Siswa
+
+            <i data-lucide="user-plus"></i>
+
+            Tambah Siswa
+
         </a>
 
 
@@ -453,7 +486,11 @@
             href="{{ route('admin.tagihan.create') }}"
             class="quick-action"
         >
-            🧾 Buat Tagihan
+
+            <i data-lucide="file-plus-2"></i>
+
+            Buat Tagihan
+
         </a>
 
 
@@ -461,12 +498,29 @@
             href="{{ route('admin.laporan.index') }}"
             class="quick-action"
         >
-            📊 Laporan
+
+            <i data-lucide="file-chart-column"></i>
+
+            Laporan
+
         </a>
 
     </div>
 
 </div>
+
+
+{{-- =========================================================
+     LUCIDE ICON
+========================================================= --}}
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+
+    lucide.createIcons();
+
+</script>
 
 
 {{-- =========================================================

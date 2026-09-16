@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrangTua;
-use App\Models\Tagihan;
 use App\Models\PembayaranTagihan;
+use App\Models\Tagihan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,19 +37,19 @@ class PembayaranOrangTuaController extends Controller
             'siswa_id',
             $tagihan->siswa_id
         )
-        ->where(
-            'tahun_ajaran_id',
-            $tagihan->tahun_ajaran_id
-        )
-        ->whereHas('kategori', function ($query) {
+            ->where(
+                'tahun_ajaran_id',
+                $tagihan->tahun_ajaran_id
+            )
+            ->whereHas('kategori', function ($query) {
 
-            $query->whereRaw(
-                'LOWER(TRIM(nama)) = ?',
-                ['spp']
-            );
+                $query->whereRaw(
+                    'LOWER(TRIM(nama)) = ?',
+                    ['spp']
+                );
 
-        })
-        ->first();
+            })
+            ->first();
     }
 
 
@@ -64,11 +64,11 @@ class PembayaranOrangTuaController extends Controller
             'tagihan_id',
             $spp->id
         )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui'
-        ])
-        ->sum('nominal');
+            ->whereIn('status', [
+                'dibayar',
+                'disetujui',
+            ])
+            ->sum('nominal');
     }
 
 
@@ -111,7 +111,6 @@ class PembayaranOrangTuaController extends Controller
             ->exists();
 
         if (!$milikOrangTua) {
-
             abort(
                 403,
                 'Anda tidak memiliki akses ke tagihan ini.'
@@ -129,7 +128,7 @@ class PembayaranOrangTuaController extends Controller
             'siswa',
             'tahunAjaran',
             'kategori',
-            'pembayaran'
+            'pembayaran',
         ]);
 
 
@@ -142,7 +141,7 @@ class PembayaranOrangTuaController extends Controller
         $totalDibayar = $tagihan->pembayaran
             ->whereIn('status', [
                 'dibayar',
-                'disetujui'
+                'disetujui',
             ])
             ->sum('nominal');
 
@@ -167,7 +166,6 @@ class PembayaranOrangTuaController extends Controller
         */
 
         if ($sisaTagihan <= 0) {
-
             return redirect()
                 ->route('orangtua.dashboard')
                 ->with(
@@ -191,7 +189,6 @@ class PembayaranOrangTuaController extends Controller
             ->count();
 
         if ($sedangDiproses > 0) {
-
             return redirect()
                 ->route('orangtua.dashboard')
                 ->with(
@@ -221,7 +218,6 @@ class PembayaranOrangTuaController extends Controller
             */
 
             if (!$spp) {
-
                 return redirect()
                     ->route('orangtua.dashboard')
                     ->with(
@@ -262,7 +258,6 @@ class PembayaranOrangTuaController extends Controller
             */
 
             if ($sisaSPP > 0) {
-
                 return redirect()
                     ->route('orangtua.dashboard')
                     ->with(
@@ -311,7 +306,6 @@ class PembayaranOrangTuaController extends Controller
         $orangTua = $user->orangTua;
 
         if (!$orangTua) {
-
             abort(
                 404,
                 'Data orang tua tidak ditemukan.'
@@ -333,7 +327,6 @@ class PembayaranOrangTuaController extends Controller
             ->exists();
 
         if (!$milikOrangTua) {
-
             abort(
                 403,
                 'Anda tidak memiliki akses ke tagihan ini.'
@@ -345,26 +338,23 @@ class PembayaranOrangTuaController extends Controller
         |--------------------------------------------------------------------------
         | VALIDASI
         |--------------------------------------------------------------------------
+        | Orang tua hanya mengirim metode pembayaran dan bukti.
+        | Nominal akan ditentukan oleh admin melalui fitur koreksi.
+        |--------------------------------------------------------------------------
         */
 
         $validated = $request->validate([
 
-            'nominal' => [
-                'required',
-                'numeric',
-                'min:1'
-            ],
-
             'metode' => [
                 'required',
-                'in:transfer,qris'
+                'in:transfer,qris',
             ],
 
             'bukti_pembayaran' => [
                 'required',
                 'image',
                 'mimes:jpg,jpeg,png',
-                'max:2048'
+                'max:2048',
             ],
 
         ]);
@@ -380,7 +370,7 @@ class PembayaranOrangTuaController extends Controller
             'siswa',
             'tahunAjaran',
             'kategori',
-            'pembayaran'
+            'pembayaran',
         ]);
 
 
@@ -394,11 +384,11 @@ class PembayaranOrangTuaController extends Controller
             'tagihan_id',
             $tagihan->id
         )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui'
-        ])
-        ->sum('nominal');
+            ->whereIn('status', [
+                'dibayar',
+                'disetujui',
+            ])
+            ->sum('nominal');
 
 
         /*
@@ -421,31 +411,10 @@ class PembayaranOrangTuaController extends Controller
         */
 
         if ($sisaTagihan <= 0) {
-
             return back()
                 ->with(
                     'error',
                     'Tagihan sudah lunas.'
-                );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOMINAL TIDAK BOLEH MELEBIHI SISA
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            (float) $validated['nominal']
-            > $sisaTagihan
-        ) {
-
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Nominal pembayaran melebihi sisa tagihan.'
                 );
         }
 
@@ -460,14 +429,13 @@ class PembayaranOrangTuaController extends Controller
             'tagihan_id',
             $tagihan->id
         )
-        ->where(
-            'status',
-            'menunggu'
-        )
-        ->exists();
+            ->where(
+                'status',
+                'menunggu'
+            )
+            ->exists();
 
         if ($menunggu) {
-
             return back()
                 ->with(
                     'error',
@@ -496,7 +464,6 @@ class PembayaranOrangTuaController extends Controller
             */
 
             if (!$spp) {
-
                 return back()
                     ->with(
                         'error',
@@ -536,7 +503,6 @@ class PembayaranOrangTuaController extends Controller
             */
 
             if ($sisaSPP > 0) {
-
                 return back()
                     ->with(
                         'error',
@@ -566,6 +532,9 @@ class PembayaranOrangTuaController extends Controller
         |--------------------------------------------------------------------------
         | SIMPAN PEMBAYARAN
         |--------------------------------------------------------------------------
+        | Nominal sengaja NULL.
+        | Admin akan menentukan nominal melalui Koreksi Pembayaran.
+        |--------------------------------------------------------------------------
         */
 
         PembayaranTagihan::create([
@@ -574,7 +543,7 @@ class PembayaranOrangTuaController extends Controller
 
             'user_id' => $user->id,
 
-            'nominal' => $validated['nominal'],
+            'nominal' => null,
 
             'metode' => $validated['metode'],
 
@@ -601,42 +570,99 @@ class PembayaranOrangTuaController extends Controller
             );
     }
 
-    public function downloadBukti(PembayaranTagihan $pembayaran)
-{
-    $user = Auth::user();
 
-    $orangTua = OrangTua::where('user_id', $user->id)->first();
-
-    if (!$orangTua) {
-        abort(403, 'Data orang tua tidak ditemukan.');
-    }
-
-    $pembayaran->load([
-        'tagihan.siswa.kelas',
-        'tagihan.kategori',
-        'tagihan.tahunAjaran',
-    ]);
-
-    if (!$pembayaran->tagihan) {
-        abort(404, 'Tagihan pembayaran tidak ditemukan.');
-    }
-
-    if (
-        !$pembayaran->tagihan->siswa ||
-        $pembayaran->tagihan->siswa->orang_tua_id != $orangTua->id
+    /**
+     * ============================================================
+     * DOWNLOAD BUKTI PEMBAYARAN PDF
+     * ============================================================
+     */
+    public function downloadBukti(
+        PembayaranTagihan $pembayaran
     ) {
-        abort(403, 'Anda tidak memiliki akses ke pembayaran ini.');
+        $user = Auth::user();
+
+        $orangTua = OrangTua::where(
+            'user_id',
+            $user->id
+        )->first();
+
+        if (!$orangTua) {
+            abort(
+                403,
+                'Data orang tua tidak ditemukan.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOAD RELASI
+        |--------------------------------------------------------------------------
+        */
+
+        $pembayaran->load([
+            'tagihan.siswa.kelas',
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK TAGIHAN
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$pembayaran->tagihan) {
+            abort(
+                404,
+                'Tagihan pembayaran tidak ditemukan.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK HAK AKSES
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            !$pembayaran->tagihan->siswa ||
+            $pembayaran->tagihan->siswa->orang_tua_id != $orangTua->id
+        ) {
+            abort(
+                403,
+                'Anda tidak memiliki akses ke pembayaran ini.'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUAT PDF
+        |--------------------------------------------------------------------------
+        */
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+            'orangtua.pembayaran.bukti-pdf',
+            compact('pembayaran')
+        );
+
+        $pdf->setPaper(
+            'A4',
+            'portrait'
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD
+        |--------------------------------------------------------------------------
+        */
+
+        return $pdf->download(
+            'bukti-pembayaran-' . $pembayaran->id . '.pdf'
+        );
     }
-
-    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
-        'orangtua.pembayaran.bukti-pdf',
-        compact('pembayaran')
-    );
-
-    $pdf->setPaper('A4', 'portrait');
-
-    return $pdf->download(
-        'bukti-pembayaran-' . $pembayaran->id . '.pdf'
-    );
-}
 }

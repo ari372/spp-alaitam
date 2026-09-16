@@ -83,6 +83,7 @@
 
             <div class="detail-list">
 
+
                 <div class="detail-item">
 
                     <span class="detail-label">
@@ -142,12 +143,14 @@
                     </span>
 
                     <span class="detail-value nominal">
+
                         Rp {{ number_format(
                             $tagihan->nominal,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </span>
 
                 </div>
@@ -160,12 +163,14 @@
                     </span>
 
                     <span class="detail-value">
+
                         Rp {{ number_format(
                             $totalDibayar,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </span>
 
                 </div>
@@ -178,12 +183,14 @@
                     </span>
 
                     <span class="detail-value nominal">
+
                         Rp {{ number_format(
                             $sisaTagihan,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </span>
 
                 </div>
@@ -201,11 +208,13 @@
                 Detail Pembayaran
             </h2>
 
+
             <div class="payment-method-info">
 
                 <h3>
                     Transfer Bank
                 </h3>
+
 
                 <div class="bank-box">
 
@@ -249,6 +258,7 @@
                     Pembayaran QRIS
                 </div>
 
+
                 @if(file_exists(public_path('images/qris.png')))
 
                     <img
@@ -272,8 +282,11 @@
 
                 @endif
 
+
                 <div class="qris-description">
+
                     Silakan scan QRIS sekolah untuk melakukan pembayaran.
+
                 </div>
 
             </div>
@@ -304,56 +317,32 @@
             @csrf
 
 
-            {{-- NOMINAL --}}
+            {{-- INFORMASI NOMINAL --}}
 
-            <div class="form-group">
+            <div class="payment-info-box">
 
-                <label
-                    for="nominal"
-                    class="form-label"
-                >
-
-                    Nominal Pembayaran
-
-                    <span class="required">*</span>
-
-                </label>
-
-
-                <div class="nominal-wrapper">
-
-                    <span>
-                        Rp
-                    </span>
-
-                    <input
-                        type="number"
-                        name="nominal"
-                        id="nominal"
-                        class="form-control nominal-input"
-                        value="{{ old('nominal', $sisaTagihan) }}"
-                        min="1"
-                        max="{{ $sisaTagihan }}"
-                        required
-                    >
-
+                <div class="payment-info-icon">
+                    ℹ
                 </div>
 
-
-                <small class="form-help">
-
-                    Maksimal pembayaran:
+                <div class="payment-info-content">
 
                     <strong>
-                        Rp {{ number_format(
-                            $sisaTagihan,
-                            0,
-                            ',',
-                            '.'
-                        ) }}
+                        Pembayaran sebagian diperbolehkan
                     </strong>
 
-                </small>
+                    <p>
+                        Silakan transfer sesuai nominal yang ingin dibayarkan
+                        atau sesuai kesepakatan dengan pihak sekolah.
+                    </p>
+
+                    <p>
+                        Setelah pembayaran dilakukan, upload bukti pembayaran
+                        di bawah ini. Nominal pembayaran akan diperiksa dan
+                        ditentukan oleh admin berdasarkan bukti pembayaran.
+                    </p>
+
+                </div>
 
             </div>
 
@@ -372,6 +361,7 @@
 
 
                 <div class="method-options">
+
 
                     <div class="method-option">
 
@@ -478,7 +468,7 @@
                     type="submit"
                     class="btn btn-submit"
                 >
-                    Kirim Pembayaran
+                    Kirim Bukti Pembayaran
                 </button>
 
             </div>
