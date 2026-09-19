@@ -6,47 +6,133 @@
 
 @section('content')
 
+@vite('resources/css/admin/siswa.css')
+
 <div class="siswa-container">
 
+    {{-- HEADER --}}
     <div class="siswa-header">
 
-        <div>
-            <h2>Data Siswa</h2>
+        <div class="siswa-header-content">
 
-            <p>
-                Daftar data siswa SMP Plus Al-I'tam
-            </p>
+            <div class="siswa-header-icon">
+                <i data-lucide="users"></i>
+            </div>
+
+            <div>
+                <h2>Data Siswa</h2>
+
+                <p>
+                    Daftar data siswa SMP Plus Al-I'tam
+                </p>
+            </div>
+
         </div>
 
         <a
             href="{{ route('admin.siswa.create') }}"
             class="btn-tambah"
         >
-            + Tambah Siswa
+            <i data-lucide="user-plus"></i>
+            Tambah Siswa
         </a>
 
     </div>
 
 
+    {{-- ALERT SUCCESS --}}
     @if(session('success'))
 
         <div class="alert success">
-            {{ session('success') }}
+
+            <i data-lucide="circle-check"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
+
         </div>
 
     @endif
 
 
+    {{-- ALERT ERROR --}}
     @if(session('error'))
 
         <div class="alert error">
-            {{ session('error') }}
+
+            <i data-lucide="circle-alert"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
         </div>
 
     @endif
 
 
+    {{-- VALIDATION ERROR --}}
+    @if($errors->any())
+
+        <div class="alert error">
+
+            <i data-lucide="triangle-alert"></i>
+
+            <div>
+
+                <strong>
+                    Terdapat kesalahan:
+                </strong>
+
+                <ul>
+
+                    @foreach($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- TABLE --}}
     <div class="siswa-table-card">
+
+        <div class="siswa-table-header">
+
+            <div>
+
+                <h3>
+                    Daftar Siswa
+                </h3>
+
+                <p>
+                    Data siswa yang terdaftar dalam sistem
+                </p>
+
+            </div>
+
+            <div class="siswa-total">
+
+                <i data-lucide="users"></i>
+
+                <span>
+                    {{ $siswa->count() }} Siswa
+                </span>
+
+            </div>
+
+        </div>
+
 
         <div class="table-wrapper">
 
@@ -56,19 +142,33 @@
 
                     <tr>
 
-                        <th>No</th>
+                        <th class="col-no">
+                            No
+                        </th>
 
-                        <th>NIS</th>
+                        <th>
+                            NIS
+                        </th>
 
-                        <th>Nama</th>
+                        <th>
+                            Nama
+                        </th>
 
-                        <th>Jenis Kelamin</th>
+                        <th>
+                            Jenis Kelamin
+                        </th>
 
-                        <th>Kelas</th>
+                        <th>
+                            Kelas
+                        </th>
 
-                        <th>Orang Tua</th>
+                        <th>
+                            Orang Tua
+                        </th>
 
-                        <th>Aksi</th>
+                        <th class="col-aksi">
+                            Aksi
+                        </th>
 
                     </tr>
 
@@ -81,78 +181,140 @@
 
                         <tr>
 
+                            {{-- NO --}}
                             <td class="text-center">
                                 {{ $loop->iteration }}
                             </td>
 
 
+                            {{-- NIS --}}
                             <td>
-                                {{ $item->nis }}
+                                <span class="siswa-nis">
+                                    {{ $item->nis }}
+                                </span>
                             </td>
 
 
+                            {{-- NAMA --}}
                             <td>
-                                {{ $item->nama }}
+
+                                <div class="siswa-name">
+
+                                    <div class="siswa-avatar">
+                                        {{ strtoupper(substr($item->nama, 0, 1)) }}
+                                    </div>
+
+                                    <span>
+                                        {{ $item->nama }}
+                                    </span>
+
+                                </div>
+
                             </td>
 
 
+                            {{-- JENIS KELAMIN --}}
                             <td>
 
                                 @if($item->jenis_kelamin === 'L')
 
-                                    Laki-laki
+                                    <span class="gender-badge gender-laki">
+
+                                        <i data-lucide="user-round"></i>
+
+                                        Laki-laki
+
+                                    </span>
 
                                 @else
 
-                                    Perempuan
+                                    <span class="gender-badge gender-perempuan">
+
+                                        <i data-lucide="user-round"></i>
+
+                                        Perempuan
+
+                                    </span>
 
                                 @endif
 
                             </td>
 
 
+                            {{-- KELAS --}}
                             <td>
-                                {{ $item->kelas->nama_kelas ?? '-' }}
+
+                                <span class="kelas-badge">
+
+                                    <i data-lucide="school"></i>
+
+                                    {{ $item->kelas->nama_kelas ?? '-' }}
+
+                                </span>
+
                             </td>
 
 
+                            {{-- ORANG TUA --}}
                             <td>
-                                {{ $item->orangTua->nama ?? '-' }}
+
+                                <span class="orangtua-text">
+
+                                    <i data-lucide="user"></i>
+
+                                    {{ $item->orangTua->nama ?? '-' }}
+
+                                </span>
+
                             </td>
 
 
+                            {{-- AKSI --}}
                             <td>
 
                                 <div class="aksi">
 
+
+                                    {{-- DETAIL --}}
                                     <a
                                         href="{{ route(
                                             'admin.siswa.show',
                                             $item->id
                                         ) }}"
-                                        class="btn-detail"
+                                        class="aksi-btn aksi-detail"
+                                        data-tooltip="Lihat detail siswa"
+                                        aria-label="Lihat detail siswa"
                                     >
-                                        Detail
+
+                                        <i data-lucide="info"></i>
+
                                     </a>
 
 
+                                    {{-- EDIT --}}
                                     <a
                                         href="{{ route(
                                             'admin.siswa.edit',
                                             $item->id
                                         ) }}"
-                                        class="btn-edit"
+                                        class="aksi-btn aksi-edit"
+                                        data-tooltip="Edit data siswa"
+                                        aria-label="Edit data siswa"
                                     >
-                                        Edit
+
+                                        <i data-lucide="square-pen"></i>
+
                                     </a>
 
 
+                                    {{-- HAPUS --}}
                                     <form
                                         action="{{ route(
                                             'admin.siswa.destroy',
                                             $item->id
                                         ) }}"
                                         method="POST"
+                                        class="aksi-form"
                                         onsubmit="
                                             return confirm(
                                                 'Yakin ingin menghapus siswa ini?'
@@ -166,9 +328,13 @@
 
                                         <button
                                             type="submit"
-                                            class="btn-hapus"
+                                            class="aksi-btn aksi-hapus"
+                                            data-tooltip="Hapus data siswa"
+                                            aria-label="Hapus data siswa"
                                         >
-                                            Hapus
+
+                                            <i data-lucide="trash-2"></i>
+
                                         </button>
 
                                     </form>
@@ -187,7 +353,36 @@
                                 colspan="7"
                                 class="empty"
                             >
-                                Belum ada data siswa.
+
+                                <div class="empty-content">
+
+                                    <div class="empty-icon">
+
+                                        <i data-lucide="users-round"></i>
+
+                                    </div>
+
+                                    <strong>
+                                        Belum ada data siswa
+                                    </strong>
+
+                                    <span>
+                                        Silakan tambahkan data siswa terlebih dahulu.
+                                    </span>
+
+                                    <a
+                                        href="{{ route('admin.siswa.create') }}"
+                                        class="empty-button"
+                                    >
+
+                                        <i data-lucide="user-plus"></i>
+
+                                        Tambah Siswa
+
+                                    </a>
+
+                                </div>
+
                             </td>
 
                         </tr>
@@ -203,5 +398,19 @@
     </div>
 
 </div>
+
+
+{{-- LUCIDE ICON --}}
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        lucide.createIcons();
+
+    });
+
+</script>
 
 @endsection

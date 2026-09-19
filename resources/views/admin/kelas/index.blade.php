@@ -12,21 +12,24 @@
 
 <div class="kelas-page">
 
-    {{-- =====================================================
-         HEADER
-    ====================================================== --}}
-
+    {{-- HEADER --}}
     <div class="kelas-header">
 
-        <div>
+        <div class="kelas-header-content">
 
-            <h2>
-                Data Kelas
-            </h2>
+            <div class="kelas-header-icon">
+                <i data-lucide="school"></i>
+            </div>
 
-            <p>
-                Daftar kelas siswa
-            </p>
+            <div>
+                <h2>
+                    Data Kelas
+                </h2>
+
+                <p>
+                    Daftar kelas siswa SMP Plus Al-I'tam
+                </p>
+            </div>
 
         </div>
 
@@ -35,33 +38,113 @@
             href="{{ route('admin.kelas.create') }}"
             class="btn-tambah-kelas"
         >
-            + Tambah Kelas
+
+            <i data-lucide="plus"></i>
+
+            Tambah Kelas
+
         </a>
 
     </div>
 
 
-    {{-- =====================================================
-         PESAN BERHASIL
-    ====================================================== --}}
-
+    {{-- SUCCESS --}}
     @if(session('success'))
 
-        <div class="alert-success">
+        <div class="kelas-alert kelas-alert-success">
 
-            {{ session('success') }}
+            <i data-lucide="circle-check"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
 
         </div>
 
     @endif
 
 
-    {{-- =====================================================
-         DATA KELAS
-    ====================================================== --}}
+    {{-- ERROR --}}
+    @if(session('error'))
 
+        <div class="kelas-alert kelas-alert-error">
+
+            <i data-lucide="circle-alert"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- VALIDATION ERROR --}}
+    @if($errors->any())
+
+        <div class="kelas-alert kelas-alert-error">
+
+            <i data-lucide="triangle-alert"></i>
+
+            <div>
+
+                <strong>
+                    Terdapat kesalahan:
+                </strong>
+
+                <ul>
+
+                    @foreach($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- CARD --}}
     <div class="kelas-card">
 
+        {{-- CARD HEADER --}}
+        <div class="kelas-card-header">
+
+            <div>
+
+                <h3>
+                    Daftar Kelas
+                </h3>
+
+                <p>
+                    Data kelas yang tersedia dalam sistem
+                </p>
+
+            </div>
+
+
+            <div class="kelas-total">
+
+                <i data-lucide="school"></i>
+
+                <span>
+                    {{ $kelas->count() }} Kelas
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- TABLE --}}
         <div class="kelas-table-wrapper">
 
             <table class="kelas-table">
@@ -70,7 +153,7 @@
 
                     <tr>
 
-                        <th>
+                        <th class="col-no">
                             No
                         </th>
 
@@ -78,11 +161,11 @@
                             Nama Kelas
                         </th>
 
-                        <th>
+                        <th class="col-jumlah">
                             Jumlah Siswa
                         </th>
 
-                        <th>
+                        <th class="col-aksi">
                             Aksi
                         </th>
 
@@ -97,49 +180,84 @@
 
                         <tr>
 
-                            <td>
+                            {{-- NO --}}
+                            <td class="text-center">
+
                                 {{ $index + 1 }}
+
                             </td>
 
 
+                            {{-- NAMA KELAS --}}
                             <td>
-                                {{ $item->nama_kelas }}
+
+                                <div class="kelas-name">
+
+                                    <div class="kelas-avatar">
+
+                                        <i data-lucide="school"></i>
+
+                                    </div>
+
+                                    <span>
+                                        {{ $item->nama_kelas }}
+                                    </span>
+
+                                </div>
+
                             </td>
 
 
-                            <td>
-                                {{ $item->siswa()->count() }}
+                            {{-- JUMLAH SISWA --}}
+                            <td class="text-center">
+
+                                <span class="kelas-jumlah">
+
+                                    <i data-lucide="users-round"></i>
+
+                                    {{ $item->siswa()->count() }}
+
+                                    Siswa
+
+                                </span>
+
                             </td>
 
 
+                            {{-- AKSI --}}
                             <td>
 
                                 <div class="kelas-actions">
 
                                     {{-- EDIT --}}
-
                                     <a
                                         href="{{ route(
                                             'admin.kelas.edit',
                                             $item->id
                                         ) }}"
-                                        class="btn-edit-kelas"
+                                        class="kelas-action-btn kelas-edit"
+                                        data-tooltip="Edit data kelas"
+                                        aria-label="Edit data kelas"
                                     >
-                                        Edit
+
+                                        <i data-lucide="square-pen"></i>
+
                                     </a>
 
 
                                     {{-- HAPUS --}}
-
                                     <form
                                         action="{{ route(
                                             'admin.kelas.destroy',
                                             $item->id
                                         ) }}"
                                         method="POST"
-                                        onsubmit="return confirm(
-                                            'Yakin ingin menghapus kelas ini?'
-                                        )"
+                                        class="kelas-action-form"
+                                        onsubmit="
+                                            return confirm(
+                                                'Yakin ingin menghapus kelas ini?'
+                                            )
+                                        "
                                     >
 
                                         @csrf
@@ -148,9 +266,13 @@
 
                                         <button
                                             type="submit"
-                                            class="btn-hapus-kelas"
+                                            class="kelas-action-btn kelas-delete"
+                                            data-tooltip="Hapus data kelas"
+                                            aria-label="Hapus data kelas"
                                         >
-                                            Hapus
+
+                                            <i data-lucide="trash-2"></i>
+
                                         </button>
 
                                     </form>
@@ -169,7 +291,36 @@
                                 colspan="4"
                                 class="kelas-empty"
                             >
-                                Belum ada data kelas.
+
+                                <div class="kelas-empty-content">
+
+                                    <div class="kelas-empty-icon">
+
+                                        <i data-lucide="school"></i>
+
+                                    </div>
+
+                                    <strong>
+                                        Belum ada data kelas
+                                    </strong>
+
+                                    <span>
+                                        Silakan tambahkan data kelas terlebih dahulu.
+                                    </span>
+
+                                    <a
+                                        href="{{ route('admin.kelas.create') }}"
+                                        class="kelas-empty-button"
+                                    >
+
+                                        <i data-lucide="plus"></i>
+
+                                        Tambah Kelas
+
+                                    </a>
+
+                                </div>
+
                             </td>
 
                         </tr>
@@ -185,5 +336,19 @@
     </div>
 
 </div>
+
+
+{{-- LUCIDE --}}
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        lucide.createIcons();
+
+    });
+
+</script>
 
 @endsection

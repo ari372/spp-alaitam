@@ -6,52 +6,64 @@
 
     <title>Laporan Pembayaran</title>
 
-    {{-- Ambil CSS langsung dari resources --}}
-    <style>
-        {!! file_get_contents(resource_path('css/admin/laporan.css')) !!}
-    </style>
-
-    {{-- CSS khusus PDF --}}
     <style>
 
         @page {
-            margin: 25px 20px;
+            size: A4 landscape;
+            margin: 18px 20px 20px 20px;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 10px;
-            color: #333;
+            font-size: 8px;
+            color: #333333;
             margin: 0;
             padding: 0;
         }
 
-        /* ==============================
-           HEADER PDF
-        ============================== */
+
+        /* ================================
+           HEADER
+        ================================= */
 
         .pdf-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .pdf-header h2 {
-            margin: 0 0 5px;
+            margin: 0 0 4px;
             color: #0f5132;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
 
         .pdf-header p {
             margin: 0;
-            color: #666;
-            font-size: 11px;
+            color: #666666;
+            font-size: 9px;
         }
 
 
-        /* ==============================
+        /* ================================
+           FILTER INFO
+        ================================= */
+
+        .pdf-period {
+            text-align: right;
+            margin-bottom: 10px;
+            color: #666666;
+            font-size: 8px;
+        }
+
+
+        /* ================================
            TABLE
-        ============================== */
+        ================================= */
 
         .laporan-table {
             width: 100%;
@@ -62,43 +74,46 @@
         .laporan-table th {
             background: #0f5132;
             color: #ffffff;
-            padding: 7px 5px;
             border: 1px solid #0b3d25;
-            text-align: center;
-            font-size: 8px;
+            padding: 6px 4px;
+            font-size: 7.5px;
             font-weight: bold;
-        }
-
-        .laporan-table td {
-            padding: 6px 5px;
-            border: 1px solid #d9d9d9;
-            font-size: 8px;
+            text-align: center;
             vertical-align: middle;
         }
 
+        .laporan-table td {
+            border: 1px solid #d7ddd9;
+            padding: 5px 4px;
+            font-size: 7.5px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
         .laporan-table tbody tr:nth-child(even) {
-            background: #f8faf9;
+            background: #f7faf8;
         }
 
 
-        /* ==============================
+        /* ================================
            LEBAR KOLOM
-        ============================== */
+           TOTAL = 100%
+        ================================= */
 
         .col-no {
             width: 4%;
         }
 
         .col-siswa {
-            width: 14%;
+            width: 16%;
         }
 
         .col-nis {
-            width: 9%;
+            width: 8%;
         }
 
         .col-kelas {
-            width: 11%;
+            width: 8%;
         }
 
         .col-tahun {
@@ -106,7 +121,7 @@
         }
 
         .col-kategori {
-            width: 11%;
+            width: 12%;
         }
 
         .col-nominal {
@@ -114,71 +129,110 @@
         }
 
         .col-status {
-            width: 10%;
+            width: 8%;
         }
 
 
-        /* ==============================
-           TEXT
-        ============================== */
+        /*
+            Untuk kolom nominal:
+            Tagihan 12%
+            Dibayar 12%
+            Sisa    12%
+
+            Ketiganya menggunakan col-nominal.
+        */
+
+
+        /* ================================
+           ALIGNMENT
+        ================================= */
 
         .text-center {
-            text-align: center !important;
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
         }
 
         .text-right {
-            text-align: right !important;
+            text-align: right;
         }
 
 
-        /* ==============================
-           STATUS
-        ============================== */
+        /* ================================
+           NOMINAL
+        ================================= */
 
-        .lunas {
+        .nominal {
+            white-space: nowrap;
+            text-align: right;
+        }
+
+
+        /* ================================
+           STATUS
+        ================================= */
+
+        .status-lunas {
             color: #198754;
             font-weight: bold;
         }
 
-        .belum {
+        .status-belum {
             color: #dc3545;
             font-weight: bold;
         }
 
 
-        /* ==============================
+        /* ================================
            SUMMARY
-        ============================== */
+        ================================= */
+
+        .summary-wrapper {
+            width: 100%;
+            margin-top: 14px;
+        }
 
         .summary {
-            margin-top: 20px;
+            width: 38%;
             margin-left: auto;
-            width: 45%;
             border-collapse: collapse;
         }
 
         .summary td {
             border: none;
-            padding: 5px;
-            font-size: 9px;
+            padding: 4px 5px;
+            font-size: 8px;
         }
 
-        .summary tr:last-child td {
-            border-top: 2px solid #0f5132;
+        .summary-label {
+            text-align: left;
+            color: #555555;
+        }
+
+        .summary-value {
+            text-align: right;
+            color: #333333;
+        }
+
+        .summary-total td {
+            padding-top: 6px;
+            border-top: 1.5px solid #0f5132;
             color: #0f5132;
             font-weight: bold;
         }
 
 
-        /* ==============================
+        /* ================================
            FOOTER
-        ============================== */
+        ================================= */
 
         .pdf-footer {
-            margin-top: 25px;
+            margin-top: 15px;
             text-align: right;
-            font-size: 8px;
-            color: #777;
+            font-size: 7px;
+            color: #777777;
         }
 
     </style>
@@ -189,9 +243,9 @@
 <body>
 
 
-    {{-- ==============================
+    {{-- ================================
          HEADER
-    ============================== --}}
+    ================================= --}}
 
     <div class="pdf-header">
 
@@ -206,9 +260,40 @@
     </div>
 
 
-    {{-- ==============================
-         TABEL PEMBAYARAN
-    ============================== --}}
+    {{-- ================================
+         PERIODE
+    ================================= --}}
+
+    <div class="pdf-period">
+
+        @if(request('bulan') && request('tahun'))
+
+            Periode:
+            {{ \Carbon\Carbon::create()->month(request('bulan'))->translatedFormat('F') }}
+            {{ request('tahun') }}
+
+        @elseif(request('tahun'))
+
+            Tahun:
+            {{ request('tahun') }}
+
+        @elseif(request('bulan'))
+
+            Bulan:
+            {{ \Carbon\Carbon::create()->month(request('bulan'))->translatedFormat('F') }}
+
+        @else
+
+            Semua Periode
+
+        @endif
+
+    </div>
+
+
+    {{-- ================================
+         TABEL
+    ================================= --}}
 
     <table class="laporan-table">
 
@@ -271,7 +356,9 @@
 
                     $nominalTagihan = $tagihan?->nominal ?? 0;
 
-                    $dibayar = $item->nominal ?? 0;
+                    $dibayar = $item->status === 'dibayar'
+                        ? ($item->nominal ?? 0)
+                        : 0;
 
                     $sisa = max(
                         0,
@@ -290,7 +377,7 @@
 
 
                     {{-- SISWA --}}
-                    <td>
+                    <td class="text-left">
                         {{ $tagihan?->siswa?->nama ?? '-' }}
                     </td>
 
@@ -303,7 +390,9 @@
 
                     {{-- KELAS --}}
                     <td class="text-center">
-                        {{ $tagihan?->siswa?->kelas?->nama_kelas ?? '-' }}
+                        {{ $tagihan?->siswa?->kelas?->nama_kelas
+                            ?? $tagihan?->siswa?->kelas?->nama
+                            ?? '-' }}
                     </td>
 
 
@@ -314,13 +403,13 @@
 
 
                     {{-- KATEGORI --}}
-                    <td>
+                    <td class="text-left">
                         {{ $tagihan?->kategori?->nama ?? '-' }}
                     </td>
 
 
                     {{-- TAGIHAN --}}
-                    <td class="text-right">
+                    <td class="nominal">
                         Rp {{ number_format(
                             $nominalTagihan,
                             0,
@@ -331,7 +420,7 @@
 
 
                     {{-- DIBAYAR --}}
-                    <td class="text-right">
+                    <td class="nominal">
                         Rp {{ number_format(
                             $dibayar,
                             0,
@@ -342,7 +431,7 @@
 
 
                     {{-- SISA --}}
-                    <td class="text-right">
+                    <td class="nominal">
                         Rp {{ number_format(
                             $sisa,
                             0,
@@ -357,13 +446,13 @@
 
                         @if($sisa <= 0)
 
-                            <span class="lunas">
+                            <span class="status-lunas">
                                 Lunas
                             </span>
 
                         @else
 
-                            <span class="belum">
+                            <span class="status-belum">
                                 Belum Lunas
                             </span>
 
@@ -378,10 +467,7 @@
 
                 <tr>
 
-                    <td
-                        colspan="10"
-                        class="text-center"
-                    >
+                    <td colspan="10" class="text-center">
                         Belum ada data laporan.
                     </td>
 
@@ -394,83 +480,77 @@
     </table>
 
 
-    {{-- ==============================
-         RINGKASAN
-    ============================== --}}
+    {{-- ================================
+         SUMMARY
+    ================================= --}}
 
-    <table class="summary">
+    <div class="summary-wrapper">
 
-        <tr>
+        <table class="summary">
 
-            <td>
-                <strong>
+            <tr>
+
+                <td class="summary-label">
                     Total Tagihan
-                </strong>
-            </td>
+                </td>
 
-            <td class="text-right">
+                <td class="summary-value">
+                    Rp {{ number_format(
+                        $totalTagihan ?? 0,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+                </td>
 
-                Rp {{ number_format(
-                    $totalTagihan ?? 0,
-                    0,
-                    ',',
-                    '.'
-                ) }}
-
-            </td>
-
-        </tr>
+            </tr>
 
 
-        <tr>
+            <tr>
 
-            <td>
-                <strong>
+                <td class="summary-label">
                     Total Pembayaran
-                </strong>
-            </td>
+                </td>
 
-            <td class="text-right">
+                <td class="summary-value">
+                    Rp {{ number_format(
+                        $totalPembayaran ?? 0,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+                </td>
 
-                Rp {{ number_format(
-                    $totalPembayaran ?? 0,
-                    0,
-                    ',',
-                    '.'
-                ) }}
-
-            </td>
-
-        </tr>
+            </tr>
 
 
-        <tr>
+            <tr class="summary-total">
 
-            <td>
-                <strong>
+                <td>
                     Sisa Tagihan
-                </strong>
-            </td>
+                </td>
 
-            <td class="text-right">
+                <td class="summary-value">
 
-                Rp {{ number_format(
-                    $sisaTagihan ?? 0,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                    Rp {{ number_format(
+                        $sisaTagihan ?? 0,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
 
-            </td>
+                </td>
 
-        </tr>
+            </tr>
 
-    </table>
+        </table>
+
+    </div>
 
 
-    {{-- ==============================
+    {{-- ================================
          FOOTER
-    ============================== --}}
+    ================================= --}}
 
     <div class="pdf-footer">
 

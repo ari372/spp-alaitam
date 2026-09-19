@@ -8,7 +8,7 @@
 
 
 /* =========================================================
-   HEADER PERSETUJUAN PEMBAYARAN
+   HEADER PEMBAYARAN
 ========================================================= */
 
 .pembayaran-header {
@@ -87,6 +87,38 @@
     background: #0b3d25;
     color: #ffffff;
     transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BUTTON KEMBALI
+========================================================= */
+
+.btn-kembali {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #f1f3f5;
+    color: #495057;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-kembali svg {
+    width: 17px;
+    height: 17px;
+}
+
+.btn-kembali:hover {
+    background: #e2e6ea;
+    color: #343a40;
 }
 
 
@@ -755,6 +787,221 @@
 
 
 /* =========================================================
+   PEMBAYARAN MANUAL
+========================================================= */
+
+.pembayaran-manual-header {
+    margin-bottom: 25px;
+}
+
+
+/* =========================================================
+   MANUAL TITLE
+========================================================= */
+
+.manual-title {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding-bottom: 20px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.manual-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+    background: #eaf6f0;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.manual-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+}
+
+.manual-title h3 {
+    margin: 0 0 4px;
+    color: #0f5132;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.manual-title p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORM GROUP MANUAL
+========================================================= */
+
+.pembayaran-card .form-group {
+    margin-bottom: 20px;
+}
+
+.pembayaran-card .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #343a40;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pembayaran-card .form-group select,
+.pembayaran-card .form-group input[type="text"],
+.pembayaran-card .form-group input[type="number"],
+.pembayaran-card .form-group input[type="date"] {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid #ced4da;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #212529;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.pembayaran-card .form-group select {
+    cursor: pointer;
+}
+
+.pembayaran-card .form-group select:focus,
+.pembayaran-card .form-group input[type="text"]:focus,
+.pembayaran-card .form-group input[type="number"]:focus,
+.pembayaran-card .form-group input[type="date"]:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.10);
+}
+
+.pembayaran-card .form-group input::placeholder {
+    color: #adb5bd;
+}
+
+
+/* =========================================================
+   READONLY METODE
+========================================================= */
+
+.pembayaran-card .input-readonly {
+    background: #f8f9fa !important;
+    color: #0f5132 !important;
+    font-weight: 700;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   INFORMASI MANUAL
+========================================================= */
+
+.manual-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 5px;
+    margin-bottom: 22px;
+    padding: 14px 15px;
+    border-radius: 9px;
+    background: #eaf6f0;
+    border: 1px solid #c8e6d5;
+    color: #0f5132;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.manual-info::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    border: 2px solid #0f5132;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+
+.manual-info strong {
+    color: #0f5132;
+}
+
+
+/* =========================================================
+   FORM ACTIONS MANUAL
+========================================================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding-top: 18px;
+    border-top: 1px solid #eeeeee;
+}
+
+.btn-batal,
+.btn-simpan {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    padding: 10px 17px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.btn-batal {
+    background: #f1f3f5;
+    color: #495057;
+    border: 1px solid #e5e7eb;
+}
+
+.btn-batal:hover {
+    background: #e2e6ea;
+    color: #343a40;
+}
+
+.btn-simpan {
+    border: none;
+    background: #0f5132;
+    color: #ffffff;
+}
+
+.btn-simpan:hover {
+    background: #0b3d25;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ICON GLOBAL
+========================================================= */
+
+[data-lucide] {
+    stroke-width: 2;
+}
+
+
+/* =========================================================
    KOREKSI PEMBAYARAN
 ========================================================= */
 
@@ -1102,7 +1349,7 @@
 
 
 /* =========================================================
-   INPUT NOMINAL
+   INPUT NOMINAL KOREKSI
 ========================================================= */
 
 .koreksi-nominal-wrapper {
@@ -1154,7 +1401,7 @@
 
 
 /* =========================================================
-   SELECT
+   SELECT KOREKSI
 ========================================================= */
 
 .koreksi-select {
@@ -1311,7 +1558,8 @@
         width: 100%;
     }
 
-    .btn-manual {
+    .btn-manual,
+    .btn-kembali {
         width: 100%;
     }
 
@@ -1374,7 +1622,57 @@
     }
 
 
-    /* KOREKSI */
+    /* =====================================================
+       MANUAL MOBILE
+    ===================================================== */
+
+    .pembayaran-manual-header {
+        margin-bottom: 20px;
+    }
+
+    .manual-title {
+        align-items: flex-start;
+    }
+
+    .manual-title h3 {
+        font-size: 17px;
+    }
+
+    .manual-title p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .pembayaran-card .form-group {
+        margin-bottom: 17px;
+    }
+
+    .pembayaran-card .form-group select,
+    .pembayaran-card .form-group input[type="text"],
+    .pembayaran-card .form-group input[type="number"],
+    .pembayaran-card .form-group input[type="date"] {
+        min-height: 46px;
+        font-size: 13px;
+    }
+
+    .manual-info {
+        font-size: 12px;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .btn-batal,
+    .btn-simpan {
+        width: 100%;
+    }
+
+
+    /* =====================================================
+       KOREKSI MOBILE
+    ===================================================== */
 
     .koreksi-container {
         padding: 0 0 30px;
@@ -1419,6 +1717,98 @@
 
     .koreksi-btn {
         width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE KECIL
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .pembayaran-header h2,
+    .koreksi-header h2 {
+        font-size: 22px;
+    }
+
+    .pembayaran-header p,
+    .koreksi-header p {
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .pembayaran-header-icon,
+    .koreksi-header-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 11px;
+    }
+
+    .pembayaran-header-icon svg,
+    .koreksi-header-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .pembayaran-card {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .manual-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .manual-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .manual-title {
+        gap: 10px;
+    }
+
+    .manual-title h3 {
+        font-size: 16px;
+    }
+
+    .manual-title p {
+        font-size: 11px;
+    }
+
+    .pembayaran-card .form-group label {
+        font-size: 13px;
+    }
+
+    .manual-info {
+        padding: 12px;
+        font-size: 11px;
+    }
+
+    .btn-batal,
+    .btn-simpan {
+        min-height: 44px;
+        font-size: 13px;
+    }
+
+    .koreksi-card,
+    .koreksi-form-card {
+        padding: 15px;
+    }
+
+    .koreksi-card-title h3 {
+        font-size: 16px;
+    }
+
+    .koreksi-card-title p {
+        font-size: 11px;
+    }
+
+    .koreksi-bukti-image-wrapper {
+        height: 300px;
     }
 
 }

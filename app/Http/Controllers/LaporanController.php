@@ -188,6 +188,178 @@ class LaporanController extends Controller
 
 
     /**
+     * Menampilkan detail pembayaran
+     */
+    public function show($id)
+    {
+        $pembayaran = PembayaranTagihan::with([
+            'tagihan.siswa.kelas',
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+            'user',
+        ])->findOrFail($id);
+
+
+        return view(
+            'admin.laporan.show',
+            compact('pembayaran')
+        );
+    }
+
+
+    /**
+     * Form edit pembayaran
+     */
+    public function edit($id)
+    {
+        $pembayaran = PembayaranTagihan::with([
+            'tagihan.siswa.kelas',
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+            'user',
+        ])->findOrFail($id);
+
+
+        return view(
+            'admin.laporan.edit',
+            compact('pembayaran')
+        );
+    }
+
+
+    /**
+     * Update pembayaran
+     */
+    public function update(Request $request, $id)
+    {
+        $pembayaran = PembayaranTagihan::findOrFail($id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
+
+        $validated = $request->validate([
+
+            'nominal' => [
+                'required',
+                'numeric',
+                'min:1',
+            ],
+
+            'metode' => [
+                'required',
+                'in:transfer,qris,cash',
+            ],
+
+            'status' => [
+                'required',
+                'in:menunggu,dibayar,ditolak',
+            ],
+
+            'tanggal_kirim' => [
+                'required',
+                'date',
+            ],
+
+            'catatan' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
+
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE DATA
+        |--------------------------------------------------------------------------
+        */
+
+        $pembayaran->nominal = $validated['nominal'];
+
+        $pembayaran->metode = $validated['metode'];
+
+        $pembayaran->status = $validated['status'];
+
+        $pembayaran->tanggal_kirim = $validated['tanggal_kirim'];
+
+        $pembayaran->catatan = $validated['catatan'] ?? null;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TANGGAL DISETUJUI
+        |--------------------------------------------------------------------------
+        */
+
+        if ($validated['status'] === 'dibayar') {
+
+            if (!$pembayaran->tanggal_disetujui) {
+
+                $pembayaran->tanggal_disetujui = now();
+            }
+
+        } else {
+
+            $pembayaran->tanggal_disetujui = null;
+        }
+
+
+        $pembayaran->save();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('admin.laporan.index')
+            ->with(
+                'success',
+                'Data pembayaran berhasil diperbarui.'
+            );
+    }
+
+
+    /**
+     * Hapus pembayaran
+     */
+    public function destroy($id)
+    {
+        $pembayaran = PembayaranTagihan::findOrFail($id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS
+        |--------------------------------------------------------------------------
+        */
+
+        $pembayaran->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('admin.laporan.index')
+            ->with(
+                'success',
+                'Data pembayaran berhasil dihapus.'
+            );
+    }
+
+
+    /**
      * Cetak PDF
      */
     public function pdf(Request $request)

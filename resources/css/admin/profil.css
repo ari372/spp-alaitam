@@ -1,343 +1,852 @@
-.profil-container {
+/* =========================================================
+   PROFIL ADMIN
+========================================================= */
+
+.profil-page {
     width: 100%;
 }
 
+
+/* =========================================================
+   HEADER
+========================================================= */
+
 .profil-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 25px;
 }
 
 .profil-header h2 {
+    margin: 0 0 6px;
     color: #0f5132;
-    margin: 0 0 5px 0;
-    font-size: 28px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
 .profil-header p {
-    color: #777;
     margin: 0;
-    font-size: 15px;
+    color: #777;
+    font-size: 14px;
 }
 
-.profil-card {
+
+/* =========================================================
+   BUTTON EDIT PROFIL
+========================================================= */
+
+.btn-edit-profil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 18px;
+    background: #0f5132;
+    color: #ffffff;
+    border: 1px solid #0f5132;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(15, 81, 50, 0.18);
+    transition: all 0.2s ease;
+}
+
+.btn-edit-profil:hover {
+    background: #0b3d25;
+    color: #ffffff;
+    border-color: #0b3d25;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(15, 81, 50, 0.24);
+}
+
+.btn-edit-profil [data-lucide] {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================================
+   BUTTON KEMBALI
+========================================================= */
+
+.profil-header-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 16px;
     background: #ffffff;
-    border-radius: 15px;
-    padding: 30px;
-    max-width: 850px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    color: #0f5132;
+    border: 1px solid #dfe5e1;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.profil-top {
+.profil-header-back:hover {
+    background: #f3f8f5;
+    color: #0b3d25;
+    border-color: #c8d8cf;
+    transform: translateY(-1px);
+}
+
+.profil-header-back [data-lucide] {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================================================
+   ALERT
+========================================================= */
+
+.profil-alert {
     display: flex;
     align-items: center;
-    gap: 25px;
-    padding-bottom: 25px;
-    margin-bottom: 25px;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 9px;
+    font-size: 14px;
+}
+
+.profil-alert [data-lucide] {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ALERT SUCCESS
+========================================================= */
+
+.profil-alert-success {
+    background: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+
+/* =========================================================
+   ALERT ERROR
+========================================================= */
+
+.profil-alert-error {
+    align-items: flex-start;
+    background: #fff0f1;
+    color: #842029;
+    border: 1px solid #f1b0b7;
+}
+
+.profil-alert-error > [data-lucide] {
+    width: 19px;
+    height: 19px;
+    margin-top: 1px;
+}
+
+.profil-alert-error strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.profil-alert-error ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.profil-alert-error li {
+    margin-bottom: 2px;
+}
+
+
+/* =========================================================
+   PROFIL CARD
+========================================================= */
+
+.profil-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   IDENTITAS PROFIL
+========================================================= */
+
+.profil-identitas {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
     border-bottom: 1px solid #eeeeee;
 }
 
 .profil-avatar {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: #0f5132;
-    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
-    font-weight: bold;
+    width: 72px;
+    height: 72px;
     flex-shrink: 0;
+    background: #0f5132;
+    color: #ffffff;
+    border-radius: 50%;
+    font-size: 28px;
+    font-weight: 700;
+    box-shadow: 0 5px 12px rgba(15, 81, 50, 0.2);
 }
 
-.profil-identitas h3 {
-    margin: 0 0 7px 0;
+.profil-identitas-content h3 {
+    margin: 0 0 5px;
     color: #212529;
-    font-size: 24px;
+    font-size: 21px;
+    font-weight: 700;
 }
 
-.profil-identitas p {
-    margin: 0;
+.profil-identitas-content p {
+    margin: 0 0 10px;
     color: #777;
     font-size: 14px;
 }
 
+
+/* =========================================================
+   ROLE
+========================================================= */
+
 .profil-role {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 6px 13px;
-    border-radius: 20px;
-    background: #d1e7dd;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    background: #e8f3ed;
     color: #0f5132;
-    font-size: 13px;
-    font-weight: bold;
+    border: 1px solid #c9e5d5;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-.profil-section-title {
-    color: #0f5132;
-    font-size: 18px;
-    margin: 0 0 18px 0;
+.profil-role [data-lucide] {
+    width: 14px;
+    height: 14px;
 }
+
+
+/* =========================================================
+   SECTION PROFIL
+========================================================= */
+
+.profil-section {
+    padding: 28px;
+}
+
+.profil-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.profil-section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    background: #e8f3ed;
+    color: #0f5132;
+    border-radius: 9px;
+}
+
+.profil-section-icon [data-lucide] {
+    width: 20px;
+    height: 20px;
+}
+
+.profil-section-header h3 {
+    margin: 0 0 3px;
+    color: #212529;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.profil-section-header p {
+    margin: 0;
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   INFORMASI AKUN
+========================================================= */
 
 .profil-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+    border-radius: 10px;
 }
 
 .profil-info-item {
-    background: #f8f9fa;
-    padding: 16px;
-    border-radius: 9px;
-    border: 1px solid #eeeeee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.profil-info-item:last-child {
+    border-bottom: none;
+}
+
+.profil-info-item:hover {
+    background: #f8faf9;
 }
 
 .profil-info-label {
-    display: block;
-    color: #777;
-    font-size: 13px;
-    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.profil-info-label [data-lucide] {
+    width: 17px;
+    height: 17px;
+    color: #0f5132;
 }
 
 .profil-info-value {
-    display: block;
     color: #212529;
-    font-size: 15px;
-    font-weight: 600;
-    word-break: break-word;
-}
-
-.profil-actions {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eeeeee;
-}
-
-.btn-edit-profil {
-    display: inline-block;
-    background: #0f5132;
-    color: #ffffff;
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.btn-edit-profil:hover {
-    background: #146c43;
-}
-
-
-/* =========================
-   FORM EDIT PROFIL
-========================= */
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
     font-size: 14px;
     font-weight: 600;
+    text-align: right;
 }
 
-.form-group input {
-    width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border: 1px solid #dcdcdc;
-    border-radius: 9px;
-    background: #ffffff;
-    color: #333;
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-    transition: 0.2s ease;
-}
 
-.form-group input:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.10);
-}
+/* =========================================================
+   ROLE BADGE
+========================================================= */
 
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eeeeee;
-}
-
-.btn-batal {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #6c757d;
-    color: white;
-    text-decoration: none;
+.profil-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    background: #e8f3ed;
+    color: #0f5132;
+    border: 1px solid #c9e5d5;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.btn-batal:hover {
-    background: #5c636a;
-}
-
-.btn-simpan {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    background: #0f5132;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.btn-simpan:hover {
-    background: #146c43;
 }
 
 
-/* =========================
-   ALERT
-========================= */
+/* =========================================================
+   STATUS AKUN
+========================================================= */
 
-.alert {
-    padding: 14px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.alert-success {
+.profil-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
     background: #d1e7dd;
     color: #0f5132;
-}
-
-.alert-error {
-    background: #f8d7da;
-    color: #842029;
-}
-
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 700px) {
-
-    .profil-card {
-        padding: 20px;
-    }
-
-    .profil-top {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .profil-info {
-        grid-template-columns: 1fr;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-
-    .btn-batal,
-    .btn-simpan {
-        width: 100%;
-        text-align: center;
-        box-sizing: border-box;
-    }
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-size: 14px;
+    border: 1px solid #badbcc;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 600;
 }
 
-.form-group input {
-    width: 100%;
-    height: 48px;
-    padding: 0 14px;
-    border: 1px solid #dcdcdc;
-    border-radius: 9px;
-    background: #ffffff;
-    color: #333;
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-    transition: 0.2s ease;
+
+/* =========================================================
+   FOOTER PROFIL
+========================================================= */
+
+.profil-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 28px;
+    background: #f8faf9;
+    border-top: 1px solid #eeeeee;
 }
 
-.form-group input:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.10);
-}
-
-.form-help {
-    display: block;
-    margin-top: 7px;
+.profil-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: #777;
     font-size: 13px;
 }
 
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #eeeeee;
-}
-
-.btn-batal {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 8px;
-    background: #6c757d;
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.btn-simpan {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    background: #0f5132;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.btn-simpan:hover {
-    background: #146c43;
-}
-
-.alert {
-    padding: 14px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.alert-success {
-    background: #d1e7dd;
+.profil-footer-info [data-lucide] {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
     color: #0f5132;
 }
 
-.alert-error {
-    background: #f8d7da;
-    color: #842029;
+.profil-footer-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 9px 15px;
+    background: #0f5132;
+    color: #ffffff;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.profil-footer-button:hover {
+    background: #0b3d25;
+    color: #ffffff;
+}
+
+.profil-footer-button [data-lucide] {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   EDIT PROFIL CARD
+========================================================= */
+
+.profil-edit-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================================
+   EDIT PROFIL HEADER
+========================================================= */
+
+.profil-edit-header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 25px 28px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.profil-edit-header .profil-section-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+}
+
+.profil-edit-header .profil-section-icon [data-lucide] {
+    width: 21px;
+    height: 21px;
+}
+
+.profil-edit-header h3 {
+    margin: 0 0 4px;
+    color: #212529;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.profil-edit-header p {
+    margin: 0;
+    color: #888;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FORM EDIT PROFIL
+========================================================= */
+
+.profil-edit-card form {
+    padding: 28px;
+}
+
+.profil-form-group {
+    margin-bottom: 22px;
+}
+
+.profil-form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profil-required {
+    margin-left: 2px;
+    color: #dc3545;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.profil-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profil-input-wrapper > [data-lucide] {
+    position: absolute;
+    left: 14px;
+    z-index: 2;
+    width: 18px;
+    height: 18px;
+    color: #777777;
+    pointer-events: none;
+}
+
+.profil-input-wrapper input {
+    width: 100%;
+    height: 46px;
+    box-sizing: border-box;
+    padding: 0 45px 0 43px;
+    background: #ffffff;
+    color: #212529;
+    border: 1px solid #dcdcdc;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.profil-input-wrapper input::placeholder {
+    color: #aaaaaa;
+}
+
+.profil-input-wrapper input:hover {
+    border-color: #c5d0ca;
+}
+
+.profil-input-wrapper input:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.08);
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.profil-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: transparent;
+    color: #777777;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: all 0.2s ease;
+}
+
+.profil-password-toggle:hover {
+    background: #f1f5f3;
+    color: #0f5132;
+}
+
+.profil-password-toggle [data-lucide] {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================================================
+   FORM HELP
+========================================================= */
+
+.profil-form-help {
+    display: block;
+    margin-top: 7px;
+    color: #888888;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   INFO EDIT PROFIL
+========================================================= */
+
+.profil-edit-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 15px 16px;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    background: #f4f9f6;
+    border: 1px solid #dcece3;
+    border-radius: 9px;
+}
+
+.profil-edit-info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    background: #e0f0e7;
+    color: #0f5132;
+    border-radius: 8px;
+}
+
+.profil-edit-info-icon [data-lucide] {
+    width: 17px;
+    height: 17px;
+}
+
+.profil-edit-info strong {
+    display: block;
+    margin-bottom: 3px;
+    color: #0f5132;
+    font-size: 13px;
+}
+
+.profil-edit-info p {
+    margin: 0;
+    color: #66736c;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FORM ACTION
+========================================================= */
+
+.profil-edit-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 22px;
+    border-top: 1px solid #eeeeee;
+}
+
+.profil-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 0 17px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.profil-btn [data-lucide] {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================================
+   BUTTON BATAL
+========================================================= */
+
+.profil-btn-cancel {
+    background: #ffffff;
+    color: #6c757d;
+    border: 1px solid #d7d7d7;
+}
+
+.profil-btn-cancel:hover {
+    background: #f5f5f5;
+    color: #495057;
+    border-color: #c5c5c5;
+}
+
+
+/* =========================================================
+   BUTTON SIMPAN
+========================================================= */
+
+.profil-btn-save {
+    background: #0f5132;
+    color: #ffffff;
+    border: 1px solid #0f5132;
+    box-shadow: 0 4px 10px rgba(15, 81, 50, 0.16);
+}
+
+.profil-btn-save:hover {
+    background: #0b3d25;
+    color: #ffffff;
+    border-color: #0b3d25;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 81, 50, 0.22);
+}
+
+
+/* =========================================================
+   LUCIDE
+========================================================= */
+
+.profil-page [data-lucide] {
+    stroke-width: 2;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .profil-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .btn-edit-profil,
+    .profil-header-back {
+        width: 100%;
+    }
+
+    .profil-identitas {
+        padding: 22px;
+    }
+
+    .profil-section {
+        padding: 22px;
+    }
+
+    .profil-card-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .profil-footer-button {
+        justify-content: center;
+    }
+
+    .profil-edit-header {
+        padding: 22px;
+    }
+
+    .profil-edit-card form {
+        padding: 22px;
+    }
+
+    .profil-edit-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .profil-btn {
+        width: 100%;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .profil-header h2 {
+        font-size: 22px;
+    }
+
+    .profil-header p {
+        font-size: 13px;
+    }
+
+    .profil-identitas {
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .profil-avatar {
+        width: 58px;
+        height: 58px;
+        font-size: 23px;
+    }
+
+    .profil-identitas-content h3 {
+        font-size: 18px;
+    }
+
+    .profil-identitas-content p {
+        font-size: 12px;
+    }
+
+    .profil-section {
+        padding: 18px;
+    }
+
+    .profil-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 7px;
+    }
+
+    .profil-info-value {
+        text-align: left;
+    }
+
+    .profil-card-footer {
+        padding: 16px 18px;
+    }
+
+    .profil-edit-header {
+        padding: 18px;
+    }
+
+    .profil-edit-card form {
+        padding: 18px;
+    }
+
+    .profil-edit-header h3 {
+        font-size: 16px;
+    }
+
+    .profil-edit-header p {
+        font-size: 12px;
+    }
+
+    .profil-edit-info {
+        padding: 13px;
+    }
 }

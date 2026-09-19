@@ -15,39 +15,70 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     margin-bottom: 25px;
+}
+
+.orang-tua-header-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.orang-tua-header-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: #d1e7dd;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.orang-tua-header-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .orang-tua-header h2 {
     margin: 0 0 5px;
     color: #0f5132;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
 }
 
 .orang-tua-header p {
     margin: 0;
-    color: #777;
-    font-size: 15px;
+    color: #6c757d;
+    font-size: 14px;
 }
 
 
 /* =========================================================
-   TOMBOL TAMBAH
+   BUTTON TAMBAH
 ========================================================= */
 
 .btn-tambah-orang-tua {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 11px 18px;
+    gap: 8px;
+    min-height: 43px;
+    padding: 10px 17px;
     border-radius: 8px;
     background: #0f5132;
     color: #ffffff;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
-    transition: 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.btn-tambah-orang-tua svg {
+    width: 18px;
+    height: 18px;
 }
 
 .btn-tambah-orang-tua:hover {
@@ -62,42 +93,95 @@
 ========================================================= */
 
 .orang-tua-alert {
-    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 15px;
+    border-radius: 9px;
     margin-bottom: 20px;
-    border-radius: 8px;
     font-size: 14px;
+    line-height: 1.5;
+}
+
+.orang-tua-alert svg {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .orang-tua-alert-success {
     background: #d1e7dd;
+    border: 1px solid #a3cfbb;
     color: #0f5132;
 }
 
 .orang-tua-alert-error {
     background: #f8d7da;
+    border: 1px solid #f1aeb5;
     color: #842029;
+}
+
+.orang-tua-alert ul {
+    margin: 7px 0 0 18px;
+    padding: 0;
 }
 
 
 /* =========================================================
-   CARD TABLE
+   CARD
 ========================================================= */
 
 .orang-tua-card {
     background: #ffffff;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
 }
 
 
 /* =========================================================
-   TABLE WRAPPER
+   TABLE HEADER
 ========================================================= */
 
-.orang-tua-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
+.orang-tua-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.orang-tua-table-header h3 {
+    margin: 0 0 4px;
+    color: #0f5132;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.orang-tua-table-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.orang-tua-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #eaf6f0;
+    color: #0f5132;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.orang-tua-total svg {
+    width: 16px;
+    height: 16px;
 }
 
 
@@ -105,9 +189,14 @@
    TABLE
 ========================================================= */
 
+.orang-tua-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .orang-tua-table {
     width: 100%;
-    min-width: 850px;
+    min-width: 900px;
     border-collapse: collapse;
 }
 
@@ -117,31 +206,115 @@
 }
 
 .orang-tua-table th {
-    padding: 14px;
+    padding: 13px 15px;
     text-align: left;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     white-space: nowrap;
 }
 
-.orang-tua-table th.text-center,
-.orang-tua-table td.text-center {
+.orang-tua-table th.col-no {
+    width: 55px;
     text-align: center;
 }
 
-.orang-tua-table td {
-    padding: 14px;
-    border-bottom: 1px solid #eeeeee;
-    color: #333333;
-    font-size: 14px;
+.orang-tua-table th.col-aksi {
+    width: 125px;
+    text-align: center;
 }
 
 .orang-tua-table tbody tr {
-    transition: 0.2s ease;
+    border-bottom: 1px solid #eeeeee;
+    transition: background 0.2s ease;
+}
+
+.orang-tua-table tbody tr:last-child {
+    border-bottom: none;
 }
 
 .orang-tua-table tbody tr:hover {
     background: #f8faf9;
+}
+
+.orang-tua-table td {
+    padding: 13px 15px;
+    color: #343a40;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+
+/* =========================================================
+   NAMA
+========================================================= */
+
+.orang-tua-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.orang-tua-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #d1e7dd;
+    color: #0f5132;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.orang-tua-name span {
+    color: #212529;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EMAIL
+========================================================= */
+
+.orang-tua-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #495057;
+    font-size: 13px;
+}
+
+.orang-tua-email svg {
+    width: 15px;
+    height: 15px;
+    color: #0f5132;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   PHONE
+========================================================= */
+
+.orang-tua-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #495057;
+    font-size: 13px;
+}
+
+.orang-tua-phone svg {
+    width: 15px;
+    height: 15px;
+    color: #0f5132;
+    flex-shrink: 0;
 }
 
 
@@ -153,99 +326,260 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 32px;
-    height: 28px;
-    padding: 0 8px;
-    border-radius: 20px;
-    background: #d1e7dd;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background: #eaf6f0;
     color: #0f5132;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.jumlah-anak svg {
+    width: 15px;
+    height: 15px;
 }
 
 
 /* =========================================================
-   AKSI
+   ACTION
 ========================================================= */
 
 .orang-tua-actions {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    gap: 8px;
+}
+
+.orang-tua-action-form {
+    margin: 0;
+    padding: 0;
+}
+
+.orang-tua-action-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.orang-tua-action-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+}
+
+.orang-tua-action-btn:hover {
+    transform: translateY(-2px);
 }
 
 
 /* =========================================================
-   TOMBOL AKSI
+   DETAIL
 ========================================================= */
 
-.btn-orang-tua {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s ease;
-    white-space: nowrap;
-}
-
-.btn-orang-tua:hover {
-    transform: translateY(-1px);
-}
-
-
-/* DETAIL */
-
-.btn-detail-orang-tua {
+.orang-tua-detail {
     background: #0d6efd;
     color: #ffffff;
 }
 
-.btn-detail-orang-tua:hover {
+.orang-tua-detail:hover {
     background: #0b5ed7;
     color: #ffffff;
-}
-
-
-/* EDIT */
-
-.btn-edit-orang-tua {
-    background: #ffc107;
-    color: #212529;
-}
-
-.btn-edit-orang-tua:hover {
-    background: #e0a800;
-    color: #212529;
-}
-
-
-/* HAPUS */
-
-.btn-hapus-orang-tua {
-    background: #dc3545;
-    color: #ffffff;
-}
-
-.btn-hapus-orang-tua:hover {
-    background: #bb2d3b;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
 }
 
 
 /* =========================================================
-   EMPTY DATA
+   EDIT
+========================================================= */
+
+.orang-tua-edit {
+    background: #fff8df;
+    color: #9a6b00;
+    border-color: #f1d98b;
+}
+
+.orang-tua-edit:hover {
+    background: #fff0bd;
+    color: #795500;
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.20);
+}
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+.orang-tua-delete {
+    background: #fff1f2;
+    color: #dc3545;
+    border-color: #ffccd1;
+}
+
+.orang-tua-delete:hover {
+    background: #ffe0e3;
+    color: #bb2d3b;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.20);
+}
+
+
+/* =========================================================
+   TOOLTIP
+========================================================= */
+
+.orang-tua-action-btn::after {
+    content: attr(data-tooltip);
+
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 9px);
+
+    transform: translateX(-50%) translateY(4px);
+
+    width: max-content;
+    max-width: 180px;
+
+    padding: 7px 10px;
+
+    background: #212529;
+    color: #ffffff;
+
+    border-radius: 6px;
+
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+    z-index: 100;
+}
+
+.orang-tua-action-btn::before {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 3px);
+
+    width: 7px;
+    height: 7px;
+
+    background: #212529;
+
+    transform: translateX(-50%) rotate(45deg);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: opacity 0.2s ease;
+
+    z-index: 99;
+}
+
+.orang-tua-action-btn:hover::after,
+.orang-tua-action-btn:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.orang-tua-action-btn:hover::after {
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* =========================================================
+   EMPTY
 ========================================================= */
 
 .orang-tua-empty {
-    padding: 40px !important;
+    padding: 0 !important;
     text-align: center;
-    color: #777;
+}
+
+.orang-tua-empty-content {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 35px 20px;
+}
+
+.orang-tua-empty-icon {
+    width: 58px;
+    height: 58px;
+    margin-bottom: 8px;
+    border-radius: 50%;
+    background: #d1e7dd;
+    color: #198754;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orang-tua-empty-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.orang-tua-empty-content strong {
+    color: #343a40;
+    font-size: 15px;
+}
+
+.orang-tua-empty-content span {
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.orang-tua-empty-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding: 9px 14px;
+    border-radius: 7px;
+    background: #0f5132;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.orang-tua-empty-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.orang-tua-empty-button:hover {
+    background: #0b3d25;
+    color: #ffffff;
 }
 
 
@@ -253,366 +587,37 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 900px) {
-
-    .orang-tua-header {
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .orang-tua-header h2 {
-        font-size: 25px;
-    }
-
-    .orang-tua-card {
-        padding: 20px;
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
     .orang-tua-header {
         flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .orang-tua-header-content {
+        width: 100%;
     }
 
     .btn-tambah-orang-tua {
         width: 100%;
     }
 
-    .orang-tua-card {
-        padding: 15px;
+    .orang-tua-table-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .orang-tua-table th,
-    .orang-tua-table td {
-        padding: 11px;
-        font-size: 13px;
+    .orang-tua-total {
+        align-self: flex-start;
     }
 
     .orang-tua-actions {
-        flex-wrap: wrap;
+        justify-content: flex-start;
     }
 
-}
+    .orang-tua-action-btn {
+        width: 40px;
+        height: 40px;
+    }
 
-/* =========================================
-   TAMBAH ORANG TUA
-========================================= */
-
-.page-title {
-    margin-bottom: 25px;
-}
-
-.page-title h1 {
-    color: #0f5132;
-    font-size: 30px;
-    margin-bottom: 5px;
-}
-
-.page-title p {
-    color: #777;
-    margin: 0;
-}
-
-.orang-tua-card {
-    background: white;
-    border-radius: 16px;
-    padding: 30px;
-    max-width: 800px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
-
-.orang-tua-form-group {
-    margin-bottom: 20px;
-}
-
-.orang-tua-form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-.orang-tua-form-group input,
-.orang-tua-form-group textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 14px;
-    font-family: inherit;
-}
-
-.orang-tua-form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.orang-tua-form-group input:focus,
-.orang-tua-form-group textarea:focus {
-    outline: none;
-    border-color: #0f5132;
-}
-
-.orang-tua-error {
-    color: #dc3545;
-    font-size: 13px;
-    margin-top: 5px;
-}
-
-.orang-tua-error-list {
-    margin-bottom: 20px;
-}
-
-.orang-tua-error-list ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.orang-tua-info {
-    background: #e9f5ee;
-    color: #0f5132;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-
-.orang-tua-button-area {
-    margin-top: 25px;
-    display: flex;
-    gap: 10px;
-}
-
-.orang-tua-btn {
-    display: inline-block;
-    padding: 11px 18px;
-    border-radius: 8px;
-    border: none;
-    text-decoration: none;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.orang-tua-btn-simpan {
-    background: #198754;
-    color: white;
-}
-
-.orang-tua-btn-simpan:hover {
-    background: #157347;
-}
-
-.orang-tua-btn-kembali {
-    background: #6c757d;
-    color: white;
-}
-
-.orang-tua-btn-kembali:hover {
-    background: #5c636a;
-}
-
-/* =========================================
-   EDIT ORANG TUA
-========================================= */
-
-.orang-tua-edit-content {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.orang-tua-edit-card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-}
-
-.orang-tua-edit-card h2 {
-    color: #0f5132;
-    margin-top: 0;
-    margin-bottom: 25px;
-}
-
-.orang-tua-edit-form-group {
-    margin-bottom: 18px;
-}
-
-.orang-tua-edit-form-group label {
-    display: block;
-    margin-bottom: 7px;
-    font-weight: bold;
-    color: #333;
-}
-
-.orang-tua-edit-form-group input,
-.orang-tua-edit-form-group textarea {
-    width: 100%;
-    padding: 11px;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-}
-
-.orang-tua-edit-form-group input:focus,
-.orang-tua-edit-form-group textarea:focus {
-    outline: none;
-    border-color: #0f5132;
-}
-
-.orang-tua-edit-form-group textarea {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.orang-tua-edit-error {
-    background: #f8d7da;
-    color: #842029;
-    padding: 12px;
-    border-radius: 7px;
-    margin-bottom: 20px;
-}
-
-.orang-tua-edit-error ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.orang-tua-edit-info {
-    background: #cff4fc;
-    color: #055160;
-    padding: 12px;
-    border-radius: 7px;
-    margin-bottom: 20px;
-    line-height: 1.6;
-}
-
-.orang-tua-edit-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 25px;
-}
-
-.orang-tua-edit-btn {
-    padding: 11px 18px;
-    border: none;
-    border-radius: 7px;
-    text-decoration: none;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.orang-tua-edit-btn-simpan {
-    background: #198754;
-    color: white;
-}
-
-.orang-tua-edit-btn-simpan:hover {
-    background: #157347;
-}
-
-.orang-tua-edit-btn-kembali {
-    background: #6c757d;
-    color: white;
-}
-
-.orang-tua-edit-btn-kembali:hover {
-    background: #5c636a;
-}
-
-/* =========================================
-   DETAIL ORANG TUA
-========================================= */
-
-.orang-tua-detail-content {
-    max-width: 900px;
-    margin: 30px auto;
-    padding: 0 20px;
-}
-
-.orang-tua-detail-card {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
-}
-
-.orang-tua-detail-card h2,
-.orang-tua-detail-card h3 {
-    color: #0f5132;
-}
-
-.orang-tua-detail-card h2 {
-    margin-top: 0;
-    margin-bottom: 25px;
-}
-
-.orang-tua-detail-card h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-}
-
-.orang-tua-detail-row {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.orang-tua-detail-label {
-    font-weight: bold;
-}
-
-.orang-tua-detail-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
-
-.orang-tua-detail-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.orang-tua-detail-table th {
-    background: #0f5132;
-    color: white;
-    padding: 11px;
-    text-align: left;
-}
-
-.orang-tua-detail-table td {
-    padding: 11px;
-    border-bottom: 1px solid #eee;
-}
-
-.orang-tua-detail-empty {
-    margin: 0;
-    color: #777;
-}
-
-.orang-tua-detail-btn {
-    display: inline-block;
-    margin-top: 10px;
-    padding: 10px 18px;
-    background: #6c757d;
-    color: white;
-    text-decoration: none;
-    border-radius: 7px;
-}
-
-.orang-tua-detail-btn:hover {
-    background: #5c636a;
 }

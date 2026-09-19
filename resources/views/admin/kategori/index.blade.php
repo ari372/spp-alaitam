@@ -4,17 +4,20 @@
 
 @section('page-title', 'Kategori Pembayaran')
 
+@push('styles')
+    @vite('resources/css/admin/kategori.css')
+@endpush
+
 @section('content')
 
 <div class="kategori-page">
 
-    {{-- =====================================================
-         HEADER
-    ====================================================== --}}
+    {{-- HEADER --}}
 
     <div class="kategori-header">
 
         <div>
+
             <h2>
                 Kategori Pembayaran
             </h2>
@@ -22,134 +25,119 @@
             <p>
                 Mengatur jenis pembayaran siswa
             </p>
+
         </div>
+
+        <a
+            href="{{ route('admin.kategori.create') }}"
+            class="btn-tambah-kategori"
+        >
+            <i data-lucide="plus"></i>
+            Tambah Kategori
+        </a>
 
     </div>
 
 
-    {{-- =====================================================
-         PESAN BERHASIL
-    ====================================================== --}}
+    {{-- SUCCESS --}}
 
     @if(session('success'))
 
-        <div class="alert-success">
+        <div class="kategori-alert kategori-alert-success">
 
-            {{ session('success') }}
+            <i data-lucide="circle-check"></i>
+
+            <span>
+                {{ session('success') }}
+            </span>
 
         </div>
 
     @endif
 
 
-    {{-- =====================================================
-         FORM TAMBAH KATEGORI
-    ====================================================== --}}
+    {{-- ERROR --}}
+
+    @if(session('error'))
+
+        <div class="kategori-alert kategori-alert-error">
+
+            <i data-lucide="circle-alert"></i>
+
+            <span>
+                {{ session('error') }}
+            </span>
+
+        </div>
+
+    @endif
+
+
+    {{-- VALIDATION ERROR --}}
+
+    @if($errors->any())
+
+        <div class="kategori-alert kategori-alert-error">
+
+            <i data-lucide="triangle-alert"></i>
+
+            <div>
+
+                <strong>
+                    Terdapat kesalahan:
+                </strong>
+
+                <ul>
+
+                    @foreach($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    @endif
+
+
+    {{-- DATA KATEGORI --}}
 
     <div class="kategori-card">
 
-        <h3>
-            Tambah Kategori
-        </h3>
+        <div class="kategori-card-header">
 
+            <div class="kategori-card-title">
 
-        <form
-            method="POST"
-            action="{{ route('admin.kategori.store') }}"
-        >
+                <div class="kategori-card-icon">
 
-            @csrf
-
-
-            <div class="kategori-form-grid">
-
-
-                {{-- NAMA --}}
-
-                <div class="form-group">
-
-                    <label for="nama">
-                        Nama Kategori
-                    </label>
-
-                    <input
-                        type="text"
-                        id="nama"
-                        name="nama"
-                        placeholder="Contoh: SPP"
-                        value="{{ old('nama') }}"
-                        required
-                    >
+                    <i data-lucide="tags"></i>
 
                 </div>
 
+                <div>
 
-                {{-- NOMINAL --}}
+                    <h3>
+                        Daftar Kategori
+                    </h3>
 
-                <div class="form-group">
-
-                    <label for="nominal">
-                        Nominal
-                    </label>
-
-                    <input
-                        type="number"
-                        id="nominal"
-                        name="nominal"
-                        placeholder="1350000"
-                        min="0"
-                        value="{{ old('nominal') }}"
-                        required
-                    >
-
-                </div>
-
-
-                {{-- KETERANGAN --}}
-
-                <div class="form-group">
-
-                    <label for="keterangan">
-                        Keterangan
-                    </label>
-
-                    <input
-                        type="text"
-                        id="keterangan"
-                        name="keterangan"
-                        placeholder="Keterangan"
-                        value="{{ old('keterangan') }}"
-                    >
+                    <p>
+                        Daftar jenis pembayaran yang tersedia
+                    </p>
 
                 </div>
 
             </div>
 
-
-            <button
-                type="submit"
-                class="btn-tambah-kategori"
-            >
-                + Tambah Kategori
-            </button>
-
-        </form>
-
-    </div>
+        </div>
 
 
-    {{-- =====================================================
-         DATA KATEGORI
-    ====================================================== --}}
-
-    <div class="kategori-card">
-
-        <h3>
-            Daftar Kategori
-        </h3>
-
-
-        <div class="table-wrapper">
+        <div class="kategori-table-wrapper">
 
             <table class="kategori-table">
 
@@ -157,7 +145,7 @@
 
                     <tr>
 
-                        <th>
+                        <th class="col-no">
                             No
                         </th>
 
@@ -173,7 +161,7 @@
                             Keterangan
                         </th>
 
-                        <th>
+                        <th class="col-aksi">
                             Aksi
                         </th>
 
@@ -186,82 +174,125 @@
 
                     @forelse($kategori as $index => $item)
 
-                    <tr>
+                        <tr>
 
-                        <td class="text-center">
-                            {{ $index + 1 }}
-                        </td>
-
-
-                        <td>
-                            {{ $item->nama }}
-                        </td>
+                            <td class="text-center">
+                                {{ $index + 1 }}
+                            </td>
 
 
-                        <td class="nominal">
+                            <td>
 
-                            Rp
-                            {{ number_format(
-                                $item->nominal,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
+                                <strong class="kategori-nama">
+                                    {{ $item->nama }}
+                                </strong>
 
-                        </td>
+                            </td>
 
 
-                        <td>
+                            <td>
 
-                            {{ $item->keterangan ?? '-' }}
+                                <strong class="kategori-nominal">
 
-                        </td>
+                                    Rp
+                                    {{ number_format(
+                                        $item->nominal,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </strong>
+
+                            </td>
 
 
-                        <td>
+                            <td>
 
-                            <form
-                                method="POST"
-                                action="{{
-                                    route(
-                                        'admin.kategori.destroy',
-                                        $item->id
-                                    )
-                                }}"
-                                onsubmit="return confirm('Hapus kategori ini?')"
-                            >
+                                <span class="kategori-keterangan">
 
-                                @csrf
+                                    {{ $item->keterangan ?? '-' }}
 
-                                @method('DELETE')
+                                </span>
 
-                                <button
-                                    type="submit"
-                                    class="btn-hapus"
-                                >
-                                    Hapus
-                                </button>
+                            </td>
 
-                            </form>
 
-                        </td>
+                            <td>
 
-                    </tr>
+                                <div class="kategori-actions">
+
+                                    {{-- EDIT --}}
+
+                                    <a
+                                        href="{{ route(
+                                            'admin.kategori.edit',
+                                            $item->id
+                                        ) }}"
+                                        class="kategori-action kategori-action-edit"
+                                        title="Edit kategori"
+                                    >
+                                        <i data-lucide="square-pen"></i>
+                                    </a>
+
+
+                                    {{-- HAPUS --}}
+
+                                    <form
+                                        action="{{ route(
+                                            'admin.kategori.destroy',
+                                            $item->id
+                                        ) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Yakin ingin menghapus kategori ini?')"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="kategori-action kategori-action-delete"
+                                            title="Hapus kategori"
+                                        >
+                                            <i data-lucide="trash-2"></i>
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
 
                     @empty
 
-                    <tr>
+                        <tr>
 
-                        <td
-                            colspan="5"
-                            class="empty-data"
-                        >
+                            <td
+                                colspan="5"
+                                class="kategori-empty"
+                            >
 
-                            Belum ada kategori pembayaran.
+                                <div class="kategori-empty-icon">
 
-                        </td>
+                                    <i data-lucide="tags"></i>
 
-                    </tr>
+                                </div>
+
+                                <strong>
+                                    Belum ada kategori pembayaran
+                                </strong>
+
+                                <span>
+                                    Silakan tambahkan kategori pembayaran baru.
+                                </span>
+
+                            </td>
+
+                        </tr>
 
                     @endforelse
 
@@ -274,5 +305,18 @@
     </div>
 
 </div>
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        lucide.createIcons();
+
+    });
+
+</script>
 
 @endsection

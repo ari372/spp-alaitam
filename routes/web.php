@@ -216,27 +216,41 @@ Route::middleware([
     ]);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | KATEGORI TAGIHAN
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| KATEGORI TAGIHAN
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/kategori', [
-        KategoriTagihanController::class,
-        'index'
-    ])->name('admin.kategori');
+Route::get('/kategori', [
+    KategoriTagihanController::class,
+    'index'
+])->name('admin.kategori.index');
 
-    Route::post('/kategori', [
-        KategoriTagihanController::class,
-        'store'
-    ])->name('admin.kategori.store');
+Route::get('/kategori/create', [
+    KategoriTagihanController::class,
+    'create'
+])->name('admin.kategori.create');
 
-    Route::delete('/kategori/{kategori}', [
-        KategoriTagihanController::class,
-        'destroy'
-    ])->name('admin.kategori.destroy');
+Route::post('/kategori', [
+    KategoriTagihanController::class,
+    'store'
+])->name('admin.kategori.store');
 
+Route::get('/kategori/{kategori}/edit', [
+    KategoriTagihanController::class,
+    'edit'
+])->name('admin.kategori.edit');
+
+Route::put('/kategori/{kategori}', [
+    KategoriTagihanController::class,
+    'update'
+])->name('admin.kategori.update');
+
+Route::delete('/kategori/{kategori}', [
+    KategoriTagihanController::class,
+    'destroy'
+])->name('admin.kategori.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -320,26 +334,52 @@ Route::middleware([
     ])->name('admin.pembayaran.tolak');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | LAPORAN
-    |--------------------------------------------------------------------------
-    */
+/*
+|--------------------------------------------------------------------------
+| LAPORAN
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/laporan', [
-        LaporanController::class,
-        'index'
-    ])->name('admin.laporan.index');
+Route::get('/laporan', [
+    LaporanController::class,
+    'index'
+])->name('admin.laporan.index');
 
-    Route::get('/laporan/pdf', [
-        LaporanController::class,
-        'pdf'
-    ])->name('admin.laporan.pdf');
 
-    Route::get('/laporan/excel', [
-        LaporanController::class,
-        'excel'
-    ])->name('admin.laporan.excel');
+Route::get('/laporan/pdf', [
+    LaporanController::class,
+    'pdf'
+])->name('admin.laporan.pdf');
+
+
+Route::get('/laporan/excel', [
+    LaporanController::class,
+    'excel'
+])->name('admin.laporan.excel');
+
+
+Route::get('/laporan/{pembayaran}', [
+    LaporanController::class,
+    'show'
+])->name('admin.laporan.show');
+
+
+Route::get('/laporan/{pembayaran}/edit', [
+    LaporanController::class,
+    'edit'
+])->name('admin.laporan.edit');
+
+
+Route::put('/laporan/{pembayaran}', [
+    LaporanController::class,
+    'update'
+])->name('admin.laporan.update');
+
+
+Route::delete('/laporan/{pembayaran}', [
+    LaporanController::class,
+    'destroy'
+])->name('admin.laporan.destroy');
 
 });
 
