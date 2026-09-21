@@ -4,9 +4,11 @@
 
 @section('page-title', 'Data Orang Tua')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/admin/orang-tua.css')
+@endpush
 
-@vite('resources/css/admin/orang-tua.css')
+@section('content')
 
 <div class="orang-tua-page">
 
@@ -29,15 +31,110 @@
 
         </div>
 
-        <a
-            href="{{ route('admin.orang-tua.create') }}"
-            class="btn-tambah-orang-tua"
-        >
-            <i data-lucide="user-plus"></i>
-            Tambah Orang Tua
-        </a>
+
+        {{-- SEARCH DAN TAMBAH --}}
+        <div class="orang-tua-header-actions">
+
+            {{-- FORM PENCARIAN --}}
+            <form
+                action="{{ route('admin.orang-tua.index') }}"
+                method="GET"
+                class="orang-tua-search-form"
+            >
+
+                <div class="orang-tua-search-input-wrapper">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari nama, email, HP..."
+                        aria-label="Cari data orang tua"
+                    >
+
+                    @if(request('search'))
+
+                        <a
+                            href="{{ route('admin.orang-tua.index') }}"
+                            class="orang-tua-search-clear"
+                            title="Hapus pencarian"
+                            aria-label="Hapus pencarian"
+                        >
+                            <i data-lucide="x"></i>
+                        </a>
+
+                    @endif
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="orang-tua-search-button"
+                >
+
+                    <i data-lucide="search"></i>
+
+                    <span>Cari</span>
+
+                </button>
+
+            </form>
+
+
+            {{-- TOMBOL TAMBAH --}}
+            <a
+                href="{{ route('admin.orang-tua.create') }}"
+                class="btn-tambah-orang-tua"
+            >
+
+                <i data-lucide="user-plus"></i>
+
+                <span>
+                    Tambah Orang Tua
+                </span>
+
+            </a>
+
+        </div>
 
     </div>
+
+
+    {{-- INFORMASI HASIL PENCARIAN --}}
+    @if(request('search'))
+
+        <div class="orang-tua-search-result">
+
+            <i data-lucide="search"></i>
+
+            <span>
+
+                Hasil pencarian untuk:
+
+                <strong>
+                    "{{ request('search') }}"
+                </strong>
+
+            </span>
+
+
+            <a
+                href="{{ route('admin.orang-tua.index') }}"
+                class="orang-tua-search-reset"
+            >
+
+                <i data-lucide="rotate-ccw"></i>
+
+                Reset
+
+            </a>
+
+        </div>
+
+    @endif
 
 
     {{-- SUCCESS --}}
@@ -122,6 +219,7 @@
 
             </div>
 
+
             <div class="orang-tua-total">
 
                 <i data-lucide="users-round"></i>
@@ -181,7 +279,9 @@
 
                             {{-- NO --}}
                             <td class="text-center">
+
                                 {{ $loop->iteration }}
+
                             </td>
 
 
@@ -244,7 +344,7 @@
 
                                     {{ $item->siswa_count }}
 
-                                    {{ $item->siswa_count == 1 ? 'Anak' : 'Anak' }}
+                                    Anak
 
                                 </span>
 
@@ -297,11 +397,7 @@
                                         ) }}"
                                         method="POST"
                                         class="orang-tua-action-form"
-                                        onsubmit="
-                                            return confirm(
-                                                'Yakin ingin menghapus orang tua ini?'
-                                            )
-                                        "
+                                        onsubmit="return confirm('Yakin ingin menghapus orang tua ini?')"
                                     >
 
                                         @csrf
@@ -344,24 +440,50 @@
 
                                     </div>
 
-                                    <strong>
-                                        Belum ada data orang tua
-                                    </strong>
 
-                                    <span>
-                                        Silakan tambahkan data orang tua terlebih dahulu.
-                                    </span>
+                                    @if(request('search'))
 
-                                    <a
-                                        href="{{ route('admin.orang-tua.create') }}"
-                                        class="orang-tua-empty-button"
-                                    >
+                                        <strong>
+                                            Data orang tua tidak ditemukan
+                                        </strong>
 
-                                        <i data-lucide="user-plus"></i>
+                                        <span>
+                                            Tidak ada data yang sesuai dengan pencarian Anda.
+                                        </span>
 
-                                        Tambah Orang Tua
+                                        <a
+                                            href="{{ route('admin.orang-tua.index') }}"
+                                            class="orang-tua-empty-button"
+                                        >
 
-                                    </a>
+                                            <i data-lucide="rotate-ccw"></i>
+
+                                            Reset Pencarian
+
+                                        </a>
+
+                                    @else
+
+                                        <strong>
+                                            Belum ada data orang tua
+                                        </strong>
+
+                                        <span>
+                                            Silakan tambahkan data orang tua terlebih dahulu.
+                                        </span>
+
+                                        <a
+                                            href="{{ route('admin.orang-tua.create') }}"
+                                            class="orang-tua-empty-button"
+                                        >
+
+                                            <i data-lucide="user-plus"></i>
+
+                                            Tambah Orang Tua
+
+                                        </a>
+
+                                    @endif
 
                                 </div>
 
@@ -383,16 +505,24 @@
 
 
 {{-- LUCIDE --}}
-<script src="https://unpkg.com/lucide@latest"></script>
+@push('scripts')
 
-<script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    document.addEventListener('DOMContentLoaded', function () {
+    <script>
 
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function () {
 
-    });
+            if (typeof lucide !== 'undefined') {
 
-</script>
+                lucide.createIcons();
+
+            }
+
+        });
+
+    </script>
+
+@endpush
 
 @endsection

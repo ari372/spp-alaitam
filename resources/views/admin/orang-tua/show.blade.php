@@ -10,150 +10,284 @@
 
 @section('content')
 
-<div class="orang-tua-detail-content">
+<div class="orang-tua-detail-page">
 
-    <div class="orang-tua-detail-card">
+    {{-- HEADER --}}
+    <div class="orang-tua-detail-header">
 
-        <h2>
-            Detail Orang Tua
-        </h2>
+        <div class="orang-tua-detail-header-content">
 
-
-        <div class="orang-tua-detail-row">
-
-            <div class="orang-tua-detail-label">
-                Nama
+            <div class="orang-tua-detail-header-icon">
+                <i data-lucide="user-round"></i>
             </div>
 
             <div>
-                {{ $orangTua->nama }}
+                <h1>Detail Orang Tua</h1>
+                <p>Informasi lengkap data orang tua dan anak siswa.</p>
             </div>
 
         </div>
 
+        <a href="{{ route('admin.orang-tua.index') }}"
+           class="orang-tua-detail-back">
 
-        <div class="orang-tua-detail-row">
+            <i data-lucide="arrow-left"></i>
+            <span>Kembali</span>
 
-            <div class="orang-tua-detail-label">
-                Email
-            </div>
-
-            <div>
-                {{ $orangTua->email ?? '-' }}
-            </div>
-
-        </div>
-
-
-        <div class="orang-tua-detail-row">
-
-            <div class="orang-tua-detail-label">
-                No HP
-            </div>
-
-            <div>
-                {{ $orangTua->no_hp ?? '-' }}
-            </div>
-
-        </div>
-
-
-        <div class="orang-tua-detail-row">
-
-            <div class="orang-tua-detail-label">
-                Alamat
-            </div>
-
-            <div>
-                {{ $orangTua->alamat ?? '-' }}
-            </div>
-
-        </div>
+        </a>
 
     </div>
 
 
-    <div class="orang-tua-detail-card">
+    {{-- INFORMASI ORANG TUA --}}
+    <div class="orang-tua-detail-grid">
 
-        <h3>
-            Anak / Siswa
-        </h3>
+        <div class="orang-tua-detail-card">
 
+            <div class="orang-tua-detail-card-header">
 
-        @if($orangTua->siswa->count() > 0)
+                <div class="orang-tua-detail-card-icon">
+                    <i data-lucide="user-round"></i>
+                </div>
 
-            <div class="orang-tua-detail-table-wrapper">
+                <div>
+                    <h2>Informasi Orang Tua</h2>
+                    <p>Data pribadi orang tua siswa.</p>
+                </div>
 
-                <table class="orang-tua-detail-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>
-                                NIS
-                            </th>
-
-                            <th>
-                                Nama
-                            </th>
-
-                            <th>
-                                Kelas
-                            </th>
-
-                        </tr>
-
-                    </thead>
+            </div>
 
 
-                    <tbody>
+            <div class="orang-tua-detail-profile">
 
-                        @foreach($orangTua->siswa as $siswa)
+                <div class="orang-tua-detail-avatar">
+                    {{ strtoupper(substr($orangTua->nama, 0, 1)) }}
+                </div>
 
+                <div>
+                    <h3>{{ $orangTua->nama }}</h3>
+                    <span>Orang Tua Siswa</span>
+                </div>
+
+            </div>
+
+
+            <div class="orang-tua-detail-list">
+
+                <div class="orang-tua-detail-item">
+
+                    <div class="orang-tua-detail-item-label">
+                        <i data-lucide="user"></i>
+                        <span>Nama</span>
+                    </div>
+
+                    <strong>
+                        {{ $orangTua->nama }}
+                    </strong>
+
+                </div>
+
+
+                <div class="orang-tua-detail-item">
+
+                    <div class="orang-tua-detail-item-label">
+                        <i data-lucide="mail"></i>
+                        <span>Email</span>
+                    </div>
+
+                    <strong>
+    {{ $orangTua->user->email ?? '-' }}
+</strong>
+
+                </div>
+
+
+                <div class="orang-tua-detail-item">
+
+                    <div class="orang-tua-detail-item-label">
+                        <i data-lucide="phone"></i>
+                        <span>No HP</span>
+                    </div>
+
+                    <strong>
+                        {{ $orangTua->no_hp ?? '-' }}
+                    </strong>
+
+                </div>
+
+
+                <div class="orang-tua-detail-item">
+
+                    <div class="orang-tua-detail-item-label">
+                        <i data-lucide="map-pin"></i>
+                        <span>Alamat</span>
+                    </div>
+
+                    <strong>
+                        {{ $orangTua->alamat ?? '-' }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="orang-tua-detail-card-actions">
+
+                <a href="{{ route('admin.orang-tua.edit', $orangTua->id) }}"
+                   class="orang-tua-detail-btn orang-tua-detail-btn-edit">
+
+                    <i data-lucide="square-pen"></i>
+                    <span>Edit Data</span>
+
+                </a>
+
+                <a href="{{ route('admin.orang-tua.index') }}"
+                   class="orang-tua-detail-btn orang-tua-detail-btn-back">
+
+                    <i data-lucide="arrow-left"></i>
+                    <span>Kembali</span>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        {{-- DATA ANAK --}}
+        <div class="orang-tua-detail-card">
+
+            <div class="orang-tua-detail-card-header">
+
+                <div class="orang-tua-detail-card-icon">
+                    <i data-lucide="users"></i>
+                </div>
+
+                <div>
+                    <h2>Anak / Siswa</h2>
+                    <p>Daftar siswa yang terhubung dengan orang tua.</p>
+                </div>
+
+            </div>
+
+
+            <div class="orang-tua-detail-total">
+
+                <i data-lucide="users"></i>
+
+                <span>
+                    {{ $orangTua->siswa->count() }} Siswa
+                </span>
+
+            </div>
+
+
+            @if($orangTua->siswa->count() > 0)
+
+                <div class="orang-tua-detail-table-wrapper">
+
+                    <table class="orang-tua-detail-table">
+
+                        <thead>
                             <tr>
-
-                                <td>
-                                    {{ $siswa->nis }}
-                                </td>
-
-                                <td>
-                                    {{ $siswa->nama }}
-                                </td>
-
-                                <td>
-                                    {{ $siswa->kelas->nama_kelas ?? '-' }}
-                                </td>
-
+                                <th>No</th>
+                                <th>NIS</th>
+                                <th>Nama</th>
+                                <th>Kelas</th>
                             </tr>
+                        </thead>
 
-                        @endforeach
+                        <tbody>
 
-                    </tbody>
+                            @foreach($orangTua->siswa as $index => $siswa)
 
-                </table>
+                                <tr>
 
-            </div>
+                                    <td>
+                                        {{ $index + 1 }}
+                                    </td>
 
-        @else
+                                    <td>
+                                        <strong>
+                                            {{ $siswa->nis }}
+                                        </strong>
+                                    </td>
 
-            <p class="orang-tua-detail-empty">
-                Orang tua ini belum memiliki
-                data siswa.
-            </p>
+                                    <td>
 
-        @endif
+                                        <div class="orang-tua-detail-siswa">
+
+                                            <div class="orang-tua-detail-siswa-avatar">
+                                                {{ strtoupper(substr($siswa->nama, 0, 1)) }}
+                                            </div>
+
+                                            <span>
+                                                {{ $siswa->nama }}
+                                            </span>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="orang-tua-detail-kelas">
+
+                                            <i data-lucide="school"></i>
+
+                                            {{ $siswa->kelas->nama_kelas
+                                                ?? $siswa->kelas->nama
+                                                ?? '-' }}
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            @else
+
+                <div class="orang-tua-detail-empty">
+
+                    <div class="orang-tua-detail-empty-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+
+                    <h3>Belum Ada Data Siswa</h3>
+
+                    <p>
+                        Orang tua ini belum memiliki data siswa
+                        yang terhubung.
+                    </p>
+
+                </div>
+
+            @endif
+
+        </div>
 
     </div>
-
-
-    <a
-        href="{{ route('admin.orang-tua.index') }}"
-        class="orang-tua-detail-btn"
-    >
-        Kembali
-    </a>
 
 </div>
+
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+@endpush
 
 @endsection

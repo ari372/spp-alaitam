@@ -1,12 +1,15 @@
+
 @extends('layouts.admin')
 
 @section('title', 'Data Siswa')
 
 @section('page-title', 'Data Siswa')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/admin/siswa.css')
+@endpush
 
-@vite('resources/css/admin/siswa.css')
+@section('content')
 
 <div class="siswa-container">
 
@@ -29,15 +32,95 @@
 
         </div>
 
-        <a
-            href="{{ route('admin.siswa.create') }}"
-            class="btn-tambah"
-        >
-            <i data-lucide="user-plus"></i>
-            Tambah Siswa
-        </a>
+        {{-- SEARCH DAN TOMBOL TAMBAH --}}
+        <div class="siswa-header-actions">
+
+            {{-- FORM PENCARIAN --}}
+            <form
+                action="{{ route('admin.siswa.index') }}"
+                method="GET"
+                class="siswa-search-form"
+            >
+
+                <div class="siswa-search-input-wrapper">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari nama, NIS, kelas..."
+                        aria-label="Cari data siswa"
+                    >
+
+                    @if(request('search'))
+
+                        <a
+                            href="{{ route('admin.siswa.index') }}"
+                            class="siswa-search-clear"
+                            title="Reset pencarian"
+                            aria-label="Reset pencarian"
+                        >
+                            <i data-lucide="x"></i>
+                        </a>
+
+                    @endif
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="siswa-search-button"
+                >
+                    <i data-lucide="search"></i>
+                    <span>Cari</span>
+                </button>
+
+            </form>
+
+
+            {{-- TOMBOL TAMBAH SISWA --}}
+            <a
+                href="{{ route('admin.siswa.create') }}"
+                class="btn-tambah"
+            >
+                <i data-lucide="user-plus"></i>
+                <span>Tambah Siswa</span>
+            </a>
+
+        </div>
 
     </div>
+
+
+    {{-- INFORMASI HASIL PENCARIAN --}}
+    @if(request('search'))
+
+        <div class="siswa-search-result">
+
+            <div class="siswa-search-result-content">
+
+                <i data-lucide="search"></i>
+
+                <span>
+                    Hasil pencarian untuk:
+                    <strong>"{{ request('search') }}"</strong>
+                </span>
+
+            </div>
+
+            <a
+                href="{{ route('admin.siswa.index') }}"
+                class="siswa-search-reset"
+            >
+                <i data-lucide="rotate-ccw"></i>
+                Reset
+            </a>
+
+        </div>
+
+    @endif
 
 
     {{-- ALERT SUCCESS --}}
@@ -104,9 +187,10 @@
     @endif
 
 
-    {{-- TABLE --}}
+    {{-- TABLE CARD --}}
     <div class="siswa-table-card">
 
+        {{-- TABLE HEADER --}}
         <div class="siswa-table-header">
 
             <div>
@@ -134,6 +218,7 @@
         </div>
 
 
+        {{-- TABLE --}}
         <div class="table-wrapper">
 
             <table class="siswa-table">
@@ -181,7 +266,7 @@
 
                         <tr>
 
-                            {{-- NO --}}
+                            {{-- NOMOR --}}
                             <td class="text-center">
                                 {{ $loop->iteration }}
                             </td>
@@ -189,19 +274,23 @@
 
                             {{-- NIS --}}
                             <td>
+
                                 <span class="siswa-nis">
                                     {{ $item->nis }}
                                 </span>
+
                             </td>
 
 
-                            {{-- NAMA --}}
+                            {{-- NAMA SISWA --}}
                             <td>
 
                                 <div class="siswa-name">
 
                                     <div class="siswa-avatar">
+
                                         {{ strtoupper(substr($item->nama, 0, 1)) }}
+
                                     </div>
 
                                     <span>
@@ -260,7 +349,7 @@
 
                                 <span class="orangtua-text">
 
-                                    <i data-lucide="user"></i>
+                                    <i data-lucide="user-round"></i>
 
                                     {{ $item->orangTua->nama ?? '-' }}
 
@@ -274,13 +363,9 @@
 
                                 <div class="aksi">
 
-
                                     {{-- DETAIL --}}
                                     <a
-                                        href="{{ route(
-                                            'admin.siswa.show',
-                                            $item->id
-                                        ) }}"
+                                        href="{{ route('admin.siswa.show', $item->id) }}"
                                         class="aksi-btn aksi-detail"
                                         data-tooltip="Lihat detail siswa"
                                         aria-label="Lihat detail siswa"
@@ -293,10 +378,7 @@
 
                                     {{-- EDIT --}}
                                     <a
-                                        href="{{ route(
-                                            'admin.siswa.edit',
-                                            $item->id
-                                        ) }}"
+                                        href="{{ route('admin.siswa.edit', $item->id) }}"
                                         class="aksi-btn aksi-edit"
                                         data-tooltip="Edit data siswa"
                                         aria-label="Edit data siswa"
@@ -309,17 +391,10 @@
 
                                     {{-- HAPUS --}}
                                     <form
-                                        action="{{ route(
-                                            'admin.siswa.destroy',
-                                            $item->id
-                                        ) }}"
+                                        action="{{ route('admin.siswa.destroy', $item->id) }}"
                                         method="POST"
                                         class="aksi-form"
-                                        onsubmit="
-                                            return confirm(
-                                                'Yakin ingin menghapus siswa ini?'
-                                            )
-                                        "
+                                        onsubmit="return confirm('Yakin ingin menghapus siswa ini?')"
                                     >
 
                                         @csrf
@@ -347,6 +422,7 @@
 
                     @empty
 
+                        {{-- DATA KOSONG --}}
                         <tr>
 
                             <td
@@ -362,24 +438,50 @@
 
                                     </div>
 
-                                    <strong>
-                                        Belum ada data siswa
-                                    </strong>
 
-                                    <span>
-                                        Silakan tambahkan data siswa terlebih dahulu.
-                                    </span>
+                                    @if(request('search'))
 
-                                    <a
-                                        href="{{ route('admin.siswa.create') }}"
-                                        class="empty-button"
-                                    >
+                                        <strong>
+                                            Data siswa tidak ditemukan
+                                        </strong>
 
-                                        <i data-lucide="user-plus"></i>
+                                        <span>
+                                            Tidak ada siswa yang sesuai dengan pencarian Anda.
+                                        </span>
 
-                                        Tambah Siswa
+                                        <a
+                                            href="{{ route('admin.siswa.index') }}"
+                                            class="empty-button"
+                                        >
 
-                                    </a>
+                                            <i data-lucide="rotate-ccw"></i>
+
+                                            Reset Pencarian
+
+                                        </a>
+
+                                    @else
+
+                                        <strong>
+                                            Belum ada data siswa
+                                        </strong>
+
+                                        <span>
+                                            Silakan tambahkan data siswa terlebih dahulu.
+                                        </span>
+
+                                        <a
+                                            href="{{ route('admin.siswa.create') }}"
+                                            class="empty-button"
+                                        >
+
+                                            <i data-lucide="user-plus"></i>
+
+                                            Tambah Siswa
+
+                                        </a>
+
+                                    @endif
 
                                 </div>
 
@@ -401,16 +503,24 @@
 
 
 {{-- LUCIDE ICON --}}
-<script src="https://unpkg.com/lucide@latest"></script>
+@push('scripts')
 
-<script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-    document.addEventListener('DOMContentLoaded', function () {
+    <script>
 
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function () {
 
-    });
+            if (typeof lucide !== 'undefined') {
 
-</script>
+                lucide.createIcons();
+
+            }
+
+        });
+
+    </script>
+
+@endpush
 
 @endsection

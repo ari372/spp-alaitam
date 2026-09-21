@@ -1,14 +1,27 @@
+
 /* =========================================================
-   DATA SISWA
+   GLOBAL
 ========================================================= */
 
-.siswa-container {
+.siswa-container,
+.siswa-create-content,
+.siswa-edit-content,
+.siswa-detail-content,
+.siswa-import-page {
     width: 100%;
+    box-sizing: border-box;
 }
 
+.siswa-container *,
+.siswa-create-content *,
+.siswa-edit-content *,
+.siswa-detail-content *,
+.siswa-import-page * {
+    box-sizing: border-box;
+}
 
 /* =========================================================
-   HEADER
+   HEADER DATA SISWA
 ========================================================= */
 
 .siswa-header {
@@ -55,7 +68,6 @@
     font-size: 14px;
 }
 
-
 /* =========================================================
    BUTTON TAMBAH
 ========================================================= */
@@ -67,12 +79,14 @@
     gap: 8px;
     min-height: 43px;
     padding: 10px 17px;
+    border: 1px solid #0f5132;
     border-radius: 8px;
     background: #0f5132;
     color: #ffffff;
     text-decoration: none;
     font-size: 14px;
     font-weight: 600;
+    cursor: pointer;
     transition: all 0.2s ease;
 }
 
@@ -83,13 +97,13 @@
 
 .btn-tambah:hover {
     background: #0b3d25;
+    border-color: #0b3d25;
     color: #ffffff;
     transform: translateY(-1px);
 }
 
-
 /* =========================================================
-   ALERT
+   ALERT UMUM
 ========================================================= */
 
 .alert {
@@ -127,12 +141,12 @@
     padding: 0;
 }
 
-
 /* =========================================================
    TABLE CARD
 ========================================================= */
 
 .siswa-table-card {
+    width: 100%;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     padding: 0;
@@ -140,7 +154,6 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
     overflow: hidden;
 }
-
 
 /* =========================================================
    TABLE HEADER
@@ -178,13 +191,13 @@
     color: #0f5132;
     font-size: 12px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .siswa-total svg {
     width: 16px;
     height: 16px;
 }
-
 
 /* =========================================================
    TABLE
@@ -197,8 +210,8 @@
 
 .siswa-table {
     width: 100%;
-    border-collapse: collapse;
     min-width: 950px;
+    border-collapse: collapse;
 }
 
 .siswa-table thead tr {
@@ -220,7 +233,7 @@
 }
 
 .siswa-table th.col-aksi {
-    width: 125px;
+    width: 145px;
     text-align: center;
 }
 
@@ -248,7 +261,6 @@
     text-align: center !important;
 }
 
-
 /* =========================================================
    NIS
 ========================================================= */
@@ -258,7 +270,6 @@
     font-weight: 600;
     font-size: 13px;
 }
-
 
 /* =========================================================
    NAMA SISWA
@@ -288,7 +299,6 @@
     color: #212529;
     font-weight: 600;
 }
-
 
 /* =========================================================
    GENDER BADGE
@@ -320,7 +330,6 @@
     color: #c2185b;
 }
 
-
 /* =========================================================
    KELAS
 ========================================================= */
@@ -343,7 +352,6 @@
     height: 14px;
 }
 
-
 /* =========================================================
    ORANG TUA
 ========================================================= */
@@ -362,9 +370,8 @@
     color: #0f5132;
 }
 
-
 /* =========================================================
-   AKSI
+   AKSI TABLE
 ========================================================= */
 
 .aksi {
@@ -379,21 +386,20 @@
     padding: 0;
 }
 
-
 /* =========================================================
    ACTION BUTTON
 ========================================================= */
 
 .aksi-btn {
     position: relative;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     padding: 0;
-    border-radius: 10px;
+    border: 1px solid transparent;
+    border-radius: 9px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid transparent;
     text-decoration: none;
     cursor: pointer;
     transition:
@@ -403,8 +409,8 @@
 }
 
 .aksi-btn svg {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     stroke-width: 2;
 }
 
@@ -412,9 +418,8 @@
     transform: translateY(-2px);
 }
 
-
 /* =========================================================
-   DETAIL - BIRU
+   DETAIL
 ========================================================= */
 
 .aksi-detail {
@@ -428,9 +433,8 @@
     box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
 }
 
-
 /* =========================================================
-   EDIT - KUNING
+   EDIT
 ========================================================= */
 
 .aksi-edit {
@@ -445,9 +449,8 @@
     box-shadow: 0 4px 10px rgba(255, 193, 7, 0.20);
 }
 
-
 /* =========================================================
-   HAPUS - MERAH
+   HAPUS
 ========================================================= */
 
 .aksi-hapus {
@@ -462,7 +465,6 @@
     box-shadow: 0 4px 10px rgba(220, 53, 69, 0.20);
 }
 
-
 /* =========================================================
    TOOLTIP
 ========================================================= */
@@ -473,62 +475,39 @@
     left: 50%;
     bottom: calc(100% + 9px);
     transform: translateX(-50%) translateY(4px);
-
     width: max-content;
     max-width: 180px;
-
     padding: 7px 10px;
-
     background: #212529;
     color: #ffffff;
-
     border-radius: 6px;
-
     font-size: 11px;
     font-weight: 500;
     line-height: 1.3;
-
     white-space: nowrap;
-
     opacity: 0;
     visibility: hidden;
-
     pointer-events: none;
-
     transition:
         opacity 0.2s ease,
         transform 0.2s ease;
-
     z-index: 100;
 }
-
-
-/* PANAH TOOLTIP */
 
 .aksi-btn::before {
     content: "";
     position: absolute;
     left: 50%;
     bottom: calc(100% + 3px);
-
     width: 7px;
     height: 7px;
-
     background: #212529;
-
     transform: translateX(-50%) rotate(45deg);
-
     opacity: 0;
     visibility: hidden;
-
-    transition:
-        opacity 0.2s ease;
-    
+    transition: opacity 0.2s ease;
     z-index: 99;
 }
-
-
-/* HOVER TOOLTIP */
 
 .aksi-btn:hover::after,
 .aksi-btn:hover::before {
@@ -540,9 +519,8 @@
     transform: translateX(-50%) translateY(0);
 }
 
-
 /* =========================================================
-   EMPTY
+   EMPTY DATA
 ========================================================= */
 
 .empty {
@@ -612,15 +590,14 @@
     color: #ffffff;
 }
 
-
 /* =========================================================
-   TAMBAH / EDIT / DETAIL FORM
+   TAMBAH, EDIT, DETAIL SISWA
 ========================================================= */
 
 .siswa-create-content,
 .siswa-edit-content,
 .siswa-detail-content {
-    max-width: 850px;
+    max-width: 1000px;
     margin: 25px auto;
     padding: 0 20px;
 }
@@ -628,21 +605,134 @@
 .siswa-create-card,
 .siswa-edit-card,
 .siswa-detail-card {
+    width: 100%;
     background: #ffffff;
     padding: 30px;
-    border-radius: 13px;
+    border-radius: 15px;
     border: 1px solid #e5e7eb;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
 }
 
-.siswa-create-card h2,
-.siswa-edit-card h2,
-.siswa-detail-card h2 {
+/* =========================================================
+   HEADER TAMBAH SISWA
+========================================================= */
+
+.siswa-create-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e5ebe7;
+}
+
+.siswa-create-header h2 {
+    margin: 0 0 8px;
     color: #0f5132;
-    margin-top: 0;
-    margin-bottom: 25px;
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1.3;
 }
 
+.siswa-create-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.siswa-create-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   BUTTON FORM SISWA
+========================================================= */
+
+.siswa-create-btn,
+.siswa-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.siswa-create-btn svg,
+.siswa-edit-btn svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+}
+
+.siswa-create-btn:hover,
+.siswa-edit-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* IMPORT EXCEL */
+
+.siswa-create-btn-import {
+    background: #ffffff;
+    border-color: #0f5132;
+    color: #0f5132;
+}
+
+.siswa-create-btn-import:hover {
+    background: #edf6f1;
+    border-color: #0b3d25;
+    color: #0b3d25;
+}
+
+/* KEMBALI */
+
+.siswa-create-btn-kembali,
+.siswa-edit-btn-kembali {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: #ffffff;
+}
+
+.siswa-create-btn-kembali:hover,
+.siswa-edit-btn-kembali:hover {
+    background: #5c636a;
+    border-color: #5c636a;
+    color: #ffffff;
+}
+
+/* SIMPAN */
+
+.siswa-create-btn-simpan,
+.siswa-edit-btn-simpan {
+    background: #0f5132;
+    border-color: #0f5132;
+    color: #ffffff;
+}
+
+.siswa-create-btn-simpan:hover,
+.siswa-edit-btn-simpan:hover {
+    background: #0b3d25;
+    border-color: #0b3d25;
+    color: #ffffff;
+}
 
 /* =========================================================
    FORM GROUP
@@ -650,14 +740,14 @@
 
 .siswa-create-form-group,
 .siswa-edit-form-group {
-    margin-bottom: 18px;
+    margin-bottom: 19px;
 }
 
 .siswa-create-form-group label,
 .siswa-edit-form-group label {
     display: block;
-    margin-bottom: 7px;
-    color: #343a40;
+    margin-bottom: 8px;
+    color: #263d32;
     font-size: 13px;
     font-weight: 600;
 }
@@ -668,22 +758,32 @@
 .siswa-edit-form-group input,
 .siswa-edit-form-group select,
 .siswa-edit-form-group textarea {
+    display: block;
     width: 100%;
-    padding: 11px 12px;
+    padding: 12px 13px;
     border: 1px solid #ced4da;
-    border-radius: 8px;
+    border-radius: 9px;
     background: #ffffff;
     color: #212529;
+    font-family: inherit;
     font-size: 14px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    line-height: 1.5;
     outline: none;
-    transition: 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.siswa-create-form-group input::placeholder,
+.siswa-create-form-group textarea::placeholder,
+.siswa-edit-form-group input::placeholder,
+.siswa-edit-form-group textarea::placeholder {
+    color: #8b959e;
 }
 
 .siswa-create-form-group textarea,
 .siswa-edit-form-group textarea {
-    min-height: 100px;
+    min-height: 110px;
     resize: vertical;
 }
 
@@ -694,9 +794,8 @@
 .siswa-edit-form-group select:focus,
 .siswa-edit-form-group textarea:focus {
     border-color: #0f5132;
-    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.08);
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.10);
 }
-
 
 /* =========================================================
    ERROR FORM
@@ -705,20 +804,51 @@
 .siswa-create-error,
 .siswa-edit-error {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+    padding: 14px 16px;
+    border: 1px solid #f1aeb5;
+    border-radius: 9px;
     background: #f8d7da;
     color: #842029;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.siswa-create-error-title,
+.siswa-edit-error-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.siswa-create-error-title svg,
+.siswa-edit-error-title svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .siswa-create-error ul,
 .siswa-edit-error ul {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 25px;
 }
 
+.siswa-create-error li,
+.siswa-edit-error li {
+    margin-bottom: 4px;
+}
+
+.siswa-create-field-error,
+.siswa-edit-field-error {
+    display: block;
+    margin-top: 6px;
+    color: #dc3545;
+    font-size: 12px;
+}
 
 /* =========================================================
    FORM ACTION
@@ -727,57 +857,29 @@
 .siswa-create-actions,
 .siswa-edit-actions {
     display: flex;
-    gap: 10px;
-    margin-top: 25px;
-}
-
-.siswa-create-btn,
-.siswa-edit-btn {
-    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 7px;
-    padding: 10px 17px;
-    border: none;
-    border-radius: 8px;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #e5ebe7;
 }
-
-.siswa-create-btn-simpan,
-.siswa-edit-btn-simpan {
-    background: #198754;
-    color: #ffffff;
-}
-
-.siswa-create-btn-simpan:hover,
-.siswa-edit-btn-simpan:hover {
-    background: #157347;
-    color: #ffffff;
-}
-
-.siswa-create-btn-kembali,
-.siswa-edit-btn-kembali {
-    background: #6c757d;
-    color: #ffffff;
-}
-
-.siswa-create-btn-kembali:hover,
-.siswa-edit-btn-kembali:hover {
-    background: #5c636a;
-    color: #ffffff;
-}
-
 
 /* =========================================================
    DETAIL SISWA
 ========================================================= */
 
+.siswa-detail-card h2,
+.siswa-edit-card h2 {
+    color: #0f5132;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
 .siswa-detail-row {
     display: grid;
     grid-template-columns: 180px 1fr;
+    gap: 20px;
     padding: 13px 0;
     border-bottom: 1px solid #eeeeee;
 }
@@ -800,10 +902,10 @@
     gap: 7px;
     margin-top: 25px;
     padding: 10px 17px;
+    border-radius: 8px;
     background: #6c757d;
     color: #ffffff;
     text-decoration: none;
-    border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
 }
@@ -813,13 +915,479 @@
     color: #ffffff;
 }
 
+/* =========================================================
+   IMPORT SISWA - PAGE
+========================================================= */
+
+.siswa-import-page {
+    padding: 28px 40px 40px;
+}
+
+.siswa-import-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.siswa-import-header-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.siswa-import-header-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.siswa-import-header-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.siswa-import-header h1 {
+    margin: 0 0 6px;
+    color: #0f5132;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.siswa-import-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.siswa-import-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid #d8e2dc;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #0f5132;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.siswa-import-back svg {
+    width: 17px;
+    height: 17px;
+}
+
+.siswa-import-back:hover {
+    background: #edf6f1;
+    border-color: #0f5132;
+    color: #0b3d25;
+}
 
 /* =========================================================
-   RESPONSIVE
+   IMPORT CARD
+========================================================= */
+
+.siswa-import-card {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #e3ebe6;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(15, 81, 50, 0.06);
+}
+
+.siswa-import-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.siswa-import-card-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.siswa-import-card-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.siswa-import-card-header h2 {
+    margin: 0 0 5px;
+    color: #0f5132;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.siswa-import-card-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* =========================================================
+   IMPORT INFORMATION
+========================================================= */
+
+.siswa-import-info {
+    margin-bottom: 24px;
+    padding: 18px 20px;
+    border: 1px solid #badbcc;
+    border-radius: 10px;
+    background: #f0f8f3;
+    color: #355b47;
+}
+
+.siswa-import-info-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 10px;
+    color: #0f5132;
+    font-size: 14px;
+}
+
+.siswa-import-info-title svg {
+    width: 18px;
+    height: 18px;
+}
+
+.siswa-import-info ul {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.siswa-import-info li {
+    margin-bottom: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.siswa-import-info li:last-child {
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   IMPORT ALERT
+========================================================= */
+
+.siswa-import-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 9px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.siswa-import-alert > svg {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.siswa-import-alert-success {
+    background: #d1e7dd;
+    border: 1px solid #badbcc;
+    color: #0f5132;
+}
+
+.siswa-import-alert-error {
+    background: #f8d7da;
+    border: 1px solid #f1aeb5;
+    color: #842029;
+}
+
+.siswa-import-alert ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+}
+
+/* =========================================================
+   DOWNLOAD TEMPLATE
+========================================================= */
+
+.siswa-import-download {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 26px;
+    padding: 18px;
+    border: 1px solid #dce8e1;
+    border-radius: 12px;
+    background: #f8fbf9;
+}
+
+.siswa-import-download-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.siswa-import-download-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.siswa-import-download-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.siswa-import-download-content h3 {
+    margin: 0 0 5px;
+    color: #0f5132;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.siswa-import-download-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.siswa-import-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 16px;
+    border: 1px solid #0f5132;
+    border-radius: 8px;
+    background: #0f5132;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.siswa-import-download-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.siswa-import-download-btn:hover {
+    background: #0b3d25;
+    border-color: #0b3d25;
+    color: #ffffff;
+}
+
+/* =========================================================
+   IMPORT FORM
+========================================================= */
+
+.siswa-import-form {
+    padding-top: 24px;
+    border-top: 1px solid #e5ebe7;
+}
+
+.siswa-import-form-group {
+    margin-bottom: 24px;
+}
+
+.siswa-import-form-group label {
+    display: block;
+    margin-bottom: 9px;
+    color: #263d32;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.siswa-import-form-group label span {
+    color: #dc3545;
+}
+
+.siswa-import-file-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid #cedbd3;
+    border-radius: 9px;
+    background: #ffffff;
+}
+
+.siswa-import-file-wrapper svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: #0f5132;
+}
+
+.siswa-import-file-wrapper input {
+    width: 100%;
+    min-width: 0;
+    color: #495057;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.siswa-import-form-group small {
+    display: block;
+    margin-top: 8px;
+    color: #6c757d;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   IMPORT BUTTON ACTIONS
+========================================================= */
+
+.siswa-import-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.siswa-import-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 125px;
+    min-height: 42px;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.siswa-import-btn svg {
+    width: 17px;
+    height: 17px;
+}
+
+.siswa-import-btn:hover {
+    transform: translateY(-1px);
+}
+
+.siswa-import-btn-cancel {
+    border: 1px solid #cedbd3;
+    background: #ffffff;
+    color: #495057;
+}
+
+.siswa-import-btn-cancel:hover {
+    background: #f2f5f3;
+    border-color: #adbdb3;
+    color: #263d32;
+}
+
+.siswa-import-btn-submit {
+    border: 1px solid #0f5132;
+    background: #0f5132;
+    color: #ffffff;
+}
+
+.siswa-import-btn-submit:hover {
+    border-color: #0b3d25;
+    background: #0b3d25;
+    color: #ffffff;
+}
+
+/* =========================================================
+   BUTTON IMPORT DI HALAMAN INDEX
+========================================================= */
+
+.btn-siswa-import {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 11px 17px;
+    border: 1px solid #0f5132;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #0f5132;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-siswa-import svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-siswa-import:hover {
+    background: #edf6f1;
+    border-color: #0b3d25;
+    color: #0b3d25;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   RESPONSIVE TABLE
+========================================================= */
+
+@media (max-width: 1000px) {
+    .siswa-import-page {
+        padding: 25px 25px 35px;
+    }
+
+    .siswa-create-content,
+    .siswa-edit-content,
+    .siswa-detail-content {
+        max-width: 100%;
+    }
+
+    .siswa-create-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .siswa-create-header-actions {
+        justify-content: flex-start;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE TABLET
 ========================================================= */
 
 @media (max-width: 768px) {
-
     .siswa-header {
         flex-direction: column;
         align-items: flex-start;
@@ -851,8 +1419,8 @@
     }
 
     .aksi-btn {
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
     }
 
     .siswa-create-content,
@@ -865,7 +1433,27 @@
     .siswa-create-card,
     .siswa-edit-card,
     .siswa-detail-card {
-        padding: 20px;
+        padding: 22px;
+        border-radius: 12px;
+    }
+
+    .siswa-create-header {
+        gap: 18px;
+        margin-bottom: 22px;
+    }
+
+    .siswa-create-header h2 {
+        font-size: 23px;
+    }
+
+    .siswa-create-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .siswa-create-header-actions .siswa-create-btn {
+        flex: 1;
     }
 
     .siswa-detail-row {
@@ -875,11 +1463,345 @@
 
     .siswa-create-actions,
     .siswa-edit-actions {
-        flex-direction: column;
+        flex-direction: column-reverse;
+        align-items: stretch;
     }
 
     .siswa-create-btn,
     .siswa-edit-btn {
+        width: 100%;
+    }
+
+    .siswa-import-page {
+        padding: 22px 18px 30px;
+    }
+
+    .siswa-import-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .siswa-import-header-content {
+        align-items: flex-start;
+    }
+
+    .siswa-import-header h1 {
+        font-size: 25px;
+    }
+
+    .siswa-import-header-icon {
+        width: 54px;
+        height: 54px;
+    }
+
+    .siswa-import-header-icon svg {
+        width: 27px;
+        height: 27px;
+    }
+
+    .siswa-import-back {
+        width: 100%;
+    }
+
+    .siswa-import-card {
+        padding: 22px;
+        border-radius: 12px;
+    }
+
+    .siswa-import-download {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .siswa-import-download-content {
+        min-width: 180px;
+    }
+
+    .siswa-import-download-btn {
+        width: 100%;
+    }
+
+    .siswa-import-actions {
+        flex-direction: column-reverse;
+    }
+
+    .siswa-import-btn {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+    .siswa-create-card,
+    .siswa-edit-card,
+    .siswa-detail-card,
+    .siswa-import-card {
+        padding: 18px;
+    }
+
+    .siswa-create-header h2 {
+        font-size: 21px;
+    }
+
+    .siswa-create-header p {
+        font-size: 13px;
+    }
+
+    .siswa-create-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .siswa-create-header-actions .siswa-create-btn {
+        width: 100%;
+        flex: none;
+    }
+
+    .siswa-import-header-content {
+        gap: 12px;
+    }
+
+    .siswa-import-header h1 {
+        font-size: 22px;
+    }
+
+    .siswa-import-header p {
+        font-size: 13px;
+    }
+
+    .siswa-import-card-header {
+        align-items: flex-start;
+    }
+
+    .siswa-import-info,
+    .siswa-import-download {
+        padding: 15px;
+    }
+
+    .siswa-import-file-wrapper {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+========================================================= */
+
+.siswa-header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* =========================================================
+   SEARCH SISWA
+========================================================= */
+
+.siswa-search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.siswa-search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 290px;
+    min-height: 43px;
+    background: #ffffff;
+    border: 1px solid #d5e1da;
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.siswa-search-input-wrapper:focus-within {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.08);
+}
+
+.siswa-search-input-wrapper > svg {
+    width: 19px;
+    height: 19px;
+    margin-left: 12px;
+    color: #6c757d;
+    flex-shrink: 0;
+}
+
+.siswa-search-input-wrapper input {
+    width: 100%;
+    min-width: 0;
+    height: 41px;
+    padding: 0 36px 0 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #212529;
+    font-size: 13px;
+}
+
+.siswa-search-input-wrapper input::placeholder {
+    color: #8a9690;
+}
+
+.siswa-search-clear {
+    position: absolute;
+    right: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    color: #6c757d;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.siswa-search-clear svg {
+    width: 15px;
+    height: 15px;
+}
+
+.siswa-search-clear:hover {
+    background: #edf2ee;
+    color: #0f5132;
+}
+
+.siswa-search-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 43px;
+    padding: 10px 15px;
+    border: 1px solid #0f5132;
+    border-radius: 8px;
+    background: #0f5132;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.siswa-search-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+.siswa-search-button:hover {
+    background: #0b3d25;
+    border-color: #0b3d25;
+}
+
+/* =========================================================
+   SEARCH RESULT
+========================================================= */
+
+.siswa-search-result {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border: 1px solid #d5e8dc;
+    border-radius: 9px;
+    background: #f0f8f3;
+    color: #355b47;
+    font-size: 13px;
+}
+
+.siswa-search-result > svg {
+    width: 17px;
+    height: 17px;
+    color: #0f5132;
+    flex-shrink: 0;
+}
+
+.siswa-search-result strong {
+    color: #0f5132;
+}
+
+.siswa-search-reset {
+    margin-left: auto;
+    color: #0f5132;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.siswa-search-reset:hover {
+    color: #0b3d25;
+    text-decoration: underline;
+}
+
+/* =========================================================
+   RESPONSIVE SEARCH
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .siswa-header {
+        align-items: flex-start;
+    }
+
+    .siswa-header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .siswa-search-form {
+        flex: 1;
+    }
+
+    .siswa-search-input-wrapper {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 768px) {
+
+    .siswa-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .siswa-search-form {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .siswa-search-input-wrapper {
+        width: 100%;
+    }
+
+    .siswa-search-button {
+        width: 100%;
+    }
+
+    .siswa-header-actions .btn-tambah {
+        width: 100%;
+    }
+
+    .siswa-search-result {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .siswa-search-reset {
+        margin-left: 26px;
         width: 100%;
     }
 

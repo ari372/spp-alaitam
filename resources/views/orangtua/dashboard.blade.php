@@ -1,3 +1,4 @@
+
 @extends('layouts.orangtua')
 
 @section('title', 'Dashboard Orang Tua')
@@ -8,91 +9,132 @@
 
 @section('content')
 
-@if(session('error'))
+@if (session('error'))
     <div class="alert alert-error">
-        {{ session('error') }}
+        <i data-lucide="alert-circle"></i>
+        <span>{{ session('error') }}</span>
     </div>
 @endif
 
-@if(session('success'))
+@if (session('success'))
     <div class="alert alert-success">
-        {{ session('success') }}
+        <i data-lucide="check-circle"></i>
+        <span>{{ session('success') }}</span>
     </div>
 @endif
-
 
 <div class="page-title">
 
-    <h1>
-        Dashboard Orang Tua
-    </h1>
+    <div>
+        <h1>Dashboard Orang Tua</h1>
 
-    <p>
-        Selamat datang di Sistem Pembayaran SPP.
-    </p>
+        <p>
+            Selamat datang di Sistem Pembayaran SPP.
+        </p>
+    </div>
+
+    <div class="page-title-icon">
+        <i data-lucide="layout-dashboard"></i>
+    </div>
 
 </div>
-
 
 @if (!$siswa)
 
     <div class="table-card">
 
-        <div class="empty">
-            Data siswa belum ditemukan.
+        <div class="empty-payment">
+
+            <div class="empty-payment-icon">
+                <i data-lucide="user-round-x"></i>
+            </div>
+
+            <strong>Data siswa belum ditemukan</strong>
+
+            <span>
+                Silakan hubungi admin sekolah untuk menghubungkan data siswa.
+            </span>
+
         </div>
 
     </div>
 
 @else
 
-
     {{-- =====================================================
-         DATA ANAK
+         DATA ANAK DAN ORANG TUA
     ====================================================== --}}
 
     <div class="anak-card">
 
-        <h2 class="section-title">
-            Data Anak
-        </h2>
+        <div class="anak-card-header">
+
+            <div class="anak-card-header-icon">
+                <i data-lucide="graduation-cap"></i>
+            </div>
+
+            <div class="anak-card-header-content">
+
+                <h3>Data Anak</h3>
+
+                <p>
+                    Informasi siswa dan orang tua yang terhubung.
+                </p>
+
+            </div>
+
+        </div>
 
         <div class="anak-info">
 
-            <div class="anak-item">
+            <div class="anak-item anak-item-primary">
 
                 <span>
+                    <i data-lucide="user-round"></i>
                     Nama Siswa
                 </span>
 
                 <strong>
-                    {{ $siswa->nama }}
+                    {{ $siswa->nama ?? '-' }}
                 </strong>
 
             </div>
 
-
             <div class="anak-item">
 
                 <span>
+                    <i data-lucide="id-card"></i>
                     NIS
                 </span>
 
                 <strong>
-                    {{ $siswa->nis }}
+                    {{ $siswa->nis ?? '-' }}
                 </strong>
 
             </div>
 
-
             <div class="anak-item">
 
                 <span>
+                    <i data-lucide="school"></i>
                     Kelas
                 </span>
 
                 <strong>
-                    {{ $siswa->kelas->nama_kelas ?? '-' }}
+                    {{ $siswa->kelas?->nama_kelas ?? $siswa->kelas?->nama ?? '-' }}
+                </strong>
+
+            </div>
+
+            <div class="anak-item anak-item-parent">
+
+                <span>
+                    <i data-lucide="users"></i>
+                    Nama Orang Tua
+                </span>
+
+                <strong>
+                    {{ $siswa->orangTua?->nama ?? '-' }}
                 </strong>
 
             </div>
@@ -103,61 +145,76 @@
 
 
     {{-- =====================================================
-         RINGKASAN
+         RINGKASAN PEMBAYARAN
     ====================================================== --}}
 
     <div class="summary">
 
         <div class="summary-card">
 
-            <span>
-                Total Tagihan
-            </span>
+            <div class="summary-card-header">
+
+                <span>Total Tagihan</span>
+
+                <div class="summary-card-icon">
+                    <i data-lucide="receipt"></i>
+                </div>
+
+            </div>
 
             <strong>
-                Rp {{ number_format(
-                    $totalTagihan,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                Rp {{ number_format($totalTagihan, 0, ',', '.') }}
             </strong>
+
+            <small>
+                Total seluruh tagihan
+            </small>
 
         </div>
 
 
-        <div class="summary-card">
+        <div class="summary-card summary-card-success">
 
-            <span>
-                Sudah Dibayar
-            </span>
+            <div class="summary-card-header">
+
+                <span>Sudah Dibayar</span>
+
+                <div class="summary-card-icon">
+                    <i data-lucide="circle-check"></i>
+                </div>
+
+            </div>
 
             <strong>
-                Rp {{ number_format(
-                    $totalDibayar,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                Rp {{ number_format($totalDibayar, 0, ',', '.') }}
             </strong>
+
+            <small>
+                Total pembayaran disetujui
+            </small>
 
         </div>
 
 
-        <div class="summary-card">
+        <div class="summary-card summary-card-warning">
 
-            <span>
-                Sisa Tagihan
-            </span>
+            <div class="summary-card-header">
+
+                <span>Sisa Tagihan</span>
+
+                <div class="summary-card-icon">
+                    <i data-lucide="wallet"></i>
+                </div>
+
+            </div>
 
             <strong>
-                Rp {{ number_format(
-                    $sisaTagihan,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                Rp {{ number_format($sisaTagihan, 0, ',', '.') }}
             </strong>
+
+            <small>
+                Total tagihan yang belum lunas
+            </small>
 
         </div>
 
@@ -195,10 +252,32 @@
 
 
     {{-- =====================================================
-         TAGIHAN & RIWAYAT
+         CARD TAGIHAN DAN RIWAYAT
     ====================================================== --}}
 
     <div class="table-card">
+
+        <div class="table-card-header">
+
+            <div class="table-card-header-left">
+
+                <div class="table-card-header-icon">
+                    <i data-lucide="wallet-cards"></i>
+                </div>
+
+                <div class="table-card-title">
+
+                    <h3>Informasi Pembayaran</h3>
+
+                    <p>
+                        Kelola tagihan dan lihat riwayat pembayaran.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
 
 
         {{-- =================================================
@@ -212,15 +291,16 @@
                 class="payment-tab active"
                 onclick="showPaymentSection('tagihan', this)"
             >
+                <i data-lucide="receipt-text"></i>
                 Daftar Tagihan
             </button>
-
 
             <button
                 type="button"
                 class="payment-tab"
                 onclick="showPaymentSection('riwayat', this)"
             >
+                <i data-lucide="history"></i>
                 Riwayat Pembayaran
             </button>
 
@@ -243,25 +323,16 @@
                     <thead>
 
                         <tr>
-
                             <th>No</th>
-
                             <th>Kategori</th>
-
                             <th>Tahun Ajaran</th>
-
                             <th>Nominal</th>
-
                             <th>Jatuh Tempo</th>
-
                             <th>Status</th>
-
                             <th>Aksi</th>
-
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -287,7 +358,6 @@
 
                             $ditolak = $item->pembayaran
                                 ->contains('status', 'ditolak');
-
 
                             if ($sisa <= 0) {
 
@@ -324,45 +394,31 @@
 
                         @endphp
 
-
                         <tr>
 
                             <td>
                                 {{ $index + 1 }}
                             </td>
 
-
                             <td>
                                 {{ $item->kategori->nama ?? '-' }}
                             </td>
-
 
                             <td>
                                 {{ $item->tahunAjaran->nama ?? '-' }}
                             </td>
 
-
                             <td>
-
                                 <strong>
-                                    Rp {{ number_format(
-                                        $item->nominal,
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) }}
+                                    Rp {{ number_format($item->nominal, 0, ',', '.') }}
                                 </strong>
-
                             </td>
-
 
                             <td>
 
                                 @if ($item->jatuh_tempo)
 
-                                    {{ \Carbon\Carbon::parse(
-                                        $item->jatuh_tempo
-                                    )->format('d-m-Y') }}
+                                    {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
 
                                 @else
 
@@ -372,15 +428,25 @@
 
                             </td>
 
-
                             <td>
 
                                 <span class="status {{ $statusClass }}">
+
+                                    @if ($statusClass === 'status-menunggu')
+                                        <i data-lucide="clock"></i>
+                                    @elseif ($statusClass === 'status-ditolak')
+                                        <i data-lucide="circle-x"></i>
+                                    @elseif ($statusClass === 'status-lunas')
+                                        <i data-lucide="check-circle"></i>
+                                    @else
+                                        <i data-lucide="circle-alert"></i>
+                                    @endif
+
                                     {{ $statusLabel }}
+
                                 </span>
 
                             </td>
-
 
                             <td>
 
@@ -393,9 +459,8 @@
                                         aria-label="Detail Tagihan"
                                         onclick="openDetailTagihan({{ $item->id }})"
                                     >
-                                        !
+                                        <i data-lucide="info"></i>
                                     </button>
-
 
                                     @if ($sedangDiproses)
 
@@ -406,10 +471,7 @@
                                     @else
 
                                         <form
-                                            action="{{ route(
-                                                'orangtua.pembayaran.create',
-                                                ['tagihan' => $item->id]
-                                            ) }}"
+                                            action="{{ route('orangtua.pembayaran.create', ['tagihan' => $item->id]) }}"
                                             method="GET"
                                             class="payment-form"
                                         >
@@ -418,6 +480,7 @@
                                                 type="submit"
                                                 class="btn btn-bayar"
                                             >
+                                                <i data-lucide="credit-card"></i>
                                                 Bayar
                                             </button>
 
@@ -431,20 +494,20 @@
 
                         </tr>
 
-
                     @empty
 
                         <tr>
 
-                            <td
-                                colspan="7"
-                                class="empty"
-                            >
+                            <td colspan="7" class="empty">
 
                                 <div class="empty-payment">
 
+                                    <div class="empty-payment-icon">
+                                        <i data-lucide="check-circle"></i>
+                                    </div>
+
                                     <strong>
-                                        Semua tagihan sudah lunas 🎉
+                                        Semua tagihan sudah lunas
                                     </strong>
 
                                     <span>
@@ -493,7 +556,6 @@
                     $ditolak = $item->pembayaran
                         ->contains('status', 'ditolak');
 
-
                     if ($sisa <= 0) {
 
                         $statusLabel = 'Lunas';
@@ -527,21 +589,16 @@
 
                     }
 
-
-                    $persentasePembayaran =
-                        $item->nominal > 0
-                            ? min(
-                                100,
-                                round(
-                                    ($sudahDibayar /
-                                    $item->nominal) *
-                                    100
-                                )
+                    $persentasePembayaran = $item->nominal > 0
+                        ? min(
+                            100,
+                            round(
+                                ($sudahDibayar / $item->nominal) * 100
                             )
-                            : 0;
+                        )
+                        : 0;
 
                 @endphp
-
 
                 <div
                     id="detail-tagihan-{{ $item->id }}"
@@ -553,7 +610,6 @@
                         class="detail-modal-overlay"
                         onclick="closeDetailTagihan({{ $item->id }})"
                     ></div>
-
 
                     <div
                         class="detail-modal-content"
@@ -567,7 +623,7 @@
                             <div class="detail-modal-header-left">
 
                                 <div class="detail-header-icon">
-                                    📄
+                                    <i data-lucide="file-text"></i>
                                 </div>
 
                                 <div>
@@ -577,13 +633,12 @@
                                     </h3>
 
                                     <p>
-                                        Informasi lengkap tagihan siswa
+                                        Informasi lengkap tagihan siswa.
                                     </p>
 
                                 </div>
 
                             </div>
-
 
                             <button
                                 type="button"
@@ -591,7 +646,7 @@
                                 onclick="closeDetailTagihan({{ $item->id }})"
                                 aria-label="Tutup"
                             >
-                                ×
+                                <i data-lucide="x"></i>
                             </button>
 
                         </div>
@@ -607,139 +662,76 @@
                                         Detail Tagihan
                                     </div>
 
-
                                     <div class="detail-item">
-
-                                        <span>
-                                            Kategori
-                                        </span>
-
+                                        <span>Kategori</span>
                                         <strong>
                                             {{ $item->kategori->nama ?? '-' }}
                                         </strong>
-
                                     </div>
 
-
                                     <div class="detail-item">
-
-                                        <span>
-                                            Tahun Ajaran
-                                        </span>
-
+                                        <span>Tahun Ajaran</span>
                                         <strong>
                                             {{ $item->tahunAjaran->nama ?? '-' }}
                                         </strong>
-
                                     </div>
-
 
                                     <div class="detail-item">
-
-                                        <span>
-                                            Nama Siswa
-                                        </span>
-
+                                        <span>Nama Siswa</span>
                                         <strong>
-                                            {{ $siswa->nama }}
+                                            {{ $siswa->nama ?? '-' }}
                                         </strong>
-
                                     </div>
-
 
                                     <div class="detail-item">
-
-                                        <span>
-                                            NIS
-                                        </span>
-
+                                        <span>Nama Orang Tua</span>
                                         <strong>
-                                            {{ $siswa->nis }}
+                                            {{ $siswa->orangTua?->nama ?? '-' }}
                                         </strong>
-
                                     </div>
-
 
                                     <div class="detail-item">
-
-                                        <span>
-                                            Kelas
-                                        </span>
-
+                                        <span>NIS</span>
                                         <strong>
-                                            {{ $siswa->kelas->nama_kelas ?? '-' }}
+                                            {{ $siswa->nis ?? '-' }}
                                         </strong>
-
                                     </div>
-
 
                                     <div class="detail-item">
-
-                                        <span>
-                                            Total Tagihan
-                                        </span>
-
+                                        <span>Kelas</span>
                                         <strong>
-                                            Rp {{ number_format(
-                                                $item->nominal,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            {{ $siswa->kelas?->nama_kelas ?? $siswa->kelas?->nama ?? '-' }}
                                         </strong>
-
                                     </div>
-
 
                                     <div class="detail-item">
-
-                                        <span>
-                                            Sudah Dibayar
-                                        </span>
-
+                                        <span>Total Tagihan</span>
                                         <strong>
-                                            Rp {{ number_format(
-                                                $sudahDibayar,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            Rp {{ number_format($item->nominal, 0, ',', '.') }}
                                         </strong>
-
                                     </div>
 
+                                    <div class="detail-item">
+                                        <span>Sudah Dibayar</span>
+                                        <strong>
+                                            Rp {{ number_format($sudahDibayar, 0, ',', '.') }}
+                                        </strong>
+                                    </div>
 
                                     <div class="detail-item detail-item-sisa">
-
-                                        <span>
-                                            Sisa Tagihan
-                                        </span>
-
+                                        <span>Sisa Tagihan</span>
                                         <strong>
-                                            Rp {{ number_format(
-                                                $sisa,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            Rp {{ number_format($sisa, 0, ',', '.') }}
                                         </strong>
-
                                     </div>
 
-
                                     <div class="detail-item">
-
-                                        <span>
-                                            Jatuh Tempo
-                                        </span>
-
+                                        <span>Jatuh Tempo</span>
                                         <strong>
 
                                             @if ($item->jatuh_tempo)
 
-                                                {{ \Carbon\Carbon::parse(
-                                                    $item->jatuh_tempo
-                                                )->format('d-m-Y') }}
+                                                {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
 
                                             @else
 
@@ -748,54 +740,37 @@
                                             @endif
 
                                         </strong>
-
                                     </div>
 
-
                                     <div class="detail-item">
-
-                                        <span>
-                                            Status
-                                        </span>
-
+                                        <span>Status</span>
                                         <strong>
-
                                             <span class="status {{ $statusClass }}">
                                                 {{ $statusLabel }}
                                             </span>
-
                                         </strong>
-
                                     </div>
 
-
-                                    @if (
-                                        $sudahDibayar > 0 &&
-                                        $sisa > 0
-                                    )
+                                    @if ($sudahDibayar > 0 && $sisa > 0)
 
                                         <div class="detail-payment-info">
 
-                                            <strong>
-                                                Pembayaran Sebagian
-                                            </strong>
+                                            <i data-lucide="info"></i>
 
-                                            <p>
-                                                Tagihan sudah dibayar sebesar
-                                                Rp {{ number_format(
-                                                    $sudahDibayar,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}.
-                                                Sisa pembayaran:
-                                                Rp {{ number_format(
-                                                    $sisa,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Sebagian
+                                                </strong>
+
+                                                <p>
+                                                    Tagihan sudah dibayar sebesar
+                                                    Rp {{ number_format($sudahDibayar, 0, ',', '.') }}.
+                                                    Sisa pembayaran:
+                                                    Rp {{ number_format($sisa, 0, ',', '.') }}.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -803,34 +778,42 @@
 
                                         <div class="detail-payment-info">
 
-                                            <strong>
-                                                Pembayaran Sedang Diproses
-                                            </strong>
+                                            <i data-lucide="clock"></i>
 
-                                            <p>
-                                                Pembayaran kamu sudah dikirim
-                                                dan sedang menunggu persetujuan
-                                                admin.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Sedang Diproses
+                                                </strong>
+
+                                                <p>
+                                                    Pembayaran sudah dikirim dan
+                                                    sedang menunggu persetujuan admin.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
-                                    @elseif (
-                                        $ditolak &&
-                                        $sudahDibayar <= 0
-                                    )
+                                    @elseif ($ditolak && $sudahDibayar <= 0)
 
                                         <div class="detail-payment-info detail-info-danger">
 
-                                            <strong>
-                                                Pembayaran Ditolak
-                                            </strong>
+                                            <i data-lucide="circle-x"></i>
 
-                                            <p>
-                                                Pembayaran sebelumnya ditolak.
-                                                Silakan lakukan pembayaran kembali
-                                                sesuai sisa tagihan.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Ditolak
+                                                </strong>
+
+                                                <p>
+                                                    Pembayaran sebelumnya ditolak.
+                                                    Silakan lakukan pembayaran kembali
+                                                    sesuai sisa tagihan.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -845,60 +828,35 @@
                                         Ringkasan Tagihan
                                     </div>
 
-
                                     <div class="detail-summary-box">
 
-                                        <span>
-                                            Total Tagihan
-                                        </span>
+                                        <span>Total Tagihan</span>
 
                                         <strong>
-                                            Rp {{ number_format(
-                                                $item->nominal,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            Rp {{ number_format($item->nominal, 0, ',', '.') }}
                                         </strong>
 
                                     </div>
 
-
                                     <div class="detail-summary-box">
 
-                                        <span>
-                                            Sudah Dibayar
-                                        </span>
+                                        <span>Sudah Dibayar</span>
 
                                         <strong>
-                                            Rp {{ number_format(
-                                                $sudahDibayar,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            Rp {{ number_format($sudahDibayar, 0, ',', '.') }}
                                         </strong>
 
                                     </div>
-
 
                                     <div class="detail-summary-box detail-summary-sisa">
 
-                                        <span>
-                                            Sisa Tagihan
-                                        </span>
+                                        <span>Sisa Tagihan</span>
 
                                         <strong>
-                                            Rp {{ number_format(
-                                                $sisa,
-                                                0,
-                                                ',',
-                                                '.'
-                                            ) }}
+                                            Rp {{ number_format($sisa, 0, ',', '.') }}
                                         </strong>
 
                                     </div>
-
 
                                     <div class="detail-progress-box">
 
@@ -914,7 +872,6 @@
 
                                         </div>
 
-
                                         <div class="detail-progress">
 
                                             <div
@@ -925,7 +882,6 @@
                                         </div>
 
                                     </div>
-
 
                                     <div class="detail-status-box">
 
@@ -939,20 +895,25 @@
 
                                     </div>
 
-
                                     @if ($sudahDibayar >= $item->nominal)
 
                                         <div class="detail-payment-info">
 
-                                            <strong>
-                                                Pembayaran Lunas
-                                            </strong>
+                                            <i data-lucide="check-circle"></i>
 
-                                            <p>
-                                                Seluruh tagihan ini sudah
-                                                dibayarkan dan tidak memiliki
-                                                sisa pembayaran.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Lunas
+                                                </strong>
+
+                                                <p>
+                                                    Seluruh tagihan ini sudah
+                                                    dibayarkan dan tidak memiliki
+                                                    sisa pembayaran.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -960,14 +921,20 @@
 
                                         <div class="detail-payment-info">
 
-                                            <strong>
-                                                Pembayaran Sedang Diproses
-                                            </strong>
+                                            <i data-lucide="clock"></i>
 
-                                            <p>
-                                                Pembayaran sudah dikirim dan
-                                                sedang menunggu persetujuan admin.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Sedang Diproses
+                                                </strong>
+
+                                                <p>
+                                                    Pembayaran sudah dikirim dan
+                                                    sedang menunggu persetujuan admin.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -975,14 +942,20 @@
 
                                         <div class="detail-payment-info detail-info-danger">
 
-                                            <strong>
-                                                Pembayaran Ditolak
-                                            </strong>
+                                            <i data-lucide="circle-x"></i>
 
-                                            <p>
-                                                Pembayaran sebelumnya ditolak.
-                                                Silakan melakukan pembayaran kembali.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Pembayaran Ditolak
+                                                </strong>
+
+                                                <p>
+                                                    Pembayaran sebelumnya ditolak.
+                                                    Silakan melakukan pembayaran kembali.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -990,14 +963,20 @@
 
                                         <div class="detail-payment-info">
 
-                                            <strong>
-                                                Belum Lunas
-                                            </strong>
+                                            <i data-lucide="info"></i>
 
-                                            <p>
-                                                Silakan melakukan pembayaran
-                                                sesuai dengan sisa tagihan.
-                                            </p>
+                                            <div>
+
+                                                <strong>
+                                                    Belum Lunas
+                                                </strong>
+
+                                                <p>
+                                                    Silakan melakukan pembayaran
+                                                    sesuai dengan sisa tagihan.
+                                                </p>
+
+                                            </div>
 
                                         </div>
 
@@ -1017,6 +996,7 @@
                                 class="btn-detail-tutup"
                                 onclick="closeDetailTagihan({{ $item->id }})"
                             >
+                                <i data-lucide="x"></i>
                                 Tutup
                             </button>
 
@@ -1047,27 +1027,17 @@
                     <thead>
 
                         <tr>
-
                             <th>No</th>
-
                             <th>Tanggal</th>
-
                             <th>Kategori</th>
-
                             <th>Tahun Ajaran</th>
-
                             <th>Nominal</th>
-
                             <th>Metode</th>
-
                             <th>Status</th>
-
                             <th>Aksi</th>
-
                         </tr>
 
                     </thead>
-
 
                     <tbody>
 
@@ -1090,11 +1060,9 @@
 
                             $tagihanLunas =
                                 $totalTagihanPembayaran > 0 &&
-                                $totalDibayarTagihan >=
-                                $totalTagihanPembayaran;
+                                $totalDibayarTagihan >= $totalTagihanPembayaran;
 
                         @endphp
-
 
                         <tr>
 
@@ -1102,14 +1070,11 @@
                                 {{ $index + 1 }}
                             </td>
 
-
                             <td>
 
                                 @if ($item->tanggal_kirim)
 
-                                    {{ \Carbon\Carbon::parse(
-                                        $item->tanggal_kirim
-                                    )->format('d-m-Y') }}
+                                    {{ \Carbon\Carbon::parse($item->tanggal_kirim)->format('d-m-Y') }}
 
                                 @else
 
@@ -1119,30 +1084,19 @@
 
                             </td>
 
-
                             <td>
                                 {{ $item->tagihan->kategori->nama ?? '-' }}
                             </td>
-
 
                             <td>
                                 {{ $item->tagihan->tahunAjaran->nama ?? '-' }}
                             </td>
 
-
                             <td>
-
                                 <strong>
-                                    Rp {{ number_format(
-                                        $item->nominal,
-                                        0,
-                                        ',',
-                                        '.'
-                                    ) }}
+                                    Rp {{ number_format($item->nominal, 0, ',', '.') }}
                                 </strong>
-
                             </td>
-
 
                             <td>
 
@@ -1154,6 +1108,10 @@
 
                                     QRIS
 
+                                @elseif ($item->metode === 'cash')
+
+                                    Tunai
+
                                 @else
 
                                     {{ $item->metode ?? '-' }}
@@ -1162,44 +1120,34 @@
 
                             </td>
 
-
                             <td>
 
                                 @if ($item->status === 'menunggu')
 
                                     <span class="status status-menunggu">
+                                        <i data-lucide="clock"></i>
                                         Menunggu
                                     </span>
-
 
                                 @elseif ($item->status === 'ditolak')
 
                                     <span class="status status-ditolak">
+                                        <i data-lucide="circle-x"></i>
                                         Ditolak
                                     </span>
 
+                                @elseif (in_array($item->status, ['dibayar', 'disetujui']))
 
-                                @elseif (
-                                    in_array(
-                                        $item->status,
-                                        ['dibayar', 'disetujui']
-                                    )
-                                )
+                                    <span class="status status-lunas">
+                                        <i data-lucide="check-circle"></i>
 
-                                    @if ($tagihanLunas)
-
-                                        <span class="status status-lunas">
+                                        @if ($tagihanLunas)
                                             Disetujui &amp; Lunas
-                                        </span>
-
-                                    @else
-
-                                        <span class="status status-lunas">
+                                        @else
                                             Disetujui
-                                        </span>
+                                        @endif
 
-                                    @endif
-
+                                    </span>
 
                                 @else
 
@@ -1211,7 +1159,6 @@
 
                             </td>
 
-
                             <td>
 
                                 <button
@@ -1221,27 +1168,27 @@
                                     aria-label="Detail Pembayaran"
                                     onclick="openDetailPembayaran({{ $item->id }})"
                                 >
-                                    !
+                                    <i data-lucide="info"></i>
                                 </button>
 
                             </td>
 
                         </tr>
 
-
                     @empty
 
                         <tr>
 
-                            <td
-                                colspan="8"
-                                class="empty"
-                            >
+                            <td colspan="8" class="empty">
 
                                 <div class="empty-payment">
 
+                                    <div class="empty-payment-icon">
+                                        <i data-lucide="history"></i>
+                                    </div>
+
                                     <strong>
-                                        Belum ada riwayat pembayaran.
+                                        Belum ada riwayat pembayaran
                                     </strong>
 
                                     <span>
@@ -1286,8 +1233,7 @@
 
                     $tagihanLunas =
                         $totalTagihanPembayaran > 0 &&
-                        $totalDibayarTagihan >=
-                        $totalTagihanPembayaran;
+                        $totalDibayarTagihan >= $totalTagihanPembayaran;
 
                     $sisaTagihanPembayaran = max(
                         $totalTagihanPembayaran -
@@ -1296,7 +1242,6 @@
                     );
 
                 @endphp
-
 
                 <div
                     id="detail-pembayaran-{{ $item->id }}"
@@ -1309,7 +1254,6 @@
                         onclick="closeDetailPembayaran({{ $item->id }})"
                     ></div>
 
-
                     <div
                         class="detail-modal-content payment-detail-modal-content"
                         role="dialog"
@@ -1317,56 +1261,13 @@
                         aria-labelledby="payment-detail-title-{{ $item->id }}"
                     >
 
-
-                        {{-- =================================================
-                             HEADER MODAL
-                        ================================================== --}}
-
                         <div class="payment-detail-header">
 
                             <div class="payment-detail-header-left">
 
                                 <div class="payment-detail-icon">
-
-                                    <svg
-                                        width="25"
-                                        height="25"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                    >
-
-                                        <path
-                                            d="M6 2H14L19 7V22H6C4.89543 22 4 21.1046 4 20V4C4 2.89543 4.89543 2 6 2Z"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linejoin="round"
-                                        />
-
-                                        <path
-                                            d="M14 2V8H20"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linejoin="round"
-                                        />
-
-                                        <path
-                                            d="M8 12H16"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linecap="round"
-                                        />
-
-                                        <path
-                                            d="M8 16H16"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linecap="round"
-                                        />
-
-                                    </svg>
-
+                                    <i data-lucide="file-text"></i>
                                 </div>
-
 
                                 <div>
 
@@ -1375,13 +1276,12 @@
                                     </h3>
 
                                     <p>
-                                        Informasi lengkap transaksi pembayaran
+                                        Informasi lengkap transaksi pembayaran.
                                     </p>
 
                                 </div>
 
                             </div>
-
 
                             <button
                                 type="button"
@@ -1389,25 +1289,15 @@
                                 onclick="closeDetailPembayaran({{ $item->id }})"
                                 aria-label="Tutup"
                             >
-                                ×
+                                <i data-lucide="x"></i>
                             </button>
 
                         </div>
 
 
-                        {{-- =================================================
-                             BODY
-                        ================================================== --}}
-
                         <div class="payment-detail-body">
 
-
                             <div class="payment-detail-layout">
-
-
-                                {{-- =================================================
-                                     KOLOM KIRI
-                                ================================================== --}}
 
                                 <div class="payment-detail-left">
 
@@ -1421,7 +1311,6 @@
 
                                         </div>
 
-
                                         <div class="payment-detail-row">
 
                                             <div class="payment-detail-label">
@@ -1433,7 +1322,6 @@
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1447,7 +1335,6 @@
 
                                         </div>
 
-
                                         <div class="payment-detail-row">
 
                                             <div class="payment-detail-label">
@@ -1455,11 +1342,22 @@
                                             </div>
 
                                             <div class="payment-detail-value">
-                                                {{ $item->tagihan->siswa->nama ?? $siswa->nama }}
+                                                {{ $item->tagihan->siswa->nama ?? $siswa->nama ?? '-' }}
                                             </div>
 
                                         </div>
 
+                                        <div class="payment-detail-row">
+
+                                            <div class="payment-detail-label">
+                                                Nama Orang Tua
+                                            </div>
+
+                                            <div class="payment-detail-value">
+                                                {{ $siswa->orangTua?->nama ?? '-' }}
+                                            </div>
+
+                                        </div>
 
                                         <div class="payment-detail-row">
 
@@ -1468,11 +1366,10 @@
                                             </div>
 
                                             <div class="payment-detail-value">
-                                                {{ $item->tagihan->siswa->nis ?? $siswa->nis }}
+                                                {{ $item->tagihan->siswa->nis ?? $siswa->nis ?? '-' }}
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1481,11 +1378,10 @@
                                             </div>
 
                                             <div class="payment-detail-value">
-                                                {{ $item->tagihan->siswa->kelas->nama_kelas ?? $siswa->kelas->nama_kelas ?? '-' }}
+                                                {{ $item->tagihan->siswa->kelas?->nama_kelas ?? $siswa->kelas?->nama_kelas ?? '-' }}
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1494,16 +1390,10 @@
                                             </div>
 
                                             <div class="payment-detail-value payment-amount">
-                                                Rp {{ number_format(
-                                                    $item->nominal,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}
+                                                Rp {{ number_format($item->nominal, 0, ',', '.') }}
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1521,6 +1411,10 @@
 
                                                     QRIS
 
+                                                @elseif ($item->metode === 'cash')
+
+                                                    Tunai
+
                                                 @else
 
                                                     {{ $item->metode ?? '-' }}
@@ -1530,7 +1424,6 @@
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1542,9 +1435,7 @@
 
                                                 @if ($item->tanggal_kirim)
 
-                                                    {{ \Carbon\Carbon::parse(
-                                                        $item->tanggal_kirim
-                                                    )->format('d-m-Y H:i') }}
+                                                    {{ \Carbon\Carbon::parse($item->tanggal_kirim)->format('d-m-Y H:i') }}
 
                                                 @else
 
@@ -1555,7 +1446,6 @@
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1567,9 +1457,7 @@
 
                                                 @if ($item->tanggal_disetujui)
 
-                                                    {{ \Carbon\Carbon::parse(
-                                                        $item->tanggal_disetujui
-                                                    )->format('d-m-Y H:i') }}
+                                                    {{ \Carbon\Carbon::parse($item->tanggal_disetujui)->format('d-m-Y H:i') }}
 
                                                 @else
 
@@ -1580,7 +1468,6 @@
                                             </div>
 
                                         </div>
-
 
                                         <div class="payment-detail-row">
 
@@ -1596,35 +1483,23 @@
                                                         Menunggu
                                                     </span>
 
-
                                                 @elseif ($item->status === 'ditolak')
 
                                                     <span class="payment-status-badge payment-status-danger">
                                                         Ditolak
                                                     </span>
 
+                                                @elseif (in_array($item->status, ['dibayar', 'disetujui']))
 
-                                                @elseif (
-                                                    in_array(
-                                                        $item->status,
-                                                        ['dibayar', 'disetujui']
-                                                    )
-                                                )
+                                                    <span class="payment-status-badge payment-status-success">
 
-                                                    @if ($tagihanLunas)
-
-                                                        <span class="payment-status-badge payment-status-success">
+                                                        @if ($tagihanLunas)
                                                             Disetujui &amp; Lunas
-                                                        </span>
-
-                                                    @else
-
-                                                        <span class="payment-status-badge payment-status-success">
+                                                        @else
                                                             Disetujui
-                                                        </span>
+                                                        @endif
 
-                                                    @endif
-
+                                                    </span>
 
                                                 @else
 
@@ -1638,7 +1513,6 @@
 
                                         </div>
 
-
                                         <div class="payment-detail-row">
 
                                             <div class="payment-detail-label">
@@ -1646,35 +1520,23 @@
                                             </div>
 
                                             <div class="payment-detail-value payment-remaining">
-
-                                                Rp {{ number_format(
-                                                    $sisaTagihanPembayaran,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}
-
+                                                Rp {{ number_format($sisaTagihanPembayaran, 0, ',', '.') }}
                                             </div>
 
                                         </div>
 
 
-                                        {{-- ==========================================
-                                             INFO STATUS
-                                        =========================================== --}}
+                                        {{-- INFO STATUS --}}
 
                                         @if (
-                                            in_array(
-                                                $item->status,
-                                                ['dibayar', 'disetujui']
-                                            ) &&
+                                            in_array($item->status, ['dibayar', 'disetujui']) &&
                                             $tagihanLunas
                                         )
 
                                             <div class="payment-info-box payment-info-success">
 
                                                 <div class="payment-info-icon">
-                                                    ✓
+                                                    <i data-lucide="check"></i>
                                                 </div>
 
                                                 <div>
@@ -1693,19 +1555,15 @@
 
                                             </div>
 
-
                                         @elseif (
-                                            in_array(
-                                                $item->status,
-                                                ['dibayar', 'disetujui']
-                                            ) &&
+                                            in_array($item->status, ['dibayar', 'disetujui']) &&
                                             !$tagihanLunas
                                         )
 
                                             <div class="payment-info-box payment-info-success">
 
                                                 <div class="payment-info-icon">
-                                                    ✓
+                                                    <i data-lucide="check"></i>
                                                 </div>
 
                                                 <div>
@@ -1719,25 +1577,19 @@
                                                         oleh admin.
 
                                                         Sisa tagihan:
-                                                        Rp {{ number_format(
-                                                            $sisaTagihanPembayaran,
-                                                            0,
-                                                            ',',
-                                                            '.'
-                                                        ) }}.
+                                                        Rp {{ number_format($sisaTagihanPembayaran, 0, ',', '.') }}.
                                                     </p>
 
                                                 </div>
 
                                             </div>
 
-
                                         @elseif ($item->status === 'menunggu')
 
                                             <div class="payment-info-box payment-info-pending">
 
                                                 <div class="payment-info-icon">
-                                                    !
+                                                    <i data-lucide="clock"></i>
                                                 </div>
 
                                                 <div>
@@ -1756,13 +1608,12 @@
 
                                             </div>
 
-
                                         @elseif ($item->status === 'ditolak')
 
                                             <div class="payment-info-box payment-info-danger">
 
                                                 <div class="payment-info-icon">
-                                                    !
+                                                    <i data-lucide="x"></i>
                                                 </div>
 
                                                 <div>
@@ -1783,9 +1634,7 @@
                                         @endif
 
 
-                                        {{-- ==========================================
-                                             CATATAN ADMIN
-                                        =========================================== --}}
+                                        {{-- CATATAN ADMIN --}}
 
                                         @if (
                                             $item->status === 'ditolak' &&
@@ -1811,48 +1660,17 @@
                                 </div>
 
 
-                                {{-- =================================================
-                                     KOLOM KANAN
-                                ================================================== --}}
+                                {{-- KOLOM KANAN --}}
 
                                 <div class="payment-detail-right">
-
-
-                                    {{-- ==========================================
-                                         BUKTI PEMBAYARAN
-                                    =========================================== --}}
 
                                     <div class="payment-proof-card">
 
                                         <div class="payment-proof-header">
 
                                             <div class="payment-proof-header-icon">
-
-                                                <svg
-                                                    width="21"
-                                                    height="21"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                >
-
-                                                    <path
-                                                        d="M4 5C4 3.89543 4.89543 3 6 3H18C19.1046 3 20 3.89543 20 5V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V5Z"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.8"
-                                                    />
-
-                                                    <path
-                                                        d="M8 15L11 12L13 14L15 12L18 15"
-                                                        stroke="currentColor"
-                                                        stroke-width="1.8"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                    />
-
-                                                </svg>
-
+                                                <i data-lucide="image"></i>
                                             </div>
-
 
                                             <div>
 
@@ -1861,7 +1679,7 @@
                                                 </h4>
 
                                                 <p>
-                                                    Dokumen atau foto bukti transaksi
+                                                    Dokumen atau foto bukti transaksi.
                                                 </p>
 
                                             </div>
@@ -1892,133 +1710,41 @@
 
                                             <div class="proof-actions">
 
-
-                                                {{-- LIHAT BUKTI --}}
-
                                                 <a
                                                     href="{{ asset('storage/' . $item->bukti_pembayaran) }}"
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     class="btn-proof btn-proof-view"
                                                 >
-
-                                                    <svg
-                                                        width="17"
-                                                        height="17"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                    >
-
-                                                        <path
-                                                            d="M2.5 12C4.2 7.8 7.8 5 12 5C16.2 5 19.8 7.8 21.5 12C19.8 16.2 16.2 19 12 19C7.8 19 4.2 16.2 2.5 12Z"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.8"
-                                                        />
-
-                                                        <circle
-                                                            cx="12"
-                                                            cy="12"
-                                                            r="3"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.8"
-                                                        />
-
-                                                    </svg>
-
+                                                    <i data-lucide="eye"></i>
                                                     Lihat Bukti
-
                                                 </a>
-
-
-                                                {{-- DOWNLOAD GAMBAR --}}
 
                                                 <a
                                                     href="{{ asset('storage/' . $item->bukti_pembayaran) }}"
                                                     download="bukti-pembayaran-{{ $item->id }}"
                                                     class="btn-proof btn-proof-download"
                                                 >
-
-                                                    <svg
-                                                        width="17"
-                                                        height="17"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                    >
-
-                                                        <path
-                                                            d="M12 3V15"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                        />
-
-                                                        <path
-                                                            d="M7 10L12 15L17 10"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                        />
-
-                                                        <path
-                                                            d="M5 21H19"
-                                                            stroke="currentColor"
-                                                            stroke-width="2"
-                                                            stroke-linecap="round"
-                                                        />
-
-                                                    </svg>
-
+                                                    <i data-lucide="download"></i>
                                                     Unduh Bukti
-
                                                 </a>
 
-
-                                                {{-- DOWNLOAD PDF --}}
-
                                                 <a
-                                                    href="{{ route(
-                                                        'orangtua.pembayaran.download',
-                                                        ['pembayaran' => $item->id]
-                                                    ) }}"
+                                                    href="{{ route('orangtua.pembayaran.download', ['pembayaran' => $item->id]) }}"
                                                     class="btn-proof btn-proof-pdf"
                                                 >
-
-                                                    <svg
-                                                        width="17"
-                                                        height="17"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                    >
-
-                                                        <path
-                                                            d="M6 2H14L19 7V22H6C4.89543 22 4 21.1046 4 20V4C4 2.89543 4.89543 2 6 2Z"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.8"
-                                                            stroke-linejoin="round"
-                                                        />
-
-                                                        <path
-                                                            d="M14 2V8H20"
-                                                            stroke="currentColor"
-                                                            stroke-width="1.8"
-                                                        />
-
-                                                    </svg>
-
+                                                    <i data-lucide="file-down"></i>
                                                     Unduh Detail
-
                                                 </a>
 
                                             </div>
-
 
                                         @else
 
                                             <div class="payment-proof-empty">
 
                                                 <div class="payment-proof-empty-icon">
-                                                    📄
+                                                    <i data-lucide="file-x"></i>
                                                 </div>
 
                                                 <strong>
@@ -2037,16 +1763,13 @@
                                     </div>
 
 
-                                    {{-- ==========================================
-                                         RINGKASAN
-                                    =========================================== --}}
+                                    {{-- RINGKASAN PEMBAYARAN --}}
 
                                     <div class="payment-side-summary">
 
                                         <div class="payment-side-summary-title">
                                             Ringkasan Pembayaran
                                         </div>
-
 
                                         <div class="payment-side-summary-row">
 
@@ -2055,16 +1778,10 @@
                                             </span>
 
                                             <strong>
-                                                Rp {{ number_format(
-                                                    $totalTagihanPembayaran,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}
+                                                Rp {{ number_format($totalTagihanPembayaran, 0, ',', '.') }}
                                             </strong>
 
                                         </div>
-
 
                                         <div class="payment-side-summary-row">
 
@@ -2073,16 +1790,10 @@
                                             </span>
 
                                             <strong>
-                                                Rp {{ number_format(
-                                                    $totalDibayarTagihan,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}
+                                                Rp {{ number_format($totalDibayarTagihan, 0, ',', '.') }}
                                             </strong>
 
                                         </div>
-
 
                                         <div class="payment-side-summary-row payment-side-summary-remaining">
 
@@ -2091,12 +1802,7 @@
                                             </span>
 
                                             <strong>
-                                                Rp {{ number_format(
-                                                    $sisaTagihanPembayaran,
-                                                    0,
-                                                    ',',
-                                                    '.'
-                                                ) }}
+                                                Rp {{ number_format($sisaTagihanPembayaran, 0, ',', '.') }}
                                             </strong>
 
                                         </div>
@@ -2110,10 +1816,6 @@
                         </div>
 
 
-                        {{-- =================================================
-                             FOOTER
-                        ================================================== --}}
-
                         <div class="detail-modal-footer">
 
                             <button
@@ -2121,6 +1823,7 @@
                                 class="btn-detail-tutup"
                                 onclick="closeDetailPembayaran({{ $item->id }})"
                             >
+                                <i data-lucide="x"></i>
                                 Tutup
                             </button>
 
@@ -2147,7 +1850,22 @@
 
     /*
      * =========================================================
-     * TAB
+     * INISIALISASI LUCIDE
+     * =========================================================
+     */
+
+    function refreshLucideIcons() {
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+    }
+
+
+    /*
+     * =========================================================
+     * TAB PEMBAYARAN
      * =========================================================
      */
 
@@ -2155,7 +1873,7 @@
 
         document
             .querySelectorAll('.payment-section')
-            .forEach(function(element) {
+            .forEach(function (element) {
 
                 element.classList.remove('active');
 
@@ -2164,7 +1882,7 @@
 
         document
             .querySelectorAll('.payment-tab')
-            .forEach(function(element) {
+            .forEach(function (element) {
 
                 element.classList.remove('active');
 
@@ -2189,6 +1907,9 @@
 
         }
 
+
+        refreshLucideIcons();
+
     }
 
 
@@ -2212,16 +1933,14 @@
 
         modal.classList.add('show');
 
-
         modal.setAttribute(
             'aria-hidden',
             'false'
         );
 
+        document.body.classList.add('modal-open');
 
-        document.body.classList.add(
-            'modal-open'
-        );
+        refreshLucideIcons();
 
     }
 
@@ -2240,16 +1959,24 @@
 
         modal.classList.remove('show');
 
-
         modal.setAttribute(
             'aria-hidden',
             'true'
         );
 
 
-        document.body.classList.remove(
-            'modal-open'
+        const activeModal = document.querySelector(
+            '.detail-modal.show'
         );
+
+
+        if (!activeModal) {
+
+            document.body.classList.remove(
+                'modal-open'
+            );
+
+        }
 
     }
 
@@ -2274,16 +2001,14 @@
 
         modal.classList.add('show');
 
-
         modal.setAttribute(
             'aria-hidden',
             'false'
         );
 
+        document.body.classList.add('modal-open');
 
-        document.body.classList.add(
-            'modal-open'
-        );
+        refreshLucideIcons();
 
     }
 
@@ -2302,29 +2027,37 @@
 
         modal.classList.remove('show');
 
-
         modal.setAttribute(
             'aria-hidden',
             'true'
         );
 
 
-        document.body.classList.remove(
-            'modal-open'
+        const activeModal = document.querySelector(
+            '.detail-modal.show'
         );
+
+
+        if (!activeModal) {
+
+            document.body.classList.remove(
+                'modal-open'
+            );
+
+        }
 
     }
 
 
     /*
      * =========================================================
-     * ESCAPE
+     * ESCAPE UNTUK MENUTUP MODAL
      * =========================================================
      */
 
     document.addEventListener(
         'keydown',
-        function(event) {
+        function (event) {
 
             if (event.key !== 'Escape') {
                 return;
@@ -2333,12 +2066,9 @@
 
             document
                 .querySelectorAll('.detail-modal.show')
-                .forEach(function(modal) {
+                .forEach(function (modal) {
 
-                    modal.classList.remove(
-                        'show'
-                    );
-
+                    modal.classList.remove('show');
 
                     modal.setAttribute(
                         'aria-hidden',
@@ -2351,6 +2081,22 @@
             document.body.classList.remove(
                 'modal-open'
             );
+
+        }
+    );
+
+
+    /*
+     * =========================================================
+     * INISIALISASI HALAMAN
+     * =========================================================
+     */
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            refreshLucideIcons();
 
         }
     );

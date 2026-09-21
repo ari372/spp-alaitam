@@ -14,19 +14,57 @@ class OrangTuaController extends Controller
     /**
      * Menampilkan semua orang tua
      */
-    public function index()
-    {
-        $orangTua = OrangTua::with('user')
-            ->withCount('siswa')
-            ->latest()
-            ->get();
+/**
+ * Menampilkan seluruh data orang tua.
+ */
+public function index(Request $request)
+{
+    $query = OrangTua::with('user')
+        ->withCount('siswa');
 
-        return view(
-            'admin.orang-tua.index',
-            compact('orangTua')
-        );
+    if ($request->filled('search')) {
+
+        $search = trim($request->search);
+
+        $query->where(function ($q) use ($search) {
+
+            // Pencarian berdasarkan nama orang tua
+            $q->where('nama', 'like', '%' . $search . '%')
+
+                // Pencarian berdasarkan nomor HP
+                ->orWhere('no_hp', 'like', '%' . $search . '%')
+
+                // Pencarian berdasarkan email atau nama user
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+
+                    $userQuery
+                        ->where('email', 'like', '%' . $search . '%')
+                        ->orWhere('name', 'like', '%' . $search . '%');
+
+                })
+
+                // Pencarian berdasarkan data anak
+                ->orWhereHas('siswa', function ($siswaQuery) use ($search) {
+
+                    $siswaQuery
+                        ->where('nama', 'like', '%' . $search . '%')
+                        ->orWhere('nis', 'like', '%' . $search . '%');
+
+                });
+
+        });
+
     }
 
+    $orangTua = $query
+        ->latest()
+        ->get();
+
+    return view(
+        'admin.orang-tua.index',
+        compact('orangTua')
+    );
+}
 
     /**
      * Form tambah orang tua

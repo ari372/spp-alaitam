@@ -1,15 +1,20 @@
+
 /* =====================================================
    DASHBOARD ORANG TUA
 ===================================================== */
 
 .page-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
     margin-bottom: 28px;
 }
 
 .page-title h1 {
     margin: 0 0 6px;
     color: #173b2b;
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 700;
     letter-spacing: -0.5px;
 }
@@ -17,20 +22,48 @@
 .page-title p {
     margin: 0;
     color: #6b7280;
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
+.page-title-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #e8f5ed;
+    color: #0f5132;
+}
+
+.page-title-icon svg {
+    width: 23px;
+    height: 23px;
+}
 
 /* =====================================================
    ALERT
 ===================================================== */
 
 .alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
     padding: 14px 18px;
-    border-radius: 12px;
     margin-bottom: 20px;
+    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
+    line-height: 1.5;
+}
+
+.alert svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .alert-error {
@@ -45,7 +78,6 @@
     border: 1px solid #bbf7d0;
 }
 
-
 /* =====================================================
    CARD DASAR
 ===================================================== */
@@ -54,19 +86,58 @@
 .summary-card,
 .table-card {
     background: #ffffff;
-    border: 1px solid #e6ece8;
+    border: 1px solid #e2ebe5;
     border-radius: 16px;
     box-shadow: 0 4px 15px rgba(15, 81, 50, 0.05);
 }
-
 
 /* =====================================================
    DATA ANAK
 ===================================================== */
 
 .anak-card {
-    padding: 25px;
-    margin-bottom: 22px;
+    padding: 26px;
+    margin-bottom: 24px;
+}
+
+.anak-card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e8efeb;
+}
+
+.anak-card-header-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #e8f5ed;
+    color: #0f5132;
+}
+
+.anak-card-header-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.anak-card-header-content h3 {
+    margin: 0 0 5px;
+    color: #173b2b;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.anak-card-header-content p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 .section-title {
@@ -76,40 +147,71 @@
     font-weight: 700;
 }
 
+/* INFORMASI SISWA DAN ORANG TUA */
+
 .anak-info {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
 }
 
 .anak-item {
-    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 82px;
+    padding: 17px 18px;
     background: #f7faf8;
-    border: 1px solid #e8efeb;
+    border: 1px solid #e5eee8;
     border-radius: 12px;
     transition: all 0.2s ease;
 }
 
 .anak-item:hover {
+    background: #f1f8f3;
     border-color: #c9ddd2;
     transform: translateY(-1px);
 }
 
 .anak-item span {
-    display: block;
-    margin-bottom: 7px;
-    color: #7a827e;
-    font-size: 13px;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 8px;
+    color: #718078;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.anak-item span svg {
+    width: 15px;
+    height: 15px;
+    color: #0f5132;
+    stroke-width: 2;
 }
 
 .anak-item strong {
     display: block;
-    color: #1f2937;
-    font-size: 17px;
+    color: #26352c;
+    font-size: 15px;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
+.anak-item-primary {
+    background: #eef8f1;
+    border-color: #d5eadd;
+}
+
+.anak-item-primary strong {
+    color: #0f5132;
+    font-size: 17px;
+}
+
+.anak-item-parent {
+    background: #f8faf9;
+    border-color: #e0eae4;
+}
 
 /* =====================================================
    RINGKASAN
@@ -117,13 +219,14 @@
 
 .summary {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
 
 .summary-card {
     position: relative;
+    min-width: 0;
     padding: 22px;
     overflow: hidden;
     transition: all 0.2s ease;
@@ -137,20 +240,45 @@
 .summary-card::after {
     content: "";
     position: absolute;
-    width: 90px;
-    height: 90px;
-    top: -35px;
-    right: -35px;
+    width: 100px;
+    height: 100px;
+    top: -40px;
+    right: -40px;
     background: #e8f5ed;
     border-radius: 50%;
 }
 
-.summary-card span {
-    display: block;
-    margin-bottom: 9px;
+.summary-card-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.summary-card-header span {
+    margin: 0;
     color: #6b7280;
     font-size: 13px;
     font-weight: 600;
+}
+
+.summary-card-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #e8f5ed;
+    color: #0f5132;
+}
+
+.summary-card-icon svg {
+    width: 19px;
+    height: 19px;
 }
 
 .summary-card strong {
@@ -160,24 +288,135 @@
     color: #0f5132;
     font-size: 24px;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
+.summary-card small {
+    position: relative;
+    z-index: 2;
+    display: block;
+    margin-top: 7px;
+    color: #849189;
+    font-size: 12px;
+}
+
+/* VARIASI SUMMARY */
+
+.summary-card-success .summary-card-icon {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.summary-card-success strong {
+    color: #15803d;
+}
+
+.summary-card-warning .summary-card-icon {
+    background: #fef3c7;
+    color: #a16207;
+}
+
+.summary-card-warning strong {
+    color: #b45309;
+}
+
+.summary-card-danger .summary-card-icon {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.summary-card-danger strong {
+    color: #b91c1c;
+}
 
 /* =====================================================
    TABLE CARD
 ===================================================== */
 
 .table-card {
-    padding: 25px;
-    margin-bottom: 22px;
+    padding: 26px;
+    margin-bottom: 24px;
+}
+
+.table-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.table-card-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.table-card-header-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 11px;
+    background: #e8f5ed;
+    color: #0f5132;
+}
+
+.table-card-header-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.table-card-title h3 {
+    margin: 0 0 4px;
+    color: #173b2b;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.table-card-title p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.table-card-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 20px;
+    background: #e8f5ed;
+    color: #0f5132;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
     border-radius: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5d1 transparent;
 }
 
+.table-wrapper::-webkit-scrollbar {
+    height: 7px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #f1f5f2;
+    border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5d1;
+    border-radius: 10px;
+}
 
 /* =====================================================
    TABLE
@@ -196,7 +435,7 @@
     background: #0f5132;
     color: #ffffff;
     text-align: left;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -234,6 +473,20 @@
     font-weight: 700;
 }
 
+.table-wrapper td small {
+    display: block;
+    margin-top: 4px;
+    color: #8a938e;
+    font-size: 12px;
+}
+
+.table-wrapper .text-center {
+    text-align: center;
+}
+
+.table-wrapper .text-right {
+    text-align: right;
+}
 
 /* =====================================================
    STATUS
@@ -243,12 +496,18 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 70px;
+    gap: 5px;
+    min-width: 75px;
     padding: 6px 11px;
     border-radius: 30px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
+}
+
+.status svg {
+    width: 13px;
+    height: 13px;
 }
 
 .status-lunas {
@@ -276,15 +535,16 @@
     color: #b91c1c;
 }
 
-
 /* =====================================================
-   BUTTON
+   BUTTON DASAR
 ===================================================== */
 
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 7px;
+    min-height: 36px;
     padding: 9px 15px;
     border: none;
     border-radius: 8px;
@@ -293,6 +553,19 @@
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.btn svg {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2.3;
+}
+
+.btn:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid rgba(25, 135, 84, 0.25);
+    outline-offset: 2px;
 }
 
 .btn-bayar {
@@ -307,7 +580,6 @@
     box-shadow: 0 4px 10px rgba(25, 135, 84, 0.2);
 }
 
-
 /* =====================================================
    PAYMENT FORM
 ===================================================== */
@@ -321,22 +593,21 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    flex-wrap: wrap;
 }
-
 
 /* =====================================================
    BUTTON DETAIL
 ===================================================== */
 
 .btn-detail {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
+    padding: 0;
     border: none;
-    border-radius: 50%;
+    border-radius: 9px;
     background: #f59e0b;
     color: #ffffff;
-    font-size: 18px;
-    font-weight: 800;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -344,14 +615,20 @@
     transition: all 0.2s ease;
 }
 
-.btn-detail:hover {
-    transform: scale(1.08);
-    background: #d97706;
+.btn-detail svg {
+    width: 17px;
+    height: 17px;
+    stroke-width: 2.5;
 }
 
+.btn-detail:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+}
 
 /* =====================================================
-   EMPTY
+   EMPTY STATE
 ===================================================== */
 
 .empty {
@@ -366,23 +643,42 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 35px 20px;
+    gap: 8px;
+    padding: 45px 20px;
+    text-align: center;
+}
+
+.empty-payment-icon {
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    border-radius: 14px;
+    background: #f1f5f2;
+    color: #94a39a;
+}
+
+.empty-payment-icon svg {
+    width: 26px;
+    height: 26px;
 }
 
 .empty-payment strong {
     color: #0f5132;
     font-size: 16px;
+    font-weight: 700;
 }
 
 .empty-payment span {
     color: #6b7280;
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
-
 /* =====================================================
-   TAB
+   TAB PEMBAYARAN
 ===================================================== */
 
 .payment-tabs {
@@ -390,9 +686,20 @@
     gap: 8px;
     margin-bottom: 20px;
     border-bottom: 1px solid #e5e7eb;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.payment-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .payment-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-shrink: 0;
     border: none;
     background: transparent;
     padding: 12px 20px;
@@ -404,6 +711,11 @@
     transition: all 0.2s ease;
 }
 
+.payment-tab svg {
+    width: 16px;
+    height: 16px;
+}
+
 .payment-tab:hover {
     color: #0f5132;
 }
@@ -412,7 +724,6 @@
     color: #0f5132;
     border-bottom-color: #0f5132;
 }
-
 
 /* =====================================================
    SECTION TAB
@@ -425,7 +736,6 @@
 .payment-section.active {
     display: block;
 }
-
 
 /* =====================================================
    MODAL DASAR
@@ -449,7 +759,6 @@ body.modal-open {
     display: flex;
 }
 
-
 /* =====================================================
    MODAL OVERLAY
 ===================================================== */
@@ -461,7 +770,6 @@ body.modal-open {
     backdrop-filter: blur(5px);
 }
 
-
 /* =====================================================
    MODAL CONTENT
 ===================================================== */
@@ -469,13 +777,13 @@ body.modal-open {
 .detail-modal-content {
     position: relative;
     z-index: 2;
+    display: flex;
+    flex-direction: column;
     width: min(1180px, calc(100vw - 40px));
     max-width: 1180px;
     max-height: calc(100vh - 40px);
     background: #ffffff;
     border-radius: 20px;
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
     animation: detailModalShow 0.22s ease-out;
@@ -492,7 +800,6 @@ body.modal-open {
         transform: translateY(0) scale(1);
     }
 }
-
 
 /* =====================================================
    MODAL HEADER
@@ -513,12 +820,13 @@ body.modal-open {
     display: flex;
     align-items: center;
     gap: 14px;
+    min-width: 0;
 }
 
 .detail-modal-header h3 {
     margin: 0;
     color: #0f5132;
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 750;
     letter-spacing: -0.3px;
 }
@@ -532,43 +840,49 @@ body.modal-open {
 .detail-header-icon {
     width: 46px;
     height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
     border-radius: 14px;
     background: #e8f5ed;
     color: #0f5132;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 21px;
 }
 
+.detail-header-icon svg {
+    width: 22px;
+    height: 22px;
+}
 
 /* =====================================================
-   CLOSE
+   CLOSE MODAL
 ===================================================== */
 
 .detail-modal-close {
-    width: 46px;
-    height: 46px;
-    flex-shrink: 0;
-    border: none;
-    border-radius: 13px;
-    background: #f3f4f6;
-    color: #64748b;
-    font-size: 30px;
-    line-height: 1;
-    cursor: pointer;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+    border-radius: 11px;
+    background: #f3f4f6;
+    color: #64748b;
+    cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.detail-modal-close svg {
+    width: 20px;
+    height: 20px;
 }
 
 .detail-modal-close:hover {
     background: #fee2e2;
     color: #dc2626;
 }
-
 
 /* =====================================================
    MODAL BODY
@@ -596,7 +910,6 @@ body.modal-open {
     border-radius: 10px;
 }
 
-
 /* =====================================================
    DETAIL TAGIHAN
 ===================================================== */
@@ -621,7 +934,7 @@ body.modal-open {
 }
 
 .detail-card-heading {
-    margin-bottom: 8px;
+    margin: 0 0 8px;
     color: #173b2b;
     font-size: 18px;
     font-weight: 700;
@@ -706,6 +1019,7 @@ body.modal-open {
 .detail-summary-box strong {
     color: #173b2b;
     font-size: 15px;
+    text-align: right;
 }
 
 .detail-summary-sisa {
@@ -718,8 +1032,8 @@ body.modal-open {
 }
 
 .detail-progress-box {
-    margin-top: 16px;
     padding: 15px;
+    margin-top: 16px;
     background: #ffffff;
     border: 1px solid #e5ebe7;
     border-radius: 10px;
@@ -775,17 +1089,26 @@ body.modal-open {
     font-size: 13px;
 }
 
-
 /* =====================================================
    DETAIL INFO
 ===================================================== */
 
 .detail-payment-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
     margin-top: 18px;
     padding: 16px 18px;
     background: #f0fdf4;
     border: 1px solid #dcfce7;
     border-radius: 12px;
+}
+
+.detail-payment-info > svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: #166534;
 }
 
 .detail-payment-info strong {
@@ -807,21 +1130,24 @@ body.modal-open {
     border-color: #fecdd3;
 }
 
+.detail-info-danger > svg {
+    color: #b91c1c;
+}
+
 .detail-info-danger strong {
     color: #b91c1c;
 }
 
-
 /* =====================================================
-   MODAL DETAIL PEMBAYARAN - HEADER
+   MODAL DETAIL PEMBAYARAN HEADER
 ===================================================== */
 
 .payment-detail-modal .payment-detail-header {
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+    flex-shrink: 0;
     padding: 24px 28px;
     background: #ffffff;
     border-bottom: 1px solid #e5ebe8;
@@ -831,18 +1157,24 @@ body.modal-open {
     display: flex;
     align-items: center;
     gap: 15px;
+    min-width: 0;
 }
 
 .payment-detail-icon {
     width: 48px;
     height: 48px;
-    border-radius: 14px;
-    background: #eaf7ef;
-    color: #0f5132;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    border-radius: 14px;
+    background: #eaf7ef;
+    color: #0f5132;
+}
+
+.payment-detail-icon svg {
+    width: 23px;
+    height: 23px;
 }
 
 .payment-detail-modal .payment-detail-header h3 {
@@ -859,19 +1191,11 @@ body.modal-open {
     font-size: 15px;
 }
 
-
 /* =====================================================
    MODAL DETAIL PEMBAYARAN CONTENT
 ===================================================== */
 
-.payment-detail-modal .payment-detail-modal-content {
-    width: min(1240px, calc(100vw - 40px));
-    max-width: 1240px;
-    height: min(900px, calc(100vh - 40px));
-    max-height: calc(100vh - 40px);
-    padding: 0;
-}
-
+.payment-detail-modal .payment-detail-modal-content,
 .payment-detail-modal-content {
     width: min(1240px, calc(100vw - 40px));
     max-width: 1240px;
@@ -883,10 +1207,10 @@ body.modal-open {
 .payment-detail-body {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding: 24px 28px;
     background: #ffffff;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .payment-detail-layout {
@@ -901,12 +1225,11 @@ body.modal-open {
 }
 
 .payment-detail-right {
-    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 18px;
+    min-width: 0;
 }
-
 
 /* =====================================================
    DETAIL CARD KIRI
@@ -953,10 +1276,10 @@ body.modal-open {
 }
 
 .payment-detail-value {
+    min-width: 0;
     color: #263238;
     font-size: 15px;
     font-weight: 600;
-    min-width: 0;
     overflow-wrap: anywhere;
 }
 
@@ -970,7 +1293,6 @@ body.modal-open {
     color: #15803d;
     font-weight: 700;
 }
-
 
 /* =====================================================
    STATUS DETAIL
@@ -1002,16 +1324,15 @@ body.modal-open {
     color: #b91c1c;
 }
 
-
 /* =====================================================
    INFO STATUS PEMBAYARAN
 ===================================================== */
 
 .payment-info-box {
-    margin-top: 20px;
     display: flex;
     align-items: flex-start;
     gap: 12px;
+    margin-top: 20px;
     padding: 15px 16px;
     border-radius: 12px;
 }
@@ -1049,17 +1370,19 @@ body.modal-open {
 .payment-info-icon {
     width: 28px;
     height: 28px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    border-radius: 50%;
     background: currentColor;
     color: #ffffff;
-    font-size: 15px;
-    font-weight: 800;
 }
 
+.payment-info-icon svg {
+    width: 15px;
+    height: 15px;
+}
 
 /* =====================================================
    CATATAN ADMIN
@@ -1087,7 +1410,6 @@ body.modal-open {
     line-height: 1.6;
 }
 
-
 /* =====================================================
    BUKTI PEMBAYARAN
 ===================================================== */
@@ -1110,13 +1432,18 @@ body.modal-open {
 .payment-proof-header-icon {
     width: 42px;
     height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
     border-radius: 11px;
     background: #e6f5ec;
     color: #0f5132;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+.payment-proof-header-icon svg {
+    width: 20px;
+    height: 20px;
 }
 
 .payment-proof-header h4 {
@@ -1132,12 +1459,14 @@ body.modal-open {
     font-size: 13px;
 }
 
-
 /* =====================================================
    IMAGE BUKTI
 ===================================================== */
 
 .payment-proof-image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     min-height: 370px;
     box-sizing: border-box;
@@ -1145,19 +1474,16 @@ body.modal-open {
     background: #ffffff;
     border: 1px solid #dfe7e2;
     border-radius: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
 }
 
 .payment-proof-image-wrapper a {
-    width: 100%;
-    height: 100%;
-    min-height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 340px;
 }
 
 .payment-proof-image {
@@ -1176,28 +1502,39 @@ body.modal-open {
     transform: scale(1.015);
 }
 
-
 /* =====================================================
    BUKTI KOSONG
 ===================================================== */
 
 .payment-proof-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     min-height: 300px;
     padding: 30px;
     background: #ffffff;
     border: 1px dashed #cbd5d0;
     border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    gap: 8px;
 }
 
 .payment-proof-empty-icon {
-    font-size: 42px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: 5px;
+    border-radius: 13px;
+    background: #f1f5f2;
+    color: #94a39a;
+}
+
+.payment-proof-empty-icon svg {
+    width: 25px;
+    height: 25px;
 }
 
 .payment-proof-empty strong {
@@ -1209,7 +1546,6 @@ body.modal-open {
     color: #718096;
     font-size: 13px;
 }
-
 
 /* =====================================================
    TOMBOL BUKTI
@@ -1223,19 +1559,24 @@ body.modal-open {
 }
 
 .btn-proof {
-    min-height: 44px;
-    padding: 10px 14px;
-    box-sizing: border-box;
-    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 7px;
+    min-height: 44px;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 700;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.btn-proof svg {
+    width: 16px;
+    height: 16px;
 }
 
 .btn-proof-view {
@@ -1276,7 +1617,6 @@ body.modal-open {
     transform: translateY(-1px);
 }
 
-
 /* =====================================================
    RINGKASAN SAMPING
 ===================================================== */
@@ -1316,6 +1656,7 @@ body.modal-open {
 .payment-side-summary-row strong {
     color: #263238;
     font-size: 14px;
+    text-align: right;
 }
 
 .payment-side-summary-remaining {
@@ -1336,7 +1677,6 @@ body.modal-open {
     font-size: 15px;
 }
 
-
 /* =====================================================
    MODAL FOOTER
 ===================================================== */
@@ -1351,6 +1691,10 @@ body.modal-open {
 }
 
 .btn-detail-tutup {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     min-width: 120px;
     padding: 11px 22px;
     border: none;
@@ -1363,25 +1707,28 @@ body.modal-open {
     transition: all 0.2s ease;
 }
 
+.btn-detail-tutup svg {
+    width: 16px;
+    height: 16px;
+}
+
 .btn-detail-tutup:hover {
     background: #0b3d26;
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(15, 81, 50, 0.18);
 }
 
-
 /* =====================================================
-   RESPONSIVE 900
+   RESPONSIVE 1000
 ===================================================== */
 
-@media (max-width: 900px) {
-
-    .anak-info {
-        grid-template-columns: repeat(2, 1fr);
+@media (max-width: 1000px) {
+    .summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .summary {
-        grid-template-columns: 1fr;
+    .summary-card:last-child {
+        grid-column: 1 / -1;
     }
 
     .detail-pembayaran-layout {
@@ -1411,15 +1758,99 @@ body.modal-open {
     .payment-proof-image-wrapper {
         min-height: 300px;
     }
-
 }
 
+/* =====================================================
+   RESPONSIVE 900
+===================================================== */
+
+@media (max-width: 900px) {
+    .anak-info {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .detail-modal-content {
+        width: calc(100vw - 32px);
+        max-height: calc(100vh - 32px);
+    }
+
+    .detail-modal-header {
+        padding: 20px 24px;
+    }
+
+    .detail-modal-body {
+        padding: 22px 24px;
+    }
+
+    .detail-modal-footer {
+        padding: 15px 24px;
+    }
+
+    .payment-detail-modal .payment-detail-header {
+        padding: 20px 24px;
+    }
+
+    .payment-detail-body {
+        padding: 22px 24px;
+    }
+}
 
 /* =====================================================
    RESPONSIVE 700
 ===================================================== */
 
 @media (max-width: 700px) {
+    .page-title {
+        margin-bottom: 22px;
+    }
+
+    .page-title h1 {
+        font-size: 28px;
+    }
+
+    .page-title p {
+        font-size: 14px;
+    }
+
+    .anak-card,
+    .table-card {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .summary-card:last-child {
+        grid-column: auto;
+    }
+
+    .summary-card {
+        padding: 19px;
+    }
+
+    .summary-card strong {
+        font-size: 22px;
+    }
+
+    .table-card-header {
+        align-items: flex-start;
+    }
+
+    .table-card-title h3 {
+        font-size: 17px;
+    }
+
+    .payment-tabs {
+        margin-bottom: 18px;
+    }
+
+    .payment-tab {
+        padding: 11px 15px;
+        white-space: nowrap;
+    }
 
     .detail-modal {
         padding: 12px;
@@ -1525,29 +1956,74 @@ body.modal-open {
     .payment-proof-image {
         max-height: 300px;
     }
-
 }
-
 
 /* =====================================================
    RESPONSIVE 600
 ===================================================== */
 
 @media (max-width: 600px) {
+    .page-title {
+        display: block;
+    }
 
     .page-title h1 {
-        font-size: 27px;
+        font-size: 26px;
     }
 
     .page-title p {
-        font-size: 14px;
+        font-size: 13px;
+    }
+
+    .anak-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .anak-card-header {
+        align-items: flex-start;
+        gap: 11px;
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+    }
+
+    .anak-card-header-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+    }
+
+    .anak-card-header-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .anak-card-header-content h3 {
+        font-size: 17px;
+    }
+
+    .anak-card-header-content p {
+        font-size: 12px;
     }
 
     .anak-info {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .anak-card,
+    .anak-item {
+        min-height: 70px;
+        padding: 14px 15px;
+    }
+
+    .anak-item strong {
+        font-size: 14px;
+    }
+
+    .anak-item-primary strong {
+        font-size: 16px;
+    }
+
     .table-card {
         padding: 18px;
     }
@@ -1564,11 +2040,6 @@ body.modal-open {
         overflow-x: auto;
     }
 
-    .payment-tab {
-        padding: 11px 15px;
-        white-space: nowrap;
-    }
-
     .proof-actions {
         grid-template-columns: 1fr;
     }
@@ -1580,15 +2051,36 @@ body.modal-open {
     .btn-proof-pdf {
         grid-column: auto;
     }
-
 }
-
 
 /* =====================================================
    RESPONSIVE 480
 ===================================================== */
 
 @media (max-width: 480px) {
+    .page-title h1 {
+        font-size: 24px;
+    }
+
+    .page-title p {
+        font-size: 12px;
+    }
+
+    .anak-card-header-content h3 {
+        font-size: 16px;
+    }
+
+    .anak-card-header-content p {
+        font-size: 11px;
+    }
+
+    .anak-item span {
+        font-size: 11px;
+    }
+
+    .anak-item strong {
+        font-size: 13px;
+    }
 
     .detail-modal-header {
         padding: 15px;
@@ -1605,7 +2097,11 @@ body.modal-open {
     .detail-modal-close {
         width: 34px;
         height: 34px;
-        font-size: 22px;
+    }
+
+    .detail-modal-close svg {
+        width: 17px;
+        height: 17px;
     }
 
     .detail-modal-header h3 {
@@ -1619,7 +2115,11 @@ body.modal-open {
     .detail-header-icon {
         width: 40px;
         height: 40px;
-        font-size: 18px;
+    }
+
+    .detail-header-icon svg {
+        width: 19px;
+        height: 19px;
     }
 
     .detail-payment-info {
@@ -1662,6 +2162,11 @@ body.modal-open {
         height: 40px;
     }
 
+    .payment-detail-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
     .payment-detail-modal .payment-detail-header h3 {
         font-size: 17px;
     }
@@ -1700,4 +2205,13 @@ body.modal-open {
         padding: 13px;
     }
 
+    .payment-side-summary-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .payment-side-summary-row strong {
+        text-align: left;
+    }
 }

@@ -27,12 +27,12 @@ Route::get('/', function () {
 
 Route::get('/login', [
     AuthController::class,
-    'showLogin'
+    'showLogin',
 ])->name('login');
 
 Route::post('/login', [
     AuthController::class,
-    'login'
+    'login',
 ])->name('login.process');
 
 
@@ -44,10 +44,10 @@ Route::post('/login', [
 
 Route::post('/logout', [
     AuthController::class,
-    'logout'
+    'logout',
 ])
-->middleware('auth')
-->name('logout');
+    ->middleware('auth')
+    ->name('logout');
 
 
 /*
@@ -58,330 +58,385 @@ Route::post('/logout', [
 
 Route::middleware([
     'auth',
-    'role:admin'
+    'role:admin',
 ])
-->prefix('admin')
-->group(function () {
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/dashboard', [
-        DashboardController::class,
-        'admin'
-    ])->name('admin.dashboard');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PROFIL ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/profil', function () {
-        return view('admin.profil.index');
-    })->name('admin.profil');
-
-    Route::get('/profil/edit', function () {
-        return view('admin.profil.edit');
-    })->name('admin.profil.edit');
-
-    Route::put('/profil', [
-        AuthController::class,
-        'updateProfil'
-    ])->name('admin.profil.update');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DATA SISWA
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'siswa',
-        SiswaController::class
-    )->names([
-        'index'   => 'admin.siswa.index',
-        'create'  => 'admin.siswa.create',
-        'store'   => 'admin.siswa.store',
-        'show'    => 'admin.siswa.show',
-        'edit'    => 'admin.siswa.edit',
-        'update'  => 'admin.siswa.update',
-        'destroy' => 'admin.siswa.destroy',
-    ]);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DATA ORANG TUA
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'orang-tua',
-        OrangTuaController::class
-    )->names([
-        'index'   => 'admin.orang-tua.index',
-        'create'  => 'admin.orang-tua.create',
-        'store'   => 'admin.orang-tua.store',
-        'show'    => 'admin.orang-tua.show',
-        'edit'    => 'admin.orang-tua.edit',
-        'update'  => 'admin.orang-tua.update',
-        'destroy' => 'admin.orang-tua.destroy',
-    ]);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DATA KELAS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'kelas',
-        KelasController::class
-    )->names([
-        'index'   => 'admin.kelas.index',
-        'create'  => 'admin.kelas.create',
-        'store'   => 'admin.kelas.store',
-        'edit'    => 'admin.kelas.edit',
-        'update'  => 'admin.kelas.update',
-        'destroy' => 'admin.kelas.destroy',
-    ]);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TAHUN AJARAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'tahun-ajaran',
-        TahunAjaranController::class
-    )
-    ->except([
-        'show'
-    ])
-    ->names([
-        'index'   => 'admin.tahun-ajaran.index',
-        'create'  => 'admin.tahun-ajaran.create',
-        'store'   => 'admin.tahun-ajaran.store',
-        'edit'    => 'admin.tahun-ajaran.edit',
-        'update'  => 'admin.tahun-ajaran.update',
-        'destroy' => 'admin.tahun-ajaran.destroy',
-    ]);
-
-    Route::patch(
-        '/tahun-ajaran/{tahunAjaran}/aktifkan',
-        [
-            TahunAjaranController::class,
-            'aktifkan'
-        ]
-    )->name('admin.tahun-ajaran.aktifkan');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | DATA TAGIHAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::resource(
-        'tagihan',
-        TagihanController::class
-    )
-    ->only([
-        'index',
-        'create',
-        'store',
-        'show',
-        'edit',
-        'update',
-        'destroy'
-    ])
-    ->names([
-        'index'   => 'admin.tagihan.index',
-        'create'  => 'admin.tagihan.create',
-        'store'   => 'admin.tagihan.store',
-        'show'    => 'admin.tagihan.show',
-        'edit'    => 'admin.tagihan.edit',
-        'update'  => 'admin.tagihan.update',
-        'destroy' => 'admin.tagihan.destroy',
-    ]);
-
-
-/*
-|--------------------------------------------------------------------------
-| KATEGORI TAGIHAN
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/kategori', [
-    KategoriTagihanController::class,
-    'index'
-])->name('admin.kategori.index');
-
-Route::get('/kategori/create', [
-    KategoriTagihanController::class,
-    'create'
-])->name('admin.kategori.create');
-
-Route::post('/kategori', [
-    KategoriTagihanController::class,
-    'store'
-])->name('admin.kategori.store');
-
-Route::get('/kategori/{kategori}/edit', [
-    KategoriTagihanController::class,
-    'edit'
-])->name('admin.kategori.edit');
-
-Route::put('/kategori/{kategori}', [
-    KategoriTagihanController::class,
-    'update'
-])->name('admin.kategori.update');
-
-Route::delete('/kategori/{kategori}', [
-    KategoriTagihanController::class,
-    'destroy'
-])->name('admin.kategori.destroy');
-
-    /*
-    |--------------------------------------------------------------------------
-    | PEMBAYARAN ADMIN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/pembayaran', [
-        PembayaranAdminController::class,
-        'index'
-    ])->name('admin.pembayaran.index');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PEMBAYARAN MANUAL / CASH
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/pembayaran/manual', [
-        PembayaranAdminController::class,
-        'createManual'
-    ])->name('admin.pembayaran.manual');
-
-    Route::post('/pembayaran/manual', [
-        PembayaranAdminController::class,
-        'storeManual'
-    ])->name('admin.pembayaran.manual.store');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | NOTIFIKASI PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/pembayaran/notifikasi', [
-        PembayaranAdminController::class,
-        'notifikasi'
-    ])->name('admin.pembayaran.notifikasi');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | KOREKSI PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/pembayaran/{pembayaran}/edit', [
-        PembayaranAdminController::class,
-        'edit'
-    ])->name('admin.pembayaran.edit');
-
-    Route::put('/pembayaran/{pembayaran}', [
-        PembayaranAdminController::class,
-        'update'
-    ])->name('admin.pembayaran.update');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SETUJUI PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::patch('/pembayaran/{pembayaran}/setujui', [
-        PembayaranAdminController::class,
-        'setujui'
-    ])->name('admin.pembayaran.setujui');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TOLAK PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::patch('/pembayaran/{pembayaran}/tolak', [
-        PembayaranAdminController::class,
-        'tolak'
-    ])->name('admin.pembayaran.tolak');
-
-
-/*
-|--------------------------------------------------------------------------
-| LAPORAN
-|--------------------------------------------------------------------------
-*/
-
-Route::get('/laporan', [
-    LaporanController::class,
-    'index'
-])->name('admin.laporan.index');
-
-
-Route::get('/laporan/pdf', [
-    LaporanController::class,
-    'pdf'
-])->name('admin.laporan.pdf');
-
-
-Route::get('/laporan/excel', [
-    LaporanController::class,
-    'excel'
-])->name('admin.laporan.excel');
-
-
-Route::get('/laporan/{pembayaran}', [
-    LaporanController::class,
-    'show'
-])->name('admin.laporan.show');
-
-
-Route::get('/laporan/{pembayaran}/edit', [
-    LaporanController::class,
-    'edit'
-])->name('admin.laporan.edit');
-
-
-Route::put('/laporan/{pembayaran}', [
-    LaporanController::class,
-    'update'
-])->name('admin.laporan.update');
-
-
-Route::delete('/laporan/{pembayaran}', [
-    LaporanController::class,
-    'destroy'
-])->name('admin.laporan.destroy');
-
-});
+    ->prefix('admin')
+    ->group(function () {
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DASHBOARD ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/dashboard', [
+            DashboardController::class,
+            'admin',
+        ])->name('admin.dashboard');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PROFIL ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/profil', function () {
+            return view('admin.profil.index');
+        })->name('admin.profil');
+
+        Route::get('/profil/edit', function () {
+            return view('admin.profil.edit');
+        })->name('admin.profil.edit');
+
+        Route::put('/profil', [
+            AuthController::class,
+            'updateProfil',
+        ])->name('admin.profil.update');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA SISWA
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        | Route import harus diletakkan sebelum resource siswa.
+        */
+
+        Route::get('/siswa/import', [
+            SiswaController::class,
+            'importForm',
+        ])->name('admin.siswa.import');
+
+        Route::get('/siswa/import/template', [
+            SiswaController::class,
+            'downloadTemplate',
+        ])->name('admin.siswa.import.template');
+
+        Route::post('/siswa/import', [
+            SiswaController::class,
+            'importExcel',
+        ])->name('admin.siswa.import.excel');
+
+
+        /*
+        | CRUD data siswa
+        */
+
+        Route::resource(
+            'siswa',
+            SiswaController::class
+        )->names([
+            'index' => 'admin.siswa.index',
+            'create' => 'admin.siswa.create',
+            'store' => 'admin.siswa.store',
+            'show' => 'admin.siswa.show',
+            'edit' => 'admin.siswa.edit',
+            'update' => 'admin.siswa.update',
+            'destroy' => 'admin.siswa.destroy',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA ORANG TUA
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            'orang-tua',
+            OrangTuaController::class
+        )->names([
+            'index' => 'admin.orang-tua.index',
+            'create' => 'admin.orang-tua.create',
+            'store' => 'admin.orang-tua.store',
+            'show' => 'admin.orang-tua.show',
+            'edit' => 'admin.orang-tua.edit',
+            'update' => 'admin.orang-tua.update',
+            'destroy' => 'admin.orang-tua.destroy',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA KELAS
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            'kelas',
+            KelasController::class
+        )->names([
+            'index' => 'admin.kelas.index',
+            'create' => 'admin.kelas.create',
+            'store' => 'admin.kelas.store',
+            'edit' => 'admin.kelas.edit',
+            'update' => 'admin.kelas.update',
+            'destroy' => 'admin.kelas.destroy',
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAHUN AJARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            'tahun-ajaran',
+            TahunAjaranController::class
+        )
+            ->except([
+                'show',
+            ])
+            ->names([
+                'index' => 'admin.tahun-ajaran.index',
+                'create' => 'admin.tahun-ajaran.create',
+                'store' => 'admin.tahun-ajaran.store',
+                'edit' => 'admin.tahun-ajaran.edit',
+                'update' => 'admin.tahun-ajaran.update',
+                'destroy' => 'admin.tahun-ajaran.destroy',
+            ]);
+
+        Route::patch(
+            '/tahun-ajaran/{tahunAjaran}/aktifkan',
+            [
+                TahunAjaranController::class,
+                'aktifkan',
+            ]
+        )->name('admin.tahun-ajaran.aktifkan');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA TAGIHAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource(
+            'tagihan',
+            TagihanController::class
+        )
+            ->only([
+                'index',
+                'create',
+                'store',
+                'show',
+                'edit',
+                'update',
+                'destroy',
+            ])
+            ->names([
+                'index' => 'admin.tagihan.index',
+                'create' => 'admin.tagihan.create',
+                'store' => 'admin.tagihan.store',
+                'show' => 'admin.tagihan.show',
+                'edit' => 'admin.tagihan.edit',
+                'update' => 'admin.tagihan.update',
+                'destroy' => 'admin.tagihan.destroy',
+            ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KATEGORI TAGIHAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/kategori', [
+            KategoriTagihanController::class,
+            'index',
+        ])->name('admin.kategori.index');
+
+        Route::get('/kategori/create', [
+            KategoriTagihanController::class,
+            'create',
+        ])->name('admin.kategori.create');
+
+        Route::post('/kategori', [
+            KategoriTagihanController::class,
+            'store',
+        ])->name('admin.kategori.store');
+
+        Route::get('/kategori/{kategori}/edit', [
+            KategoriTagihanController::class,
+            'edit',
+        ])->name('admin.kategori.edit');
+
+        Route::put('/kategori/{kategori}', [
+            KategoriTagihanController::class,
+            'update',
+        ])->name('admin.kategori.update');
+
+        Route::delete('/kategori/{kategori}', [
+            KategoriTagihanController::class,
+            'destroy',
+        ])->name('admin.kategori.destroy');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PEMBAYARAN ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pembayaran', [
+            PembayaranAdminController::class,
+            'index',
+        ])->name('admin.pembayaran.index');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PEMBAYARAN MANUAL / CASH
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pembayaran/manual', [
+            PembayaranAdminController::class,
+            'createManual',
+        ])->name('admin.pembayaran.manual');
+
+        Route::post('/pembayaran/manual', [
+            PembayaranAdminController::class,
+            'storeManual',
+        ])->name('admin.pembayaran.manual.store');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | NOTIFIKASI PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pembayaran/notifikasi', [
+            PembayaranAdminController::class,
+            'notifikasi',
+        ])->name('admin.pembayaran.notifikasi');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KOREKSI PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pembayaran/{pembayaran}/edit', [
+            PembayaranAdminController::class,
+            'edit',
+        ])->name('admin.pembayaran.edit');
+
+        Route::put('/pembayaran/{pembayaran}', [
+            PembayaranAdminController::class,
+            'update',
+        ])->name('admin.pembayaran.update');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SETUJUI PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::patch('/pembayaran/{pembayaran}/setujui', [
+            PembayaranAdminController::class,
+            'setujui',
+        ])->name('admin.pembayaran.setujui');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOLAK PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::patch('/pembayaran/{pembayaran}/tolak', [
+            PembayaranAdminController::class,
+            'tolak',
+        ])->name('admin.pembayaran.tolak');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LAPORAN PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        | Halaman utama laporan
+        */
+
+        Route::get('/laporan', [
+            LaporanController::class,
+            'index',
+        ])->name('admin.laporan.index');
+
+
+        /*
+        | Export PDF
+        |
+        | Diletakkan sebelum route dinamis {pembayaran}.
+        */
+
+        Route::get('/laporan/pdf', [
+            LaporanController::class,
+            'pdf',
+        ])->name('admin.laporan.pdf');
+
+
+        /*
+        | Export Excel
+        */
+
+        Route::get('/laporan/excel', [
+            LaporanController::class,
+            'excel',
+        ])->name('admin.laporan.excel');
+
+
+        /*
+        | Detail laporan
+        */
+
+        Route::get('/laporan/{pembayaran}', [
+            LaporanController::class,
+            'show',
+        ])->name('admin.laporan.show');
+
+
+        /*
+        | Edit laporan
+        */
+
+        Route::get('/laporan/{pembayaran}/edit', [
+            LaporanController::class,
+            'edit',
+        ])->name('admin.laporan.edit');
+
+
+        /*
+        | Update laporan
+        */
+
+        Route::put('/laporan/{pembayaran}', [
+            LaporanController::class,
+            'update',
+        ])->name('admin.laporan.update');
+
+
+        /*
+        | Hapus laporan
+        */
+
+        Route::delete('/laporan/{pembayaran}', [
+            LaporanController::class,
+            'destroy',
+        ])->name('admin.laporan.destroy');
+
+    });
 
 
 /*
@@ -392,57 +447,57 @@ Route::delete('/laporan/{pembayaran}', [
 
 Route::middleware([
     'auth',
-    'role:orang_tua'
+    'role:orang_tua',
 ])
-->prefix('orangtua')
-->group(function () {
+    ->prefix('orangtua')
+    ->group(function () {
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD ORANG TUA
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | DASHBOARD ORANG TUA
+        |--------------------------------------------------------------------------
+        */
 
-    Route::get('/dashboard', [
-        DashboardController::class,
-        'orangTua'
-    ])->name('orangtua.dashboard');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | BAYAR TAGIHAN
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/pembayaran/{tagihan}/bayar', [
-        PembayaranOrangTuaController::class,
-        'create'
-    ])->name('orangtua.pembayaran.create');
+        Route::get('/dashboard', [
+            DashboardController::class,
+            'orangTua',
+        ])->name('orangtua.dashboard');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | KIRIM BUKTI PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | BAYAR TAGIHAN
+        |--------------------------------------------------------------------------
+        */
 
-    Route::post('/pembayaran/{tagihan}', [
-        PembayaranOrangTuaController::class,
-        'store'
-    ])->name('orangtua.pembayaran.store');
+        Route::get('/pembayaran/{tagihan}/bayar', [
+            PembayaranOrangTuaController::class,
+            'create',
+        ])->name('orangtua.pembayaran.create');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DOWNLOAD BUKTI PEMBAYARAN
-    |--------------------------------------------------------------------------
-    */
+        /*
+        |--------------------------------------------------------------------------
+        | KIRIM BUKTI PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
 
-    Route::get('/pembayaran/{pembayaran}/download', [
-        PembayaranOrangTuaController::class,
-        'downloadBukti'
-    ])->name('orangtua.pembayaran.download');
+        Route::post('/pembayaran/{tagihan}', [
+            PembayaranOrangTuaController::class,
+            'store',
+        ])->name('orangtua.pembayaran.store');
 
-});
+
+        /*
+        |--------------------------------------------------------------------------
+        | DOWNLOAD BUKTI PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/pembayaran/{pembayaran}/download', [
+            PembayaranOrangTuaController::class,
+            'downloadBukti',
+        ])->name('orangtua.pembayaran.download');
+
+    });
