@@ -38,29 +38,45 @@
 
         {{-- ERROR DARI CONTROLLER --}}
         @if(session('error'))
+
             <div class="tagihan-alert tagihan-alert-error">
+
                 <i class="bi bi-exclamation-triangle-fill"></i>
+
                 {{ session('error') }}
+
             </div>
+
         @endif
 
 
         {{-- ERROR VALIDASI --}}
         @if($errors->any())
+
             <div class="tagihan-alert tagihan-alert-error">
 
                 <div class="tagihan-error-title">
+
                     <i class="bi bi-exclamation-triangle-fill"></i>
+
                     Terjadi kesalahan
+
                 </div>
 
                 <ul>
+
                     @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
                     @endforeach
+
                 </ul>
 
             </div>
+
         @endif
 
 
@@ -68,15 +84,22 @@
         <div class="tagihan-info">
 
             <div class="tagihan-info-title">
+
                 <i class="bi bi-info-circle-fill"></i>
+
                 Informasi
+
             </div>
 
             <p>
+
                 Tagihan akan dibuat secara otomatis untuk
                 <strong>seluruh siswa</strong> yang terdaftar.
-                Jika memilih <strong>Semua Kategori</strong>,
+
+                Jika memilih
+                <strong>Semua Kategori</strong>,
                 semua kategori tagihan akan dibuat otomatis.
+
             </p>
 
         </div>
@@ -90,14 +113,19 @@
 
             @csrf
 
+
             <div class="tagihan-form-grid">
+
 
                 {{-- TAHUN AJARAN --}}
                 <div class="tagihan-form-group">
 
                     <label for="tahun_ajaran_id">
+
                         <i class="bi bi-calendar3"></i>
+
                         Tahun Ajaran
+
                     </label>
 
                     <select
@@ -117,11 +145,13 @@
                                 value="{{ $tahun->id }}"
                                 {{ old('tahun_ajaran_id') == $tahun->id ? 'selected' : '' }}
                             >
+
                                 {{ $tahun->nama }}
 
                                 @if($tahun->aktif)
                                     (Aktif)
                                 @endif
+
                             </option>
 
                         @endforeach
@@ -137,6 +167,7 @@
                     <label for="kategori">
 
                         <i class="bi bi-tags"></i>
+
                         Kategori Pembayaran
 
                     </label>
@@ -152,13 +183,15 @@
                             -- Pilih Kategori --
                         </option>
 
-                        {{-- PILIHAN SEMUA KATEGORI --}}
+
+                        {{-- SEMUA KATEGORI --}}
                         <option
                             value="semua"
                             {{ old('kategori_tagihan_id') === 'semua' ? 'selected' : '' }}
                         >
                             Semua Kategori
                         </option>
+
 
                         @foreach($kategori as $item)
 
@@ -167,9 +200,13 @@
                                 data-nominal="{{ $item->nominal }}"
                                 {{ old('kategori_tagihan_id') == $item->id ? 'selected' : '' }}
                             >
+
                                 {{ $item->nama }}
+
                                 -
-                                Rp {{ number_format($item->nominal, 0, ',', '.') }}
+                                Rp
+                                {{ number_format($item->nominal, 0, ',', '.') }}
+
                             </option>
 
                         @endforeach
@@ -177,7 +214,9 @@
                     </select>
 
                     <small class="tagihan-form-help">
+
                         Pilih satu kategori atau pilih Semua Kategori.
+
                     </small>
 
                 </div>
@@ -189,6 +228,7 @@
                     <label for="nominal">
 
                         <i class="bi bi-cash-stack"></i>
+
                         Nominal Tagihan
 
                     </label>
@@ -202,8 +242,11 @@
                     >
 
                     <small class="tagihan-form-help">
-                        Jika memilih Semua Kategori, nominal setiap kategori
-                        mengikuti nominal yang tersimpan di database.
+
+                        Jika memilih Semua Kategori,
+                        nominal setiap kategori mengikuti
+                        nominal yang tersimpan di database.
+
                     </small>
 
                 </div>
@@ -215,6 +258,7 @@
                     <label for="target">
 
                         <i class="bi bi-people"></i>
+
                         Target Tagihan
 
                     </label>
@@ -236,19 +280,120 @@
                     <label for="jatuh_tempo">
 
                         <i class="bi bi-calendar-event"></i>
+
                         Jatuh Tempo
 
                     </label>
 
-                    <input
-                        type="date"
-                        name="jatuh_tempo"
-                        id="jatuh_tempo"
-                        value="{{ old('jatuh_tempo') }}"
-                        class="tagihan-form-control"
-                    >
+
+                    @php
+
+                        $pengaturanPembayaran =
+                            \App\Models\PengaturanPembayaran::first();
+
+                        $tanggalJatuhTempo =
+                            $pengaturanPembayaran?->tanggal_jatuh_tempo ?? 5;
+
+                        $aktifPengaturan =
+                            $pengaturanPembayaran?->aktif ?? true;
+
+                    @endphp
+
+
+                    @if($aktifPengaturan)
+
+                        @php
+
+                            $hariIni = \Carbon\Carbon::now();
+
+                            $tanggal =
+                                min(
+                                    (int) $tanggalJatuhTempo,
+                                    $hariIni->daysInMonth
+                                );
+
+                            $tanggalTempo =
+                                $hariIni
+                                    ->copy()
+                                    ->startOfDay()
+                                    ->setDay($tanggal);
+
+                            if (
+                                $hariIni
+                                    ->copy()
+                                    ->startOfDay()
+                                    ->greaterThan($tanggalTempo)
+                            ) {
+
+                                $bulanBerikutnya =
+                                    $hariIni
+                                        ->copy()
+                                        ->addMonthNoOverflow();
+
+                                $tanggalBulanBerikutnya =
+                                    min(
+                                        (int) $tanggalJatuhTempo,
+                                        $bulanBerikutnya->daysInMonth
+                                    );
+
+                                $tanggalTempo =
+                                    $bulanBerikutnya
+                                        ->copy()
+                                        ->startOfDay()
+                                        ->setDay(
+                                            $tanggalBulanBerikutnya
+                                        );
+                            }
+
+                            $tanggalTempoValue =
+                                $tanggalTempo->format('Y-m-d');
+
+                        @endphp
+
+
+                        <input
+                            type="date"
+                            name="jatuh_tempo"
+                            id="jatuh_tempo"
+                            value="{{ old('jatuh_tempo', $tanggalTempoValue) }}"
+                            readonly
+                            class="tagihan-form-control tagihan-readonly"
+                        >
+
+
+                        <small class="tagihan-form-help">
+
+                            Jatuh tempo otomatis mengikuti
+                            pengaturan pembayaran.
+
+                            Tanggal setiap bulan:
+                            <strong>
+                                {{ $tanggalJatuhTempo }}
+                            </strong>
+
+                        </small>
+
+                    @else
+
+                        <input
+                            type="date"
+                            name="jatuh_tempo"
+                            id="jatuh_tempo"
+                            value="{{ old('jatuh_tempo') }}"
+                            class="tagihan-form-control"
+                        >
+
+                        <small class="tagihan-form-help">
+
+                            Pengaturan jatuh tempo sedang tidak aktif.
+                            Silakan tentukan tanggal secara manual.
+
+                        </small>
+
+                    @endif
 
                 </div>
+
 
             </div>
 
@@ -260,16 +405,23 @@
                     href="{{ route('admin.tagihan.index') }}"
                     class="tagihan-detail-btn tagihan-detail-btn-kembali"
                 >
+
                     <i class="bi bi-arrow-left"></i>
+
                     Kembali
+
                 </a>
+
 
                 <button
                     type="submit"
                     class="tagihan-detail-btn tagihan-detail-btn-edit"
                 >
+
                     <i class="bi bi-check-circle"></i>
+
                     Buat Tagihan
+
                 </button>
 
             </div>
@@ -286,40 +438,74 @@
 @push('scripts')
 
 <script>
-    const kategoriSelect = document.getElementById('kategori');
-    const nominalInput = document.getElementById('nominal');
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const kategoriSelect =
+        document.getElementById('kategori');
+
+    const nominalInput =
+        document.getElementById('nominal');
+
 
     if (kategoriSelect && nominalInput) {
 
         function tampilkanNominal() {
+
             const option =
-                kategoriSelect.options[kategoriSelect.selectedIndex];
+                kategoriSelect.options[
+                    kategoriSelect.selectedIndex
+                ];
+
 
             if (!option || !option.value) {
+
                 nominalInput.value = '';
+
                 return;
             }
 
+
             if (option.value === 'semua') {
+
                 nominalInput.value =
                     'Mengikuti nominal semua kategori';
 
                 return;
             }
 
-            const nominal = Number(option.dataset.nominal || 0);
+
+            const nominal =
+                Number(
+                    option.dataset.nominal || 0
+                );
+
 
             nominalInput.value =
-                'Rp ' + nominal.toLocaleString('id-ID');
+                'Rp ' +
+                nominal.toLocaleString('id-ID');
         }
+
 
         kategoriSelect.addEventListener(
             'change',
             tampilkanNominal
         );
 
+
         tampilkanNominal();
+
     }
+
+
+    if (typeof lucide !== 'undefined') {
+
+        lucide.createIcons();
+
+    }
+
+});
+
 </script>
 
 @endpush

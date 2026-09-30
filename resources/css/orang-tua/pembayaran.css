@@ -359,3 +359,267 @@
         width: 100%;
     }
 }
+
+/* =========================================================
+   GROUP TAGIHAN PER TAHUN AJARAN
+========================================================= */
+
+.tagihan-group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+
+.tahun-tagihan-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 81, 50, 0.06);
+}
+
+
+.tahun-tagihan-header {
+    padding: 20px 24px;
+    background: #f8faf9;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+.tahun-tagihan-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+
+.tahun-tagihan-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #0f5132;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.tahun-tagihan-icon i {
+    width: 22px;
+    height: 22px;
+}
+
+
+.tahun-tagihan-header h3 {
+    margin: 0 0 4px;
+    color: #123c2b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+.tahun-tagihan-header span {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+
+.tagihan-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.tagihan-item {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.8fr) minmax(150px, 1fr) minmax(180px, 1fr) auto;
+
+    align-items: center;
+
+    gap: 24px;
+
+    padding: 20px 24px;
+
+    border-bottom: 1px solid #edf0ee;
+
+    transition:
+        background 0.2s ease;
+}
+
+
+.tagihan-item:last-child {
+    border-bottom: none;
+}
+
+
+.tagihan-item:hover {
+    background: #fafcfb;
+}
+
+
+/* KATEGORI */
+
+.tagihan-item-category {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+
+.tagihan-category-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 10px;
+
+    background: #e9f7ef;
+    color: #0f5132;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.tagihan-category-icon i {
+    width: 20px;
+    height: 20px;
+}
+
+
+.tagihan-item-category strong {
+    display: block;
+
+    color: #1f2937;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    margin-bottom: 4px;
+}
+
+
+.tagihan-item-category span {
+    display: block;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+/* NOMINAL */
+
+.tagihan-item-nominal span,
+.tagihan-item-status > span:first-child {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+.tagihan-item-nominal strong {
+    color: #0f5132;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+/* STATUS */
+
+.tagihan-item-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+
+.tagihan-item-status .status {
+    white-space: nowrap;
+}
+
+
+/* AKSI */
+
+.tagihan-item-action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+}
+
+
+.tagihan-item-action .payment-form {
+    margin: 0;
+}
+
+
+.tagihan-item-action .btn-bayar {
+    min-width: 120px;
+    height: 42px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1000px) {
+
+    .tagihan-item {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 18px;
+    }
+
+    .tagihan-item-action {
+        justify-content: flex-start;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .tahun-tagihan-header {
+        padding: 18px;
+    }
+
+
+    .tagihan-item {
+        grid-template-columns: 1fr;
+
+        padding: 18px;
+        gap: 16px;
+    }
+
+
+    .tagihan-item-nominal,
+    .tagihan-item-status {
+        padding-left: 56px;
+    }
+
+
+    .tagihan-item-action {
+        padding-left: 56px;
+
+        justify-content: flex-start;
+    }
+
+
+    .tagihan-item-action .btn-bayar {
+        width: auto;
+    }
+
+}

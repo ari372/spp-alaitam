@@ -2,9 +2,11 @@
 
 @section('title', 'Tahun Ajaran')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/admin/tahun-ajaran.css')
+@endpush
 
-@vite('resources/css/admin/tahun-ajaran.css')
+@section('content')
 
 <div class="tahun-ajaran-page">
 

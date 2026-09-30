@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // =========================================
         // ADMIN
         // =========================================
+
         User::create([
             'name' => 'Administrator',
             'email' => 'admin@alaitam.sch.id',
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
         // =========================================
         // ORANG TUA
         // =========================================
+
         $userOrangTua = User::create([
             'name' => 'Bapak Ahmad',
             'email' => 'ahmad@gmail.com',
@@ -44,16 +46,35 @@ class DatabaseSeeder extends Seeder
         // =========================================
         // KELAS
         // =========================================
-        Kelas::create(['nama_kelas' => '7A']);
-        Kelas::create(['nama_kelas' => '7B']);
-        Kelas::create(['nama_kelas' => '8A']);
-        Kelas::create(['nama_kelas' => '8B']);
-        Kelas::create(['nama_kelas' => '9A']);
-        Kelas::create(['nama_kelas' => '9B']);
+
+        Kelas::create([
+            'nama_kelas' => '7A'
+        ]);
+
+        Kelas::create([
+            'nama_kelas' => '7B'
+        ]);
+
+        Kelas::create([
+            'nama_kelas' => '8A'
+        ]);
+
+        Kelas::create([
+            'nama_kelas' => '8B'
+        ]);
+
+        Kelas::create([
+            'nama_kelas' => '9A'
+        ]);
+
+        Kelas::create([
+            'nama_kelas' => '9B'
+        ]);
 
         // =========================================
         // TAHUN AJARAN
         // =========================================
+
         TahunAjaran::create([
             'nama' => '2026/2027',
             'tanggal_mulai' => '2026-07-01',
@@ -78,6 +99,7 @@ class DatabaseSeeder extends Seeder
         // =========================================
         // KATEGORI TAGIHAN
         // =========================================
+
         KategoriTagihan::create([
             'nama' => 'SPP',
             'nominal' => 1350000,
@@ -100,6 +122,14 @@ class DatabaseSeeder extends Seeder
             'nama' => 'Ujian',
             'nominal' => 550000,
             'keterangan' => 'Pembayaran ujian siswa',
+        ]);
+
+        // =========================================
+        // PENGATURAN PEMBAYARAN
+        // =========================================
+
+        $this->call([
+            PengaturanPembayaranSeeder::class,
         ]);
     }
 }

@@ -4,9 +4,11 @@
 
 @section('page-title', 'Koreksi Pembayaran')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/admin/pembayaran.css')
+@endpush
 
-@vite('resources/css/admin/pembayaran.css')
+@section('content')
 
 <div class="koreksi-container">
 

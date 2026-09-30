@@ -465,4 +465,18 @@ class LaporanController extends Controller
             'laporan-pembayaran.xlsx'
         );
     }
+
+    public function bulkDestroy(Request $request)
+{
+    $request->validate([
+        'payment_ids' => ['required', 'array'],
+        'payment_ids.*' => ['integer', 'exists:pembayaran_tagihan,id'],
+    ]);
+
+    PembayaranTagihan::whereIn('id', $request->payment_ids)->delete();
+
+    return redirect()
+        ->route('admin.laporan.index')
+        ->with('success', count($request->payment_ids) . ' data pembayaran berhasil dihapus.');
+}
 }

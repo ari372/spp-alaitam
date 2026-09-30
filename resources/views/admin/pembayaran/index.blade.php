@@ -4,16 +4,17 @@
 
 @section('page-title', 'Persetujuan Pembayaran')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/admin/pembayaran.css')
+@endpush
 
-@vite('resources/css/admin/pembayaran.css')
+@section('content')
 
 <div class="pembayaran-container">
 
     {{-- =====================================================
         HEADER
     ====================================================== --}}
-
     <div class="pembayaran-header">
 
         <div class="pembayaran-header-content">
@@ -23,7 +24,6 @@
             </div>
 
             <div>
-
                 <h2>
                     Persetujuan Pembayaran
                 </h2>
@@ -31,22 +31,31 @@
                 <p>
                     Periksa detail, bukti pembayaran, dan proses pembayaran siswa.
                 </p>
-
             </div>
 
         </div>
 
+        <div class="pembayaran-header-actions">
 
-        <a
-            href="{{ route('admin.pembayaran.manual') }}"
-            class="btn-manual"
-        >
+            {{-- PENGATURAN PEMBAYARAN --}}
+            <a
+                href="{{ route('admin.pengaturan-pembayaran.index') }}"
+                class="btn-pengaturan"
+            >
+                <i data-lucide="settings"></i>
+                Pengaturan Pembayaran
+            </a>
 
-            <i data-lucide="plus"></i>
+            {{-- PEMBAYARAN MANUAL --}}
+            <a
+                href="{{ route('admin.pembayaran.manual') }}"
+                class="btn-manual"
+            >
+                <i data-lucide="plus"></i>
+                Pembayaran Manual
+            </a>
 
-            Pembayaran Manual
-
-        </a>
+        </div>
 
     </div>
 
@@ -54,7 +63,6 @@
     {{-- =====================================================
         SUCCESS
     ====================================================== --}}
-
     @if(session('success'))
 
         <div class="pembayaran-alert pembayaran-alert-success">
@@ -73,7 +81,6 @@
     {{-- =====================================================
         ERROR
     ====================================================== --}}
-
     @if(session('error'))
 
         <div class="pembayaran-alert pembayaran-alert-error">
@@ -92,7 +99,6 @@
     {{-- =====================================================
         VALIDATION ERROR
     ====================================================== --}}
-
     @if($errors->any())
 
         <div class="pembayaran-alert pembayaran-alert-error">
@@ -119,7 +125,6 @@
     {{-- =====================================================
         DAFTAR PEMBAYARAN
     ====================================================== --}}
-
     @forelse($pembayaran as $item)
 
         @php
@@ -130,7 +135,10 @@
 
             $sudahDibayar = $tagihan
                 ? $tagihan->pembayaran
-                    ->whereIn('status', ['dibayar', 'disetujui'])
+                    ->whereIn('status', [
+                        'dibayar',
+                        'disetujui'
+                    ])
                     ->sum('nominal')
                 : 0;
 
@@ -148,7 +156,6 @@
             {{-- =================================================
                 CARD HEADER
             ================================================== --}}
-
             <div class="pembayaran-card-header">
 
                 <div class="pembayaran-card-title">
@@ -183,20 +190,16 @@
             </div>
 
 
-
             {{-- =================================================
                 MAIN GRID
             ================================================== --}}
-
             <div class="pembayaran-main-grid">
 
 
                 {{-- =================================================
                     INFORMASI PEMBAYARAN
                 ================================================== --}}
-
                 <div class="pembayaran-detail-card">
-
 
                     <div class="pembayaran-section-header">
 
@@ -223,7 +226,6 @@
 
 
                         {{-- SISWA --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -246,7 +248,6 @@
 
 
                         {{-- NIS --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -269,7 +270,6 @@
 
 
                         {{-- TAHUN AJARAN --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -292,7 +292,6 @@
 
 
                         {{-- KATEGORI --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -315,7 +314,6 @@
 
 
                         {{-- NOMINAL --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -334,7 +332,8 @@
 
                                     <strong class="nominal-normal">
 
-                                        Rp {{ number_format(
+                                        Rp
+                                        {{ number_format(
                                             $item->nominal,
                                             0,
                                             ',',
@@ -346,9 +345,7 @@
                                 @else
 
                                     <span class="nominal-belum">
-
                                         Belum ditentukan
-
                                     </span>
 
                                 @endif
@@ -359,7 +356,6 @@
 
 
                         {{-- METODE --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -394,7 +390,6 @@
 
 
                         {{-- WAKTU --}}
-
                         <div class="pembayaran-detail-row">
 
                             <div class="pembayaran-detail-label">
@@ -422,13 +417,10 @@
                     </div>
 
 
-
                     {{-- =================================================
                         RINGKASAN TAGIHAN
                     ================================================== --}}
-
                     <div class="pembayaran-summary">
-
 
                         <div class="pembayaran-summary-header">
 
@@ -444,6 +436,7 @@
                         <div class="pembayaran-summary-grid">
 
 
+                            {{-- TOTAL --}}
                             <div class="pembayaran-summary-item">
 
                                 <span>
@@ -452,7 +445,8 @@
 
                                 <strong>
 
-                                    Rp {{ number_format(
+                                    Rp
+                                    {{ number_format(
                                         $totalTagihan,
                                         0,
                                         ',',
@@ -464,6 +458,7 @@
                             </div>
 
 
+                            {{-- SUDAH DIBAYAR --}}
                             <div class="pembayaran-summary-item">
 
                                 <span>
@@ -472,7 +467,8 @@
 
                                 <strong>
 
-                                    Rp {{ number_format(
+                                    Rp
+                                    {{ number_format(
                                         $sudahDibayar,
                                         0,
                                         ',',
@@ -484,6 +480,7 @@
                             </div>
 
 
+                            {{-- SISA --}}
                             <div class="pembayaran-summary-item">
 
                                 <span>
@@ -492,7 +489,8 @@
 
                                 <strong class="summary-sisa">
 
-                                    Rp {{ number_format(
+                                    Rp
+                                    {{ number_format(
                                         $sisaTagihan,
                                         0,
                                         ',',
@@ -512,13 +510,10 @@
                 </div>
 
 
-
                 {{-- =================================================
                     BUKTI PEMBAYARAN
                 ================================================== --}}
-
                 <div class="pembayaran-proof-card">
-
 
                     <div class="pembayaran-section-header">
 
@@ -545,7 +540,6 @@
 
                     @if($item->bukti_pembayaran)
 
-
                         <div class="pembayaran-proof-wrapper">
 
                             <img
@@ -570,9 +564,7 @@
 
                         </a>
 
-
                     @else
-
 
                         <div class="pembayaran-proof-empty">
 
@@ -588,7 +580,6 @@
 
                         </div>
 
-
                     @endif
 
 
@@ -598,11 +589,9 @@
             </div>
 
 
-
             {{-- =================================================
                 TINDAKAN PEMBAYARAN
             ================================================== --}}
-
             <div class="pembayaran-action-card">
 
 
@@ -633,14 +622,12 @@
                 </div>
 
 
-
                 <div class="pembayaran-actions">
 
 
                     {{-- =================================================
                         KOREKSI
                     ================================================== --}}
-
                     <a
                         href="{{ route(
                             'admin.pembayaran.edit',
@@ -656,11 +643,9 @@
                     </a>
 
 
-
                     {{-- =================================================
                         TOLAK
                     ================================================== --}}
-
                     <form
                         action="{{ route(
                             'admin.pembayaran.tolak',
@@ -697,15 +682,12 @@
 
                         </button>
 
-
                     </form>
-
 
 
                     {{-- =================================================
                         SETUJUI
                     ================================================== --}}
-
                     <form
                         action="{{ route(
                             'admin.pembayaran.setujui',
@@ -733,7 +715,6 @@
 
                         </button>
 
-
                     </form>
 
 
@@ -752,9 +733,7 @@
         {{-- =================================================
             EMPTY STATE
         ================================================== --}}
-
         <div class="pembayaran-empty">
-
 
             <div class="pembayaran-empty-icon">
 
@@ -784,7 +763,6 @@
 
             </a>
 
-
         </div>
 
 
@@ -794,11 +772,9 @@
 </div>
 
 
-
 {{-- =========================================================
     LUCIDE ICON
 ========================================================= --}}
-
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <script>

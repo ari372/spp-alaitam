@@ -1,19 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\OrangTuaController;
-use App\Http\Controllers\TagihanController;
-use App\Http\Controllers\PembayaranOrangTuaController;
-use App\Http\Controllers\PembayaranAdminController;
 use App\Http\Controllers\KategoriTagihanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\OrangTuaController;
+use App\Http\Controllers\PembayaranAdminController;
+use App\Http\Controllers\PembayaranOrangTuaController;
+use App\Http\Controllers\PengaturanPembayaranController;
+use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TahunAjaranController;
-
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +34,6 @@ Route::post('/login', [
     'login',
 ])->name('login.process');
 
-
 /*
 |--------------------------------------------------------------------------
 | LOGOUT
@@ -48,7 +46,6 @@ Route::post('/logout', [
 ])
     ->middleware('auth')
     ->name('logout');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +60,6 @@ Route::middleware([
     ->prefix('admin')
     ->group(function () {
 
-
         /*
         |--------------------------------------------------------------------------
         | DASHBOARD ADMIN
@@ -74,7 +70,6 @@ Route::middleware([
             DashboardController::class,
             'admin',
         ])->name('admin.dashboard');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -94,7 +89,6 @@ Route::middleware([
             AuthController::class,
             'updateProfil',
         ])->name('admin.profil.update');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -121,7 +115,6 @@ Route::middleware([
             'importExcel',
         ])->name('admin.siswa.import.excel');
 
-
         /*
         | CRUD data siswa
         */
@@ -130,15 +123,14 @@ Route::middleware([
             'siswa',
             SiswaController::class
         )->names([
-            'index' => 'admin.siswa.index',
-            'create' => 'admin.siswa.create',
-            'store' => 'admin.siswa.store',
-            'show' => 'admin.siswa.show',
-            'edit' => 'admin.siswa.edit',
-            'update' => 'admin.siswa.update',
+            'index'   => 'admin.siswa.index',
+            'create'  => 'admin.siswa.create',
+            'store'   => 'admin.siswa.store',
+            'show'    => 'admin.siswa.show',
+            'edit'    => 'admin.siswa.edit',
+            'update'  => 'admin.siswa.update',
             'destroy' => 'admin.siswa.destroy',
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -150,15 +142,14 @@ Route::middleware([
             'orang-tua',
             OrangTuaController::class
         )->names([
-            'index' => 'admin.orang-tua.index',
-            'create' => 'admin.orang-tua.create',
-            'store' => 'admin.orang-tua.store',
-            'show' => 'admin.orang-tua.show',
-            'edit' => 'admin.orang-tua.edit',
-            'update' => 'admin.orang-tua.update',
+            'index'   => 'admin.orang-tua.index',
+            'create'  => 'admin.orang-tua.create',
+            'store'   => 'admin.orang-tua.store',
+            'show'    => 'admin.orang-tua.show',
+            'edit'    => 'admin.orang-tua.edit',
+            'update'  => 'admin.orang-tua.update',
             'destroy' => 'admin.orang-tua.destroy',
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -170,14 +161,13 @@ Route::middleware([
             'kelas',
             KelasController::class
         )->names([
-            'index' => 'admin.kelas.index',
-            'create' => 'admin.kelas.create',
-            'store' => 'admin.kelas.store',
-            'edit' => 'admin.kelas.edit',
-            'update' => 'admin.kelas.update',
+            'index'   => 'admin.kelas.index',
+            'create'  => 'admin.kelas.create',
+            'store'   => 'admin.kelas.store',
+            'edit'    => 'admin.kelas.edit',
+            'update'  => 'admin.kelas.update',
             'destroy' => 'admin.kelas.destroy',
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -193,11 +183,11 @@ Route::middleware([
                 'show',
             ])
             ->names([
-                'index' => 'admin.tahun-ajaran.index',
-                'create' => 'admin.tahun-ajaran.create',
-                'store' => 'admin.tahun-ajaran.store',
-                'edit' => 'admin.tahun-ajaran.edit',
-                'update' => 'admin.tahun-ajaran.update',
+                'index'   => 'admin.tahun-ajaran.index',
+                'create'  => 'admin.tahun-ajaran.create',
+                'store'   => 'admin.tahun-ajaran.store',
+                'edit'    => 'admin.tahun-ajaran.edit',
+                'update'  => 'admin.tahun-ajaran.update',
                 'destroy' => 'admin.tahun-ajaran.destroy',
             ]);
 
@@ -208,7 +198,6 @@ Route::middleware([
                 'aktifkan',
             ]
         )->name('admin.tahun-ajaran.aktifkan');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -230,15 +219,23 @@ Route::middleware([
                 'destroy',
             ])
             ->names([
-                'index' => 'admin.tagihan.index',
-                'create' => 'admin.tagihan.create',
-                'store' => 'admin.tagihan.store',
-                'show' => 'admin.tagihan.show',
-                'edit' => 'admin.tagihan.edit',
-                'update' => 'admin.tagihan.update',
+                'index'   => 'admin.tagihan.index',
+                'create'  => 'admin.tagihan.create',
+                'store'   => 'admin.tagihan.store',
+                'show'    => 'admin.tagihan.show',
+                'edit'    => 'admin.tagihan.edit',
+                'update'  => 'admin.tagihan.update',
                 'destroy' => 'admin.tagihan.destroy',
             ]);
 
+        /*
+        | Hapus beberapa tagihan sekaligus
+        */
+
+        Route::post('/tagihan/bulk-destroy', [
+            TagihanController::class,
+            'bulkDestroy',
+        ])->name('admin.tagihan.bulk-destroy');
 
         /*
         |--------------------------------------------------------------------------
@@ -276,7 +273,6 @@ Route::middleware([
             'destroy',
         ])->name('admin.kategori.destroy');
 
-
         /*
         |--------------------------------------------------------------------------
         | PEMBAYARAN ADMIN
@@ -287,7 +283,6 @@ Route::middleware([
             PembayaranAdminController::class,
             'index',
         ])->name('admin.pembayaran.index');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -305,7 +300,6 @@ Route::middleware([
             'storeManual',
         ])->name('admin.pembayaran.manual.store');
 
-
         /*
         |--------------------------------------------------------------------------
         | NOTIFIKASI PEMBAYARAN
@@ -316,7 +310,6 @@ Route::middleware([
             PembayaranAdminController::class,
             'notifikasi',
         ])->name('admin.pembayaran.notifikasi');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -334,7 +327,6 @@ Route::middleware([
             'update',
         ])->name('admin.pembayaran.update');
 
-
         /*
         |--------------------------------------------------------------------------
         | SETUJUI PEMBAYARAN
@@ -346,7 +338,6 @@ Route::middleware([
             'setujui',
         ])->name('admin.pembayaran.setujui');
 
-
         /*
         |--------------------------------------------------------------------------
         | TOLAK PEMBAYARAN
@@ -357,7 +348,6 @@ Route::middleware([
             PembayaranAdminController::class,
             'tolak',
         ])->name('admin.pembayaran.tolak');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -374,6 +364,14 @@ Route::middleware([
             'index',
         ])->name('admin.laporan.index');
 
+        /*
+        | Hapus beberapa laporan sekaligus
+        */
+
+        Route::post('/laporan/bulk-destroy', [
+            LaporanController::class,
+            'bulkDestroy',
+        ])->name('admin.laporan.bulk-destroy');
 
         /*
         | Export PDF
@@ -386,7 +384,6 @@ Route::middleware([
             'pdf',
         ])->name('admin.laporan.pdf');
 
-
         /*
         | Export Excel
         */
@@ -395,7 +392,6 @@ Route::middleware([
             LaporanController::class,
             'excel',
         ])->name('admin.laporan.excel');
-
 
         /*
         | Detail laporan
@@ -406,7 +402,6 @@ Route::middleware([
             'show',
         ])->name('admin.laporan.show');
 
-
         /*
         | Edit laporan
         */
@@ -415,7 +410,6 @@ Route::middleware([
             LaporanController::class,
             'edit',
         ])->name('admin.laporan.edit');
-
 
         /*
         | Update laporan
@@ -426,7 +420,6 @@ Route::middleware([
             'update',
         ])->name('admin.laporan.update');
 
-
         /*
         | Hapus laporan
         */
@@ -436,8 +429,22 @@ Route::middleware([
             'destroy',
         ])->name('admin.laporan.destroy');
 
-    });
+        /*
+        |--------------------------------------------------------------------------
+        | PENGATURAN PEMBAYARAN
+        |--------------------------------------------------------------------------
+        */
 
+        Route::get('/pengaturan-pembayaran', [
+            PengaturanPembayaranController::class,
+            'index',
+        ])->name('admin.pengaturan-pembayaran.index');
+
+        Route::put('/pengaturan-pembayaran', [
+            PengaturanPembayaranController::class,
+            'update',
+        ])->name('admin.pengaturan-pembayaran.update');
+    });
 
 /*
 |--------------------------------------------------------------------------
@@ -452,7 +459,6 @@ Route::middleware([
     ->prefix('orangtua')
     ->group(function () {
 
-
         /*
         |--------------------------------------------------------------------------
         | DASHBOARD ORANG TUA
@@ -463,7 +469,6 @@ Route::middleware([
             DashboardController::class,
             'orangTua',
         ])->name('orangtua.dashboard');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -476,7 +481,6 @@ Route::middleware([
             'create',
         ])->name('orangtua.pembayaran.create');
 
-
         /*
         |--------------------------------------------------------------------------
         | KIRIM BUKTI PEMBAYARAN
@@ -488,7 +492,6 @@ Route::middleware([
             'store',
         ])->name('orangtua.pembayaran.store');
 
-
         /*
         |--------------------------------------------------------------------------
         | DOWNLOAD BUKTI PEMBAYARAN
@@ -499,5 +502,4 @@ Route::middleware([
             PembayaranOrangTuaController::class,
             'downloadBukti',
         ])->name('orangtua.pembayaran.download');
-
     });

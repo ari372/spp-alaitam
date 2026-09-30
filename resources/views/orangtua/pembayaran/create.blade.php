@@ -2,9 +2,11 @@
 
 @section('title', 'Pembayaran Tagihan')
 
-@section('content')
+@push('styles')
+    @vite('resources/css/orang-tua/pembayaran.css')
+@endpush
 
-@vite('resources/css/orang-tua/pembayaran.css')
+@section('content')
 
 <div class="payment-page">
 
@@ -252,44 +254,38 @@
             </div>
 
 
-            <div class="qris-box">
+<div class="qris-box">
 
-                <div class="qris-title">
-                    Pembayaran QRIS
-                </div>
+    <div class="qris-title">
+        Pembayaran QRIS
+    </div>
 
+    @if(file_exists(public_path('images/qris.jpeg')))
 
-                @if(file_exists(public_path('images/qris.png')))
+        <img
+            src="{{ asset('images/qris.jpeg') }}"
+            alt="QRIS SMP Plus Al-I'tam"
+        >
 
-                    <img
-                        src="{{ asset('images/qris.png') }}"
-                        alt="QRIS SMP Plus Al-I'tam"
-                    >
+    @else
 
-                @else
+        <div style="
+            padding:35px 15px;
+            color:#777;
+            border:1px dashed #ccc;
+            border-radius:8px;
+            margin-bottom:10px;
+        ">
+            QRIS sekolah belum tersedia
+        </div>
 
-                    <div style="
-                        padding:35px 15px;
-                        color:#777;
-                        border:1px dashed #ccc;
-                        border-radius:8px;
-                        margin-bottom:10px;
-                    ">
+    @endif
 
-                        QRIS sekolah belum tersedia
+    <div class="qris-description">
+        Silakan scan QRIS sekolah untuk melakukan pembayaran.
+    </div>
 
-                    </div>
-
-                @endif
-
-
-                <div class="qris-description">
-
-                    Silakan scan QRIS sekolah untuk melakukan pembayaran.
-
-                </div>
-
-            </div>
+</div>
 
         </div>
 

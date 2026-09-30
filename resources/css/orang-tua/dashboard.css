@@ -2215,3 +2215,258 @@ body.modal-open {
         text-align: left;
     }
 }
+
+/* =========================================================
+   PENGINGAT PEMBAYARAN
+========================================================= */
+
+.payment-reminder-card {
+    margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(15, 81, 50, 0.06);
+}
+
+.payment-reminder-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px;
+    background: #f8faf9;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.payment-reminder-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #0f5132;
+    color: #fff;
+}
+
+.payment-reminder-icon i {
+    width: 22px;
+    height: 22px;
+}
+
+.payment-reminder-title h3 {
+    margin: 0 0 4px;
+    color: #123c2b;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.payment-reminder-title p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.payment-reminder-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-reminder-item {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #edf0ee;
+}
+
+.payment-reminder-item:last-child {
+    border-bottom: none;
+}
+
+.payment-reminder-item-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    background: #fff7ed;
+    color: #d97706;
+}
+
+.payment-reminder-item-icon i {
+    width: 21px;
+    height: 21px;
+}
+
+.payment-reminder-item-content {
+    min-width: 0;
+}
+
+.payment-reminder-item-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.payment-reminder-item-top strong {
+    color: #1f2937;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.payment-reminder-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 25px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.payment-reminder-badge.warning {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.payment-reminder-badge.danger {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.payment-reminder-item-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.payment-reminder-item-info span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.payment-reminder-item-info strong {
+    margin-left: 4px;
+    color: #0f5132;
+    font-weight: 700;
+}
+
+.payment-reminder-action {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.payment-reminder-action form {
+    margin: 0;
+}
+
+.payment-reminder-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 105px;
+    height: 40px;
+    padding: 0 14px;
+    border: none;
+    border-radius: 9px;
+    background: #0f5132;
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.payment-reminder-button:hover {
+    background: #0b3d26;
+    transform: translateY(-1px);
+}
+
+.payment-reminder-button i {
+    width: 17px;
+    height: 17px;
+}
+
+.payment-reminder-processing {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 9px;
+    background: #fff7ed;
+    color: #c2410c;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.payment-reminder-processing i {
+    width: 16px;
+    height: 16px;
+}
+
+@media (max-width: 800px) {
+
+    .payment-reminder-item {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .payment-reminder-action {
+        grid-column: 2;
+        justify-content: flex-start;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .payment-reminder-header {
+        padding: 18px;
+    }
+
+    .payment-reminder-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 12px;
+        padding: 16px 18px;
+    }
+
+    .payment-reminder-item-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .payment-reminder-item-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .payment-reminder-item-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .payment-reminder-action {
+        grid-column: 2;
+    }
+
+    .payment-reminder-button {
+        width: 100%;
+    }
+
+}

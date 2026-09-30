@@ -1756,3 +1756,214 @@
     }
 
 }
+
+/* =========================================================
+   TOOLBAR TABEL
+========================================================= */
+
+.laporan-table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.laporan-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 540px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.laporan-search i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    width: 21px;
+    height: 21px;
+    transform: translateY(-50%);
+    color: #374151;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.laporan-search input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    box-sizing: border-box;
+
+    padding: 0 18px 0 48px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    outline: none;
+    background: #ffffff;
+
+    color: #374151;
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 48px;
+
+    transition: all 0.2s ease;
+}
+
+.laporan-search input::placeholder {
+    color: #6b7280;
+}
+
+.laporan-search input:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.08);
+}
+
+
+/* =========================================================
+   TOOLBAR ACTION
+========================================================= */
+
+.laporan-toolbar-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    min-height: 48px;
+    margin-left: auto;
+}
+
+.jumlah-dipilih {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 48px;
+    padding: 0 4px;
+
+    color: #374151;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   TOMBOL HAPUS TERPILIH
+========================================================= */
+
+.btn-hapus-terpilih {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    height: 42px;
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #dc2626;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-hapus-terpilih i {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-hapus-terpilih:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.18);
+}
+
+.btn-hapus-terpilih:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-hapus-terpilih:disabled {
+    background: #d1d5db;
+    color: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .laporan-table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .laporan-search {
+        width: 100%;
+    }
+
+    .laporan-toolbar-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .laporan-table-toolbar {
+        padding: 16px;
+    }
+
+    .laporan-toolbar-actions {
+        justify-content: space-between;
+    }
+
+    .jumlah-dipilih {
+        font-size: 14px;
+    }
+
+    .btn-hapus-terpilih {
+        height: 44px;
+        padding: 0 16px;
+        font-size: 14px;
+    }
+
+    .laporan-search {
+        height: 44px;
+    }
+
+    .laporan-search input {
+        height: 44px;
+        line-height: 44px;
+        font-size: 14px;
+    }
+
+}
