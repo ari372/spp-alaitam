@@ -32,14 +32,33 @@ class LaporanController extends Controller
         ];
     }
 
-
     /**
      * Query pembayaran
+     *
+     * LOGIKA:
+     *
+     * SPP:
+     * - Bulan  = tagihan.bulan
+     * - Tahun  = tagihan.tahun
+     *
+     * Non-SPP:
+     * - Bulan  = tanggal pembayaran
+     * - Tahun  = tanggal pembayaran
      */
     private function getPembayaranQuery(Request $request)
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
+
+        $bulanMap = $this->bulanIndonesia();
+
+        $nomorBulan = null;
+
+        if (!empty($bulan) && isset($bulanMap[$bulan])) {
+            $nomorBulan = $bulanMap[$bulan];
+        } elseif (is_numeric($bulan)) {
+            $nomorBulan = (int) $bulan;
+        }
 
         $query = PembayaranTagihan::with([
             'tagihan.siswa.kelas',
@@ -48,41 +67,109 @@ class LaporanController extends Controller
             'user',
         ]);
 
-
         /*
         |--------------------------------------------------------------------------
-        | FILTER TAHUN
+        | FILTER BULAN / TAHUN
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($tahun)) {
+        if (!empty($nomorBulan) || !empty($tahun)) {
 
-            $query->whereYear(
-                'tanggal_kirim',
+            $query->where(function ($query) use (
+                $nomorBulan,
                 $tahun
-            );
+            ) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | BAGIAN 1
+                | SPP
+                |
+                | Filter berdasarkan tagihan.bulan dan tagihan.tahun
+                |--------------------------------------------------------------------------
+                */
+
+                $query->where(function ($sppQuery) use (
+                    $nomorBulan,
+                    $tahun
+                ) {
+
+                    $sppQuery->whereHas(
+                        'tagihan.kategori',
+                        function ($kategoriQuery) {
+                            $kategoriQuery->whereRaw(
+                                'LOWER(TRIM(nama)) = ?',
+                                ['spp']
+                            );
+                        }
+                    );
+
+                    if (!empty($nomorBulan)) {
+                        $sppQuery->whereHas(
+                            'tagihan',
+                            function ($tagihanQuery) use ($nomorBulan) {
+                                $tagihanQuery->where(
+                                    'bulan',
+                                    $nomorBulan
+                                );
+                            }
+                        );
+                    }
+
+                    if (!empty($tahun)) {
+                        $sppQuery->whereHas(
+                            'tagihan',
+                            function ($tagihanQuery) use ($tahun) {
+                                $tagihanQuery->where(
+                                    'tahun',
+                                    $tahun
+                                );
+                            }
+                        );
+                    }
+                });
+
+                /*
+                |--------------------------------------------------------------------------
+                | BAGIAN 2
+                | NON-SPP
+                |
+                | Karena PTS / Jas-Baju tidak mempunyai bulan & tahun
+                | tagihan, gunakan tanggal pembayaran.
+                |--------------------------------------------------------------------------
+                */
+
+                $query->orWhere(function ($nonSppQuery) use (
+                    $nomorBulan,
+                    $tahun
+                ) {
+
+                    $nonSppQuery->whereHas(
+                        'tagihan.kategori',
+                        function ($kategoriQuery) {
+                            $kategoriQuery->whereRaw(
+                                'LOWER(TRIM(nama)) != ?',
+                                ['spp']
+                            );
+                        }
+                    );
+
+                    if (!empty($nomorBulan)) {
+                        $nonSppQuery->whereMonth(
+                            'tanggal_kirim',
+                            $nomorBulan
+                        );
+                    }
+
+                    if (!empty($tahun)) {
+                        $nonSppQuery->whereYear(
+                            'tanggal_kirim',
+                            $tahun
+                        );
+                    }
+                });
+            });
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER BULAN
-        |--------------------------------------------------------------------------
-        */
-
-        if (!empty($bulan)) {
-
-            $bulanMap = $this->bulanIndonesia();
-
-            if (isset($bulanMap[$bulan])) {
-
-                $query->whereMonth(
-                    'tanggal_kirim',
-                    $bulanMap[$bulan]
-                );
-            }
-        }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -90,11 +177,8 @@ class LaporanController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        return $query->orderByDesc(
-            'tanggal_kirim'
-        );
+        return $query->orderByDesc('tanggal_kirim');
     }
-
 
     /**
      * Menampilkan laporan pembayaran
@@ -103,7 +187,6 @@ class LaporanController extends Controller
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -114,7 +197,6 @@ class LaporanController extends Controller
         $pembayaran = $this
             ->getPembayaranQuery($request)
             ->get();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -129,7 +211,6 @@ class LaporanController extends Controller
             ->where('status', 'dibayar')
             ->sum('nominal');
 
-
         /*
         |--------------------------------------------------------------------------
         | AMBIL ID TAGIHAN
@@ -142,7 +223,6 @@ class LaporanController extends Controller
             ->unique()
             ->values();
 
-
         /*
         |--------------------------------------------------------------------------
         | TOTAL TAGIHAN
@@ -154,7 +234,6 @@ class LaporanController extends Controller
             $tagihanIds
         )->sum('nominal');
 
-
         /*
         |--------------------------------------------------------------------------
         | SISA TAGIHAN
@@ -165,7 +244,6 @@ class LaporanController extends Controller
             0,
             $totalTagihan - $totalPembayaran
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -186,7 +264,6 @@ class LaporanController extends Controller
         );
     }
 
-
     /**
      * Menampilkan detail pembayaran
      */
@@ -199,13 +276,11 @@ class LaporanController extends Controller
             'user',
         ])->findOrFail($id);
 
-
         return view(
             'admin.laporan.show',
             compact('pembayaran')
         );
     }
-
 
     /**
      * Form edit pembayaran
@@ -219,13 +294,11 @@ class LaporanController extends Controller
             'user',
         ])->findOrFail($id);
 
-
         return view(
             'admin.laporan.edit',
             compact('pembayaran')
         );
     }
-
 
     /**
      * Update pembayaran
@@ -234,7 +307,6 @@ class LaporanController extends Controller
     {
         $pembayaran = PembayaranTagihan::findOrFail($id);
 
-
         /*
         |--------------------------------------------------------------------------
         | VALIDASI
@@ -242,7 +314,6 @@ class LaporanController extends Controller
         */
 
         $validated = $request->validate([
-
             'nominal' => [
                 'required',
                 'numeric',
@@ -269,9 +340,7 @@ class LaporanController extends Controller
                 'string',
                 'max:500',
             ],
-
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -280,15 +349,10 @@ class LaporanController extends Controller
         */
 
         $pembayaran->nominal = $validated['nominal'];
-
         $pembayaran->metode = $validated['metode'];
-
         $pembayaran->status = $validated['status'];
-
         $pembayaran->tanggal_kirim = $validated['tanggal_kirim'];
-
         $pembayaran->catatan = $validated['catatan'] ?? null;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -299,7 +363,6 @@ class LaporanController extends Controller
         if ($validated['status'] === 'dibayar') {
 
             if (!$pembayaran->tanggal_disetujui) {
-
                 $pembayaran->tanggal_disetujui = now();
             }
 
@@ -308,9 +371,7 @@ class LaporanController extends Controller
             $pembayaran->tanggal_disetujui = null;
         }
 
-
         $pembayaran->save();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -326,14 +387,12 @@ class LaporanController extends Controller
             );
     }
 
-
     /**
      * Hapus pembayaran
      */
     public function destroy($id)
     {
         $pembayaran = PembayaranTagihan::findOrFail($id);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -342,7 +401,6 @@ class LaporanController extends Controller
         */
 
         $pembayaran->delete();
-
 
         /*
         |--------------------------------------------------------------------------
@@ -358,7 +416,6 @@ class LaporanController extends Controller
             );
     }
 
-
     /**
      * Cetak PDF
      */
@@ -366,7 +423,6 @@ class LaporanController extends Controller
     {
         $bulan = $request->bulan;
         $tahun = $request->tahun;
-
 
         /*
         |--------------------------------------------------------------------------
@@ -378,7 +434,6 @@ class LaporanController extends Controller
             ->getPembayaranQuery($request)
             ->get();
 
-
         /*
         |--------------------------------------------------------------------------
         | TOTAL PEMBAYARAN
@@ -388,7 +443,6 @@ class LaporanController extends Controller
         $totalPembayaran = $pembayaran
             ->where('status', 'dibayar')
             ->sum('nominal');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -402,12 +456,10 @@ class LaporanController extends Controller
             ->unique()
             ->values();
 
-
         $totalTagihan = Tagihan::whereIn(
             'id',
             $tagihanIds
         )->sum('nominal');
-
 
         /*
         |--------------------------------------------------------------------------
@@ -419,7 +471,6 @@ class LaporanController extends Controller
             0,
             $totalTagihan - $totalPembayaran
         );
-
 
         /*
         |--------------------------------------------------------------------------
@@ -439,18 +490,15 @@ class LaporanController extends Controller
             )
         );
 
-
         $pdf->setPaper(
             'A4',
             'landscape'
         );
 
-
         return $pdf->download(
             'laporan-pembayaran.pdf'
         );
     }
-
 
     /**
      * Export Excel
@@ -466,17 +514,34 @@ class LaporanController extends Controller
         );
     }
 
+    /**
+     * Hapus pembayaran secara massal
+     */
     public function bulkDestroy(Request $request)
-{
-    $request->validate([
-        'payment_ids' => ['required', 'array'],
-        'payment_ids.*' => ['integer', 'exists:pembayaran_tagihan,id'],
-    ]);
+    {
+        $request->validate([
+            'payment_ids' => [
+                'required',
+                'array',
+            ],
 
-    PembayaranTagihan::whereIn('id', $request->payment_ids)->delete();
+            'payment_ids.*' => [
+                'integer',
+                'exists:pembayaran_tagihan,id',
+            ],
+        ]);
 
-    return redirect()
-        ->route('admin.laporan.index')
-        ->with('success', count($request->payment_ids) . ' data pembayaran berhasil dihapus.');
-}
+        PembayaranTagihan::whereIn(
+            'id',
+            $request->payment_ids
+        )->delete();
+
+        return redirect()
+            ->route('admin.laporan.index')
+            ->with(
+                'success',
+                count($request->payment_ids) .
+                ' data pembayaran berhasil dihapus.'
+            );
+    }
 }

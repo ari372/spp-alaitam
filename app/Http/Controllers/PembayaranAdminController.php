@@ -7,12 +7,124 @@ use App\Models\Tagihan;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PembayaranAdminController extends Controller
 {
     /**
      * ============================================================
-     * MENAMPILKAN PEMBAYARAN YANG MENUNGGU PERSETUJUAN
+     * CEK APAKAH KATEGORI ADALAH SPP
+     * ============================================================
+     */
+    private function isSpp(Tagihan $tagihan)
+    {
+        return strtolower(
+            trim($tagihan->kategori->nama ?? '')
+        ) === 'spp';
+    }
+
+    /**
+     * ============================================================
+     * CEK APAKAH TAGIHAN ADALAH PTS ATAU UJIAN
+     * ============================================================
+     */
+    private function isPtsAtauUjian(Tagihan $tagihan)
+    {
+        $namaKategori = strtolower(
+            trim($tagihan->kategori->nama ?? '')
+        );
+
+        return str_contains($namaKategori, 'pts')
+            || str_contains($namaKategori, 'ujian');
+    }
+
+    /**
+     * ============================================================
+     * AMBIL SELURUH TAGIHAN SPP
+     *
+     * Diurutkan berdasarkan tahun dan bulan.
+     * ============================================================
+     */
+    private function getTagihanSpp(Tagihan $tagihan)
+    {
+        return Tagihan::with([
+            'kategori',
+            'tahunAjaran',
+        ])
+            ->where('siswa_id', $tagihan->siswa_id)
+            ->where('tahun_ajaran_id', $tagihan->tahun_ajaran_id)
+            ->whereHas('kategori', function ($query) {
+                $query->whereRaw(
+                    'LOWER(TRIM(nama)) = ?',
+                    ['spp']
+                );
+            })
+            ->orderBy('tahun')
+            ->orderBy('bulan')
+            ->orderBy('id')
+            ->get();
+    }
+
+    /**
+     * ============================================================
+     * HITUNG TOTAL PEMBAYARAN YANG SUDAH DIBAYAR
+     * UNTUK SATU TAGIHAN
+     * ============================================================
+     */
+    private function getTotalDibayar(Tagihan $tagihan)
+    {
+        return (float) PembayaranTagihan::where(
+            'tagihan_id',
+            $tagihan->id
+        )
+            ->whereIn('status', [
+                'dibayar',
+                'disetujui',
+            ])
+            ->sum('nominal');
+    }
+
+    /**
+     * ============================================================
+     * HITUNG SISA SATU TAGIHAN
+     * ============================================================
+     */
+    private function getSisaTagihan(Tagihan $tagihan)
+    {
+        $sudahDibayar = $this->getTotalDibayar($tagihan);
+
+        return max(
+            (float) $tagihan->nominal - $sudahDibayar,
+            0
+        );
+    }
+
+    /**
+     * ============================================================
+     * CEK APAKAH SELURUH SPP SUDAH LUNAS
+     * ============================================================
+     */
+    private function cekSppLunas(Tagihan $tagihan)
+    {
+        $tagihanSpp = $this->getTagihanSpp($tagihan);
+
+        if ($tagihanSpp->isEmpty()) {
+            return false;
+        }
+
+        foreach ($tagihanSpp as $spp) {
+            if ($this->getSisaTagihan($spp) > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * ============================================================
+     * MENAMPILKAN PEMBAYARAN YANG MENUNGGU
      * ============================================================
      */
     public function index()
@@ -21,18 +133,17 @@ class PembayaranAdminController extends Controller
             'tagihan.siswa',
             'tagihan.kategori',
             'tagihan.tahunAjaran',
-            'user'
+            'user',
         ])
-        ->where('status', 'menunggu')
-        ->orderByDesc('tanggal_kirim')
-        ->get();
+            ->where('status', 'menunggu')
+            ->orderByDesc('tanggal_kirim')
+            ->get();
 
         return view(
             'admin.pembayaran.index',
             compact('pembayaran')
         );
     }
-
 
     /**
      * ============================================================
@@ -46,10 +157,29 @@ class PembayaranAdminController extends Controller
         $tagihan = Tagihan::with([
             'siswa',
             'kategori',
-            'tahunAjaran'
+            'tahunAjaran',
+            'pembayaran',
         ])
-        ->orderByDesc('id')
-        ->get();
+            ->get()
+            ->sortBy(function ($item) {
+                $tanggalMulai = optional($item->tahunAjaran)->tanggal_mulai;
+
+                $tanggalSekolah = $tanggalMulai
+                    ? Carbon::parse($tanggalMulai)->timestamp
+                    : PHP_INT_MAX;
+
+                $periode = (($item->tahun ?? 0) * 100)
+                    + ($item->bulan ?? 0);
+
+                return [
+                    $tanggalSekolah,
+                    strtolower($item->siswa->nama ?? ''),
+                    strtolower($item->kategori->nama ?? ''),
+                    $periode,
+                    $item->id,
+                ];
+            })
+            ->values();
 
         return view(
             'admin.pembayaran.manual',
@@ -60,10 +190,24 @@ class PembayaranAdminController extends Controller
         );
     }
 
-
     /**
      * ============================================================
      * SIMPAN PEMBAYARAN MANUAL / CASH
+     *
+     * ATURAN:
+     *
+     * 1. SPP:
+     *    - Bisa memilih bulan mulai pembayaran.
+     *    - Pembayaran dimulai dari bulan yang dipilih.
+     *    - Jika nominal lebih besar dari satu bulan,
+     *      otomatis lanjut ke bulan berikutnya.
+     *    - Bulan yang sudah lunas akan dilewati.
+     *    - Pembayaran berhenti ketika nominal habis.
+     *    - Semua pembayaran langsung berstatus "dibayar".
+     *
+     * 2. Non-SPP:
+     *    - Nominal maksimal = sisa tagihan.
+     *    - Pembayaran langsung berstatus "dibayar".
      * ============================================================
      */
     public function storeManual(Request $request)
@@ -71,22 +215,18 @@ class PembayaranAdminController extends Controller
         $request->validate([
             'tagihan_id' => [
                 'required',
-                'exists:tagihan,id'
+                'exists:tagihan,id',
             ],
-
             'nominal' => [
                 'required',
                 'numeric',
                 'min:1',
             ],
-
             'tanggal_kirim' => [
                 'required',
                 'date',
             ],
-
         ], [
-
             'tagihan_id.required' =>
                 'Tagihan harus dipilih.',
 
@@ -109,127 +249,287 @@ class PembayaranAdminController extends Controller
                 'Tanggal pembayaran tidak valid.',
         ]);
 
+        return DB::transaction(function () use ($request) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | CARI TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+            /**
+             * ========================================================
+             * AMBIL TAGIHAN YANG DIPILIH
+             * ========================================================
+             */
+            $tagihan = Tagihan::with([
+                'siswa',
+                'kategori',
+                'tahunAjaran',
+            ])
+                ->lockForUpdate()
+                ->findOrFail($request->tagihan_id);
 
-        $tagihan = Tagihan::findOrFail(
-            $request->tagihan_id
-        );
+            $nominal = (float) $request->nominal;
 
+            /**
+             * ========================================================
+             * SPP
+             * ========================================================
+             */
+            if ($this->isSpp($tagihan)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG PEMBAYARAN YANG SUDAH DIBAYAR
-        |--------------------------------------------------------------------------
-        */
+                $tagihanSpp = $this->getTagihanSpp($tagihan)
+                    ->filter(function ($spp) use ($tagihan) {
 
-        $sudahDibayar = PembayaranTagihan::where(
-            'tagihan_id',
-            $tagihan->id
-        )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui',
-        ])
-        ->sum('nominal');
+                        if ($spp->tahun > $tagihan->tahun) {
+                            return true;
+                        }
 
+                        if (
+                            $spp->tahun == $tagihan->tahun &&
+                            $spp->bulan >= $tagihan->bulan
+                        ) {
+                            return true;
+                        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+                        return false;
+                    })
+                    ->values();
 
-        $sisaTagihan = max(
-            (float) $tagihan->nominal
-            - (float) $sudahDibayar,
-            0
-        );
+                if ($tagihanSpp->isEmpty()) {
+                    return back()
+                        ->withInput()
+                        ->with(
+                            'error',
+                            'Tagihan SPP dari bulan yang dipilih tidak ditemukan.'
+                        );
+                }
 
+                /**
+                 * ====================================================
+                 * TOTAL SISA SPP
+                 * ====================================================
+                 */
+                $totalSisaSpp = $tagihanSpp->sum(function ($spp) {
+                    return $this->getSisaTagihan($spp);
+                });
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK TAGIHAN SUDAH LUNAS
-        |--------------------------------------------------------------------------
-        */
+                /**
+                 * ====================================================
+                 * JIKA SUDAH LUNAS
+                 * ====================================================
+                 */
+                if ($totalSisaSpp <= 0) {
 
-        if ($sisaTagihan <= 0) {
-            return back()
-                ->withInput()
+                    $bulan = $tagihan->bulan;
+                    $tahun = $tagihan->tahun;
+
+                    $namaBulan = '-';
+
+                    if ($bulan && $tahun) {
+                        $namaBulan = Carbon::create(
+                            $tahun,
+                            $bulan,
+                            1
+                        )->translatedFormat('F Y');
+                    }
+
+                    return back()
+                        ->withInput()
+                        ->with(
+                            'error',
+                            'Tagihan SPP mulai bulan ' .
+                            $namaBulan .
+                            ' sudah lunas.'
+                        );
+                }
+
+                /**
+                 * ====================================================
+                 * NOMINAL TIDAK BOLEH MELEBIHI TOTAL SISA
+                 * ====================================================
+                 */
+                if ($nominal > $totalSisaSpp) {
+
+                    return back()
+                        ->withInput()
+                        ->with(
+                            'error',
+                            'Nominal pembayaran melebihi total sisa SPP mulai bulan yang dipilih. Sisa total: Rp ' .
+                            number_format(
+                                $totalSisaSpp,
+                                0,
+                                ',',
+                                '.'
+                            )
+                        );
+                }
+
+                /**
+                 * ====================================================
+                 * ALOKASI PEMBAYARAN
+                 * ====================================================
+                 */
+                $sisaPembayaran = $nominal;
+
+                foreach ($tagihanSpp as $spp) {
+
+                    if ($sisaPembayaran <= 0) {
+                        break;
+                    }
+
+                    $sisaBulan = $this->getSisaTagihan($spp);
+
+                    if ($sisaBulan <= 0) {
+                        continue;
+                    }
+
+                    $nominalUntukBulan = min(
+                        $sisaPembayaran,
+                        $sisaBulan
+                    );
+
+                    /**
+                     * =================================================
+                     * SIMPAN PEMBAYARAN CASH
+                     * =================================================
+                     */
+                    PembayaranTagihan::create([
+                        'tagihan_id' =>
+                            $spp->id,
+
+                        'user_id' =>
+                            Auth::id(),
+
+                        'nominal' =>
+                            $nominalUntukBulan,
+
+                        'metode' =>
+                            'cash',
+
+                        'tanggal_kirim' =>
+                            $request->tanggal_kirim,
+
+                        'status' =>
+                            'dibayar',
+
+                        'tanggal_disetujui' =>
+                            now(),
+                    ]);
+
+                    $sisaPembayaran -= $nominalUntukBulan;
+                }
+
+                /**
+                 * ====================================================
+                 * CEK KEAMANAN
+                 * ====================================================
+                 */
+                if ($sisaPembayaran > 0) {
+                    throw new \Exception(
+                        'Nominal pembayaran melebihi total sisa tagihan SPP.'
+                    );
+                }
+
+                /**
+                 * ====================================================
+                 * NAMA BULAN YANG DIPILIH
+                 * ====================================================
+                 */
+                $bulan = $tagihan->bulan;
+                $tahun = $tagihan->tahun;
+
+                $namaBulan = '-';
+
+                if ($bulan && $tahun) {
+                    $namaBulan = Carbon::create(
+                        $tahun,
+                        $bulan,
+                        1
+                    )->translatedFormat('F Y');
+                }
+
+                /**
+                 * ====================================================
+                 * PESAN BERHASIL
+                 * ====================================================
+                 */
+                return redirect()
+                    ->route('admin.pembayaran.index')
+                    ->with(
+                        'success',
+                        'Pembayaran cash SPP mulai bulan ' .
+                        $namaBulan .
+                        ' sebesar Rp ' .
+                        number_format(
+                            $nominal,
+                            0,
+                            ',',
+                            '.'
+                        ) .
+                        ' berhasil dicatat dan otomatis dialokasikan ke bulan berikutnya.'
+                    );
+            }
+
+            /**
+             * ========================================================
+             * NON-SPP
+             * ========================================================
+             */
+            $sisaTagihan = $this->getSisaTagihan($tagihan);
+
+            if ($sisaTagihan <= 0) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Tagihan ini sudah lunas.'
+                    );
+            }
+
+            if ($nominal > $sisaTagihan) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Nominal pembayaran melebihi sisa tagihan. Sisa tagihan: Rp ' .
+                        number_format(
+                            $sisaTagihan,
+                            0,
+                            ',',
+                            '.'
+                        )
+                    );
+            }
+
+            PembayaranTagihan::create([
+                'tagihan_id' =>
+                    $tagihan->id,
+
+                'user_id' =>
+                    Auth::id(),
+
+                'nominal' =>
+                    $nominal,
+
+                'metode' =>
+                    'cash',
+
+                'tanggal_kirim' =>
+                    $request->tanggal_kirim,
+
+                'status' =>
+                    'dibayar',
+
+                'tanggal_disetujui' =>
+                    now(),
+            ]);
+
+            return redirect()
+                ->route('admin.pembayaran.index')
                 ->with(
-                    'error',
-                    'Tagihan ini sudah lunas.'
+                    'success',
+                    'Pembayaran cash berhasil dicatat.'
                 );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK NOMINAL TIDAK MELEBIHI SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            (float) $request->nominal
-            > $sisaTagihan
-        ) {
-            return back()
-                ->withInput()
-                ->with(
-                    'error',
-                    'Nominal pembayaran melebihi sisa tagihan. Sisa tagihan: Rp ' .
-                    number_format(
-                        $sisaTagihan,
-                        0,
-                        ',',
-                        '.'
-                    )
-                );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN PEMBAYARAN CASH
-        |--------------------------------------------------------------------------
-        */
-
-        PembayaranTagihan::create([
-            'tagihan_id' =>
-                $tagihan->id,
-
-            'user_id' =>
-                Auth::id(),
-
-            'nominal' =>
-                $request->nominal,
-
-            'metode' =>
-                'cash',
-
-            'tanggal_kirim' =>
-                $request->tanggal_kirim,
-
-            'status' =>
-                'dibayar',
-
-            'tanggal_disetujui' =>
-                now(),
-        ]);
-
-
-        return redirect()
-            ->route('admin.pembayaran.index')
-            ->with(
-                'success',
-                'Pembayaran cash berhasil dicatat.'
-            );
+        });
     }
-
 
     /**
      * ============================================================
@@ -244,39 +544,25 @@ class PembayaranAdminController extends Controller
         )->count();
 
         return response()->json([
-            'jumlah' => $jumlah
+            'jumlah' => $jumlah,
         ]);
     }
-
 
     /**
      * ============================================================
      * FORM KOREKSI PEMBAYARAN
      * ============================================================
      */
-    public function edit(
-        PembayaranTagihan $pembayaran
-    ) {
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD DATA PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
+    public function edit(PembayaranTagihan $pembayaran)
+    {
         $pembayaran->load([
             'tagihan.siswa',
             'tagihan.kategori',
             'tagihan.tahunAjaran',
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PEMBAYARAN HARUS MASIH MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
         if ($pembayaran->status !== 'menunggu') {
+
             return redirect()
                 ->route('admin.pembayaran.index')
                 ->with(
@@ -285,16 +571,10 @@ class PembayaranAdminController extends Controller
                 );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
         $tagihan = $pembayaran->tagihan;
 
         if (!$tagihan) {
+
             return redirect()
                 ->route('admin.pembayaran.index')
                 ->with(
@@ -303,42 +583,65 @@ class PembayaranAdminController extends Controller
                 );
         }
 
+        /**
+         * ========================================================
+         * SPP
+         * ========================================================
+         */
+        if ($this->isSpp($tagihan)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG PEMBAYARAN YANG SUDAH DIBAYAR
-        |--------------------------------------------------------------------------
-        */
+            $tagihanSpp = $this->getTagihanSpp($tagihan)
+                ->filter(function ($spp) use ($tagihan) {
 
-        $sudahDibayar = PembayaranTagihan::where(
-            'tagihan_id',
-            $tagihan->id
-        )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui',
-        ])
-        ->sum('nominal');
+                    if ($spp->tahun > $tagihan->tahun) {
+                        return true;
+                    }
 
+                    if (
+                        $spp->tahun == $tagihan->tahun &&
+                        $spp->bulan >= $tagihan->bulan
+                    ) {
+                        return true;
+                    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+                    return false;
+                })
+                ->values();
 
-        $sisaTagihan = max(
-            (float) $tagihan->nominal
-            - (float) $sudahDibayar,
-            0
+            $totalSisaSpp = $tagihanSpp->sum(function ($spp) {
+                return $this->getSisaTagihan($spp);
+            });
+
+            return view(
+                'admin.pembayaran.edit',
+                [
+                    'pembayaran' =>
+                        $pembayaran,
+
+                    'tagihan' =>
+                        $tagihan,
+
+                    'sudahDibayar' =>
+                        0,
+
+                    'sisaTagihan' =>
+                        $totalSisaSpp,
+                ]
+            );
+        }
+
+        /**
+         * ========================================================
+         * NON-SPP
+         * ========================================================
+         */
+        $sudahDibayar = $this->getTotalDibayar(
+            $tagihan
         );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TAMPILKAN FORM KOREKSI
-        |--------------------------------------------------------------------------
-        */
+        $sisaTagihan = $this->getSisaTagihan(
+            $tagihan
+        );
 
         return view(
             'admin.pembayaran.edit',
@@ -351,7 +654,6 @@ class PembayaranAdminController extends Controller
         );
     }
 
-
     /**
      * ============================================================
      * UPDATE / SIMPAN KOREKSI PEMBAYARAN
@@ -361,13 +663,8 @@ class PembayaranAdminController extends Controller
         Request $request,
         PembayaranTagihan $pembayaran
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | PEMBAYARAN HARUS MASIH MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
         if ($pembayaran->status !== 'menunggu') {
+
             return redirect()
                 ->route('admin.pembayaran.index')
                 ->with(
@@ -375,13 +672,6 @@ class PembayaranAdminController extends Controller
                     'Pembayaran yang sudah diproses tidak dapat dikoreksi.'
                 );
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI
-        |--------------------------------------------------------------------------
-        */
 
         $request->validate([
             'nominal' => [
@@ -394,9 +684,7 @@ class PembayaranAdminController extends Controller
                 'required',
                 'in:transfer,qris',
             ],
-
         ], [
-
             'nominal.required' =>
                 'Nominal pembayaran harus diisi.',
 
@@ -413,18 +701,24 @@ class PembayaranAdminController extends Controller
                 'Metode pembayaran tidak valid.',
         ]);
 
+        /**
+         * ========================================================
+         * INI YANG MEMPERBAIKI ERROR:
+         *
+         * Undefined variable $nominal
+         * ========================================================
+         */
+        $nominal = (float) $request->nominal;
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
-        $pembayaran->load('tagihan');
+        $pembayaran->load([
+            'tagihan.kategori',
+            'tagihan.tahunAjaran',
+        ]);
 
         $tagihan = $pembayaran->tagihan;
 
         if (!$tagihan) {
+
             return redirect()
                 ->route('admin.pembayaran.index')
                 ->with(
@@ -433,47 +727,92 @@ class PembayaranAdminController extends Controller
                 );
         }
 
+        /**
+         * ========================================================
+         * KOREKSI PEMBAYARAN SPP
+         * ========================================================
+         */
+        if ($this->isSpp($tagihan)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG PEMBAYARAN YANG SUDAH DIBAYAR
-        |--------------------------------------------------------------------------
-        */
+            $tagihanSpp = $this->getTagihanSpp($tagihan)
+                ->filter(function ($spp) use ($tagihan) {
 
+                    if ($spp->tahun > $tagihan->tahun) {
+                        return true;
+                    }
+
+                    if (
+                        $spp->tahun == $tagihan->tahun &&
+                        $spp->bulan >= $tagihan->bulan
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                ->values();
+
+            $totalSisaSpp = $tagihanSpp->sum(
+                function ($spp) {
+                    return $this->getSisaTagihan($spp);
+                }
+            );
+
+            if ($nominal > $totalSisaSpp) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Nominal pembayaran melebihi total sisa SPP. Total sisa SPP: Rp ' .
+                        number_format(
+                            $totalSisaSpp,
+                            0,
+                            ',',
+                            '.'
+                        )
+                    );
+            }
+
+            $pembayaran->update([
+                'nominal' =>
+                    $nominal,
+
+                'metode' =>
+                    $request->metode,
+            ]);
+
+            return redirect()
+                ->route('admin.pembayaran.index')
+                ->with(
+                    'success',
+                    'Nominal pembayaran berhasil dikoreksi. Saat disetujui, pembayaran akan otomatis dialokasikan ke beberapa bulan SPP.'
+                );
+        }
+
+        /**
+         * ========================================================
+         * KOREKSI NON-SPP
+         * ========================================================
+         */
         $sudahDibayar = PembayaranTagihan::where(
             'tagihan_id',
             $tagihan->id
         )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui',
-        ])
-        ->sum('nominal');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+            ->whereIn('status', [
+                'dibayar',
+                'disetujui',
+            ])
+            ->sum('nominal');
 
         $sisaTagihan = max(
             (float) $tagihan->nominal
-            - (float) $sudahDibayar,
+                - (float) $sudahDibayar,
             0
         );
 
+        if ($nominal > $sisaTagihan) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | NOMINAL TIDAK BOLEH MELEBIHI SISA
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            (float) $request->nominal
-            > $sisaTagihan
-        ) {
             return back()
                 ->withInput()
                 ->with(
@@ -488,21 +827,13 @@ class PembayaranAdminController extends Controller
                 );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
         $pembayaran->update([
             'nominal' =>
-                $request->nominal,
+                $nominal,
 
             'metode' =>
                 $request->metode,
         ]);
-
 
         return redirect()
             ->route('admin.pembayaran.index')
@@ -512,141 +843,293 @@ class PembayaranAdminController extends Controller
             );
     }
 
-
     /**
      * ============================================================
      * MENYETUJUI PEMBAYARAN
+     *
+     * Untuk pembayaran online SPP:
+     * nominal dapat dialokasikan ke beberapa bulan.
      * ============================================================
      */
     public function setujui(
         PembayaranTagihan $pembayaran
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | PEMBAYARAN HARUS MASIH MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
         if ($pembayaran->status !== 'menunggu') {
+
             return back()->with(
                 'error',
                 'Pembayaran ini sudah diproses.'
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOMINAL HARUS SUDAH DITENTUKAN
-        |--------------------------------------------------------------------------
-        */
-
         if (
             $pembayaran->nominal === null ||
             (float) $pembayaran->nominal <= 0
         ) {
+
             return back()->with(
                 'error',
                 'Nominal pembayaran belum ditentukan. Silakan lakukan koreksi terlebih dahulu.'
             );
         }
 
+        return DB::transaction(function () use ($pembayaran) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+            $pembayaran->load([
+                'tagihan.kategori',
+                'tagihan.tahunAjaran',
+            ]);
 
-        $pembayaran->load('tagihan');
+            $tagihan = $pembayaran->tagihan;
 
-        if (!$pembayaran->tagihan) {
-            return back()->with(
-                'error',
-                'Tagihan pembayaran tidak ditemukan.'
-            );
-        }
+            if (!$tagihan) {
 
+                return back()->with(
+                    'error',
+                    'Tagihan pembayaran tidak ditemukan.'
+                );
+            }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG PEMBAYARAN SEBELUMNYA
-        |--------------------------------------------------------------------------
-        */
+            $nominalPembayaran =
+                (float) $pembayaran->nominal;
 
-        $sudahDibayar = PembayaranTagihan::where(
-            'tagihan_id',
-            $pembayaran->tagihan_id
-        )
-        ->whereIn('status', [
-            'dibayar',
-            'disetujui',
-        ])
-        ->where(
-            'id',
-            '!=',
-            $pembayaran->id
-        )
-        ->sum('nominal');
+            /**
+             * ====================================================
+             * JIKA BUKAN SPP
+             * ====================================================
+             */
+            if (!$this->isSpp($tagihan)) {
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
-        $sisaTagihan = max(
-            (float) $pembayaran->tagihan->nominal
-            - (float) $sudahDibayar,
-            0
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | NOMINAL TIDAK BOLEH MELEBIHI SISA
-        |--------------------------------------------------------------------------
-        */
-
-        if (
-            (float) $pembayaran->nominal
-            > $sisaTagihan
-        ) {
-            return back()->with(
-                'error',
-                'Nominal pembayaran melebihi sisa tagihan. Sisa tagihan: Rp ' .
-                number_format(
-                    $sisaTagihan,
-                    0,
-                    ',',
-                    '.'
+                $sudahDibayar = PembayaranTagihan::where(
+                    'tagihan_id',
+                    $tagihan->id
                 )
+                    ->whereIn('status', [
+                        'dibayar',
+                        'disetujui',
+                    ])
+                    ->where(
+                        'id',
+                        '!=',
+                        $pembayaran->id
+                    )
+                    ->sum('nominal');
+
+                $sisaTagihan = max(
+                    (float) $tagihan->nominal
+                        - (float) $sudahDibayar,
+                    0
+                );
+
+                if ($nominalPembayaran > $sisaTagihan) {
+
+                    return back()->with(
+                        'error',
+                        'Nominal pembayaran melebihi sisa tagihan. Sisa tagihan: Rp ' .
+                        number_format(
+                            $sisaTagihan,
+                            0,
+                            ',',
+                            '.'
+                        )
+                    );
+                }
+
+                $pembayaran->update([
+                    'status' =>
+                        'dibayar',
+
+                    'tanggal_disetujui' =>
+                        now(),
+                ]);
+
+                return back()->with(
+                    'success',
+                    'Pembayaran berhasil disetujui.'
+                );
+            }
+
+            /**
+             * ====================================================
+             * SPP
+             * ====================================================
+             */
+            $tagihanSpp = $this->getTagihanSpp($tagihan)
+                ->filter(function ($spp) use ($tagihan) {
+
+                    if ($spp->tahun > $tagihan->tahun) {
+                        return true;
+                    }
+
+                    if (
+                        $spp->tahun == $tagihan->tahun &&
+                        $spp->bulan >= $tagihan->bulan
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                ->values();
+
+            if ($tagihanSpp->isEmpty()) {
+
+                return back()->with(
+                    'error',
+                    'Tagihan SPP tidak ditemukan.'
+                );
+            }
+
+            /**
+             * ====================================================
+             * CEK PEMBAYARAN MENUNGGU LAIN
+             * ====================================================
+             */
+            $adaMenungguLain =
+                PembayaranTagihan::where(
+                    'status',
+                    'menunggu'
+                )
+                    ->where(
+                        'id',
+                        '!=',
+                        $pembayaran->id
+                    )
+                    ->whereHas(
+                        'tagihan',
+                        function ($query) use ($tagihan) {
+
+                            $query->where(
+                                'siswa_id',
+                                $tagihan->siswa_id
+                            )
+                                ->where(
+                                    'tahun_ajaran_id',
+                                    $tagihan->tahun_ajaran_id
+                                );
+                        }
+                    )
+                    ->exists();
+
+            if ($adaMenungguLain) {
+
+                return back()->with(
+                    'error',
+                    'Masih terdapat pembayaran SPP lain yang menunggu persetujuan untuk siswa dan tahun ajaran ini. Proses pembayaran tersebut terlebih dahulu.'
+                );
+            }
+
+            /**
+             * ====================================================
+             * ALOKASI NOMINAL
+             * ====================================================
+             */
+            $sisaPembayaran =
+                $nominalPembayaran;
+
+            $alokasiPertama = true;
+
+            foreach ($tagihanSpp as $spp) {
+
+                if ($sisaPembayaran <= 0) {
+                    break;
+                }
+
+                $sisaTagihan =
+                    $this->getSisaTagihan($spp);
+
+                if ($sisaTagihan <= 0) {
+                    continue;
+                }
+
+                $nominalUntukTagihan = min(
+                    $sisaPembayaran,
+                    $sisaTagihan
+                );
+
+                /**
+                 * =================================================
+                 * PEMBAYARAN PERTAMA
+                 * =================================================
+                 */
+                if ($alokasiPertama) {
+
+                    $pembayaran->update([
+                        'tagihan_id' =>
+                            $spp->id,
+
+                        'nominal' =>
+                            $nominalUntukTagihan,
+
+                        'status' =>
+                            'dibayar',
+
+                        'tanggal_disetujui' =>
+                            now(),
+                    ]);
+
+                    $alokasiPertama = false;
+                }
+
+                /**
+                 * =================================================
+                 * PEMBAYARAN BERIKUTNYA
+                 * =================================================
+                 */
+                else {
+
+                    PembayaranTagihan::create([
+                        'tagihan_id' =>
+                            $spp->id,
+
+                        'user_id' =>
+                            $pembayaran->user_id,
+
+                        'nominal' =>
+                            $nominalUntukTagihan,
+
+                        'metode' =>
+                            $pembayaran->metode,
+
+                        'bukti_pembayaran' =>
+                            $pembayaran->bukti_pembayaran,
+
+                        'status' =>
+                            'dibayar',
+
+                        'catatan' =>
+                            $pembayaran->catatan,
+
+                        'tanggal_kirim' =>
+                            $pembayaran->tanggal_kirim,
+
+                        'tanggal_disetujui' =>
+                            now(),
+                    ]);
+                }
+
+                $sisaPembayaran -=
+                    $nominalUntukTagihan;
+            }
+
+            /**
+             * ====================================================
+             * JIKA ADA UANG YANG BELUM TERPAKAI
+             * ====================================================
+             */
+            if ($sisaPembayaran > 0) {
+
+                throw new \Exception(
+                    'Nominal pembayaran melebihi total sisa tagihan SPP.'
+                );
+            }
+
+            return back()->with(
+                'success',
+                'Pembayaran berhasil disetujui dan otomatis dialokasikan ke tagihan SPP bulan berikutnya.'
             );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SETUJUI PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
-        $pembayaran->update([
-            'status' =>
-                'dibayar',
-
-            'tanggal_disetujui' =>
-                now(),
-        ]);
-
-
-        return back()->with(
-            'success',
-            'Pembayaran berhasil disetujui.'
-        );
+        });
     }
-
 
     /**
      * ============================================================
@@ -657,25 +1140,13 @@ class PembayaranAdminController extends Controller
         Request $request,
         PembayaranTagihan $pembayaran
     ) {
-        /*
-        |--------------------------------------------------------------------------
-        | PEMBAYARAN HARUS MASIH MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
         if ($pembayaran->status !== 'menunggu') {
+
             return back()->with(
                 'error',
                 'Pembayaran ini sudah diproses.'
             );
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI CATATAN
-        |--------------------------------------------------------------------------
-        */
 
         $request->validate([
             'catatan' => [
@@ -685,13 +1156,6 @@ class PembayaranAdminController extends Controller
             ],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOLAK PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
         $pembayaran->update([
             'status' =>
                 'ditolak',
@@ -699,7 +1163,6 @@ class PembayaranAdminController extends Controller
             'catatan' =>
                 $request->catatan,
         ]);
-
 
         return back()->with(
             'success',

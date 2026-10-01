@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Carbon\Carbon;
 
 class LaporanExport implements
     FromCollection,
@@ -26,28 +27,69 @@ class LaporanExport implements
         $this->tahun = $tahun;
     }
 
-
     /**
      * Daftar bulan Indonesia
      */
     private function bulanIndonesia()
     {
         return [
-            'Januari'   => 1,
-            'Februari'  => 2,
-            'Maret'     => 3,
-            'April'     => 4,
-            'Mei'       => 5,
-            'Juni'      => 6,
-            'Juli'      => 7,
-            'Agustus'   => 8,
-            'September' => 9,
-            'Oktober'   => 10,
-            'November'  => 11,
-            'Desember'  => 12,
+            1  => 'Januari',
+            2  => 'Februari',
+            3  => 'Maret',
+            4  => 'April',
+            5  => 'Mei',
+            6  => 'Juni',
+            7  => 'Juli',
+            8  => 'Agustus',
+            9  => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
         ];
     }
 
+    /**
+     * Ambil nomor bulan
+     *
+     * Bisa menerima:
+     * - 1 sampai 12
+     * - "Januari" sampai "Desember"
+     */
+    private function getNomorBulan($bulan)
+    {
+        if (empty($bulan)) {
+            return null;
+        }
+
+        if (is_numeric($bulan)) {
+            $bulan = (int) $bulan;
+
+            if ($bulan >= 1 && $bulan <= 12) {
+                return $bulan;
+            }
+
+            return null;
+        }
+
+        $bulan = strtolower(trim($bulan));
+
+        $bulanMap = [
+            'januari'   => 1,
+            'februari'  => 2,
+            'maret'     => 3,
+            'april'     => 4,
+            'mei'       => 5,
+            'juni'      => 6,
+            'juli'      => 7,
+            'agustus'   => 8,
+            'september' => 9,
+            'oktober'   => 10,
+            'november'  => 11,
+            'desember'  => 12,
+        ];
+
+        return $bulanMap[$bulan] ?? null;
+    }
 
     /**
      * Ambil data pembayaran
@@ -58,14 +100,14 @@ class LaporanExport implements
             'tagihan.siswa.kelas',
             'tagihan.kategori',
             'tagihan.tahunAjaran',
+            'tagihan.pembayaran',
             'user',
         ])
         ->where('status', 'dibayar');
 
-
         /*
         |--------------------------------------------------------------------------
-        | Filter Tahun
+        | FILTER TAHUN
         |--------------------------------------------------------------------------
         */
 
@@ -77,38 +119,38 @@ class LaporanExport implements
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | Filter Bulan
+        | FILTER BULAN
         |--------------------------------------------------------------------------
         */
 
         if (!empty($this->bulan)) {
 
-            $bulanMap = $this->bulanIndonesia();
+            $nomorBulan = $this->getNomorBulan(
+                $this->bulan
+            );
 
-            if (isset($bulanMap[$this->bulan])) {
+            if ($nomorBulan) {
 
                 $query->whereMonth(
                     'tanggal_kirim',
-                    $bulanMap[$this->bulan]
+                    $nomorBulan
                 );
             }
         }
 
-
         /*
         |--------------------------------------------------------------------------
-        | Urutkan pembayaran terbaru
+        | URUTKAN
         |--------------------------------------------------------------------------
         */
 
         return $query
             ->orderByDesc('tanggal_kirim')
+            ->orderByDesc('id')
             ->get();
     }
-
 
     /**
      * Header Excel
@@ -121,6 +163,7 @@ class LaporanExport implements
             'NIS',
             'Kelas',
             'Tahun Ajaran',
+            'Bulan',
             'Kategori',
             'Tagihan',
             'Dibayar',
@@ -131,7 +174,6 @@ class LaporanExport implements
         ];
     }
 
-
     /**
      * Format kolom Excel
      */
@@ -140,17 +182,15 @@ class LaporanExport implements
         return [
 
             // Tagihan
-            'G' => '#,##0',
-
-            // Dibayar
             'H' => '#,##0',
 
-            // Sisa
+            // Dibayar
             'I' => '#,##0',
 
+            // Sisa
+            'J' => '#,##0',
         ];
     }
-
 
     /**
      * Isi setiap baris Excel
@@ -159,40 +199,92 @@ class LaporanExport implements
     {
         $tagihan = $item->tagihan;
 
-
         /*
         |--------------------------------------------------------------------------
-        | Nominal Tagihan
+        | NOMINAL TAGIHAN
         |--------------------------------------------------------------------------
         */
 
-        $nominalTagihan = (float) ($tagihan?->nominal ?? 0);
-
+        $nominalTagihan = (float) (
+            $tagihan?->nominal ?? 0
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | Nominal Dibayar
+        | NOMINAL PEMBAYARAN PADA TRANSAKSI INI
         |--------------------------------------------------------------------------
         */
 
-        $dibayar = (float) ($item->nominal ?? 0);
-
+        $dibayar = (float) (
+            $item->nominal ?? 0
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | Sisa
+        | TOTAL SUDAH DIBAYAR PADA TAGIHAN
+        |--------------------------------------------------------------------------
+        |
+        | Penting untuk pembayaran lebih dari satu kali.
+        |
+        | Contoh:
+        |
+        | Tagihan        Rp500.000
+        | Pembayaran 1   Rp200.000
+        | Pembayaran 2   Rp300.000
+        |
+        | Maka total dibayar = Rp500.000
+        | dan sisa = Rp0.
+        |
+        */
+
+        $totalSudahDibayar = 0;
+
+        if ($tagihan) {
+
+            if ($tagihan->relationLoaded('pembayaran')) {
+
+                $totalSudahDibayar = (float) $tagihan
+                    ->pembayaran
+                    ->whereIn(
+                        'status',
+                        [
+                            'dibayar',
+                            'disetujui',
+                        ]
+                    )
+                    ->sum('nominal');
+
+            } else {
+
+                $totalSudahDibayar = (float) PembayaranTagihan::where(
+                    'tagihan_id',
+                    $tagihan->id
+                )
+                ->whereIn(
+                    'status',
+                    [
+                        'dibayar',
+                        'disetujui',
+                    ]
+                )
+                ->sum('nominal');
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | SISA TAGIHAN
         |--------------------------------------------------------------------------
         */
 
         $sisa = max(
-            0,
-            $nominalTagihan - $dibayar
+            $nominalTagihan - $totalSudahDibayar,
+            0
         );
-
 
         /*
         |--------------------------------------------------------------------------
-        | Status
+        | STATUS
         |--------------------------------------------------------------------------
         */
 
@@ -200,10 +292,9 @@ class LaporanExport implements
             ? 'Lunas'
             : 'Belum Lunas';
 
-
         /*
         |--------------------------------------------------------------------------
-        | Nomor Urut
+        | NOMOR URUT
         |--------------------------------------------------------------------------
         */
 
@@ -211,6 +302,85 @@ class LaporanExport implements
 
         $no++;
 
+        /*
+        |--------------------------------------------------------------------------
+        | BULAN TAGIHAN
+        |--------------------------------------------------------------------------
+        |
+        | Untuk SPP:
+        | gunakan bulan dan tahun pada tagihan.
+        |
+        | Contoh:
+        | Juli 2028
+        | Agustus 2028
+        | September 2028
+        |
+        */
+
+        $bulanTagihan = '-';
+
+        if (
+            $tagihan &&
+            $tagihan->bulan &&
+            $tagihan->tahun
+        ) {
+
+            $bulanTagihan = Carbon::create(
+                $tagihan->tahun,
+                $tagihan->bulan,
+                1
+            )->translatedFormat('F Y');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TANGGAL BAYAR
+        |--------------------------------------------------------------------------
+        */
+
+        $tanggalBayar = '-';
+
+        if ($item->tanggal_kirim) {
+
+            $tanggalBayar = Carbon::parse(
+                $item->tanggal_kirim
+            )
+                ->timezone('Asia/Jakarta')
+                ->format('d-m-Y H:i');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | METODE
+        |--------------------------------------------------------------------------
+        */
+
+        $metode = strtolower(
+            trim($item->metode ?? '')
+        );
+
+        if ($metode === 'transfer') {
+
+            $metode = 'Transfer';
+
+        } elseif ($metode === 'qris') {
+
+            $metode = 'QRIS';
+
+        } elseif ($metode === 'cash') {
+
+            $metode = 'Cash';
+
+        } else {
+
+            $metode = $item->metode ?? '-';
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETURN DATA
+        |--------------------------------------------------------------------------
+        */
 
         return [
 
@@ -229,6 +399,9 @@ class LaporanExport implements
             // Tahun Ajaran
             $tagihan?->tahunAjaran?->nama ?? '-',
 
+            // Bulan
+            $bulanTagihan,
+
             // Kategori
             $tagihan?->kategori?->nama ?? '-',
 
@@ -242,15 +415,13 @@ class LaporanExport implements
             $sisa,
 
             // Metode
-            $item->metode ?? '-',
+            $metode,
 
             // Status
             $status,
 
             // Tanggal Bayar
-            $item->tanggal_kirim
-                ? $item->tanggal_kirim->format('d-m-Y H:i')
-                : '-',
+            $tanggalBayar,
         ];
     }
 }

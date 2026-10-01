@@ -8,12 +8,59 @@
 
 @section('content')
 
+@php
+    $isSpp = strtolower(trim($tagihan->kategori->nama ?? '')) === 'spp';
+
+    /*
+    |--------------------------------------------------------------------------
+    | DATA SPP
+    |--------------------------------------------------------------------------
+    | Jika kategori SPP, ambil seluruh tagihan SPP siswa pada tahun ajaran
+    | yang sama karena SPP merupakan tagihan tahunan yang dibagi menjadi
+    | 12 tagihan bulanan.
+    |--------------------------------------------------------------------------
+    */
+
+    $totalTagihanTampilan = $tagihan->nominal;
+    $totalDibayarTampilan = $totalDibayar;
+    $sisaTagihanTampilan = $sisaTagihan;
+
+    $tagihanSpp = collect();
+
+    if ($isSpp) {
+        $tagihanSpp = \App\Models\Tagihan::with('pembayaran')
+            ->where('siswa_id', $tagihan->siswa_id)
+            ->where('tahun_ajaran_id', $tagihan->tahun_ajaran_id)
+            ->whereHas('kategori', function ($query) {
+                $query->whereRaw('LOWER(TRIM(nama)) = ?', ['spp']);
+            })
+            ->orderBy('tahun')
+            ->orderBy('bulan')
+            ->get();
+
+        $totalTagihanTampilan = $tagihanSpp->sum(function ($item) {
+            return (float) $item->nominal;
+        });
+
+        $totalDibayarTampilan = $tagihanSpp->sum(function ($item) {
+            return $item->pembayaran
+                ->whereIn('status', ['dibayar', 'disetujui'])
+                ->sum(function ($pembayaran) {
+                    return (float) ($pembayaran->nominal ?? 0);
+                });
+        });
+
+        $sisaTagihanTampilan = max(
+            $totalTagihanTampilan - $totalDibayarTampilan,
+            0
+        );
+    }
+@endphp
+
 <div class="payment-page">
 
     {{-- HEADER --}}
-
     <div class="page-header">
-
         <h1>
             Pembayaran Tagihan
         </h1>
@@ -21,62 +68,43 @@
         <p>
             Silakan lakukan pembayaran dan upload bukti pembayaran.
         </p>
-
     </div>
 
 
     {{-- ERROR --}}
-
     @if(session('error'))
-
         <div class="alert alert-error">
             {{ session('error') }}
         </div>
-
     @endif
 
 
     {{-- SUCCESS --}}
-
     @if(session('success'))
-
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-
     @endif
 
 
     {{-- VALIDATION ERROR --}}
-
     @if($errors->any())
-
         <div class="alert alert-error">
-
             <ul style="margin-left: 18px;">
-
                 @foreach($errors->all() as $error)
-
                     <li>
                         {{ $error }}
                     </li>
-
                 @endforeach
-
             </ul>
-
         </div>
-
     @endif
 
 
     {{-- DETAIL + PEMBAYARAN --}}
-
     <div class="payment-grid">
 
-
         {{-- DETAIL TAGIHAN --}}
-
         <div class="card">
 
             <h2 class="card-title">
@@ -85,9 +113,8 @@
 
             <div class="detail-list">
 
-
+                {{-- NAMA SISWA --}}
                 <div class="detail-item">
-
                     <span class="detail-label">
                         Nama Siswa
                     </span>
@@ -95,12 +122,11 @@
                     <span class="detail-value">
                         {{ $tagihan->siswa->nama ?? '-' }}
                     </span>
-
                 </div>
 
 
+                {{-- NIS --}}
                 <div class="detail-item">
-
                     <span class="detail-label">
                         NIS
                     </span>
@@ -108,12 +134,11 @@
                     <span class="detail-value">
                         {{ $tagihan->siswa->nis ?? '-' }}
                     </span>
-
                 </div>
 
 
+                {{-- TAHUN AJARAN --}}
                 <div class="detail-item">
-
                     <span class="detail-label">
                         Tahun Ajaran
                     </span>
@@ -121,23 +146,78 @@
                     <span class="detail-value">
                         {{ $tagihan->tahunAjaran->nama ?? '-' }}
                     </span>
-
                 </div>
 
 
+                {{-- KATEGORI --}}
                 <div class="detail-item">
-
                     <span class="detail-label">
                         Kategori
                     </span>
 
                     <span class="detail-value green">
-                        {{ $tagihan->kategori->nama ?? '-' }}
-                    </span>
 
+                        @if($isSpp)
+                            SPP
+                        @else
+                            {{ $tagihan->kategori->nama ?? '-' }}
+                        @endif
+
+                    </span>
                 </div>
 
 
+                {{-- PERIODE SPP --}}
+                @if($isSpp)
+                    <div class="detail-item">
+
+                        <span class="detail-label">
+                            Periode SPP
+                        </span>
+
+                        <span class="detail-value">
+
+                            @php
+                                $bulanPertama = $tagihanSpp->first();
+                                $bulanTerakhir = $tagihanSpp->last();
+
+                                $namaBulan = [
+                                    1 => 'Januari',
+                                    2 => 'Februari',
+                                    3 => 'Maret',
+                                    4 => 'April',
+                                    5 => 'Mei',
+                                    6 => 'Juni',
+                                    7 => 'Juli',
+                                    8 => 'Agustus',
+                                    9 => 'September',
+                                    10 => 'Oktober',
+                                    11 => 'November',
+                                    12 => 'Desember',
+                                ];
+                            @endphp
+
+                            @if($bulanPertama && $bulanTerakhir && $bulanPertama->bulan && $bulanTerakhir->bulan)
+
+                                {{ $namaBulan[(int) $bulanPertama->bulan] ?? '-' }}
+                                {{ $bulanPertama->tahun }}
+
+                                -
+
+                                {{ $namaBulan[(int) $bulanTerakhir->bulan] ?? '-' }}
+                                {{ $bulanTerakhir->tahun }}
+
+                            @else
+                                -
+                            @endif
+
+                        </span>
+
+                    </div>
+                @endif
+
+
+                {{-- TOTAL TAGIHAN --}}
                 <div class="detail-item">
 
                     <span class="detail-label">
@@ -145,19 +225,18 @@
                     </span>
 
                     <span class="detail-value nominal">
-
                         Rp {{ number_format(
-                            $tagihan->nominal,
+                            $totalTagihanTampilan,
                             0,
                             ',',
                             '.'
                         ) }}
-
                     </span>
 
                 </div>
 
 
+                {{-- SUDAH DIBAYAR --}}
                 <div class="detail-item">
 
                     <span class="detail-label">
@@ -165,19 +244,18 @@
                     </span>
 
                     <span class="detail-value">
-
                         Rp {{ number_format(
-                            $totalDibayar,
+                            $totalDibayarTampilan,
                             0,
                             ',',
                             '.'
                         ) }}
-
                     </span>
 
                 </div>
 
 
+                {{-- SISA TAGIHAN --}}
                 <div class="detail-item">
 
                     <span class="detail-label">
@@ -185,25 +263,21 @@
                     </span>
 
                     <span class="detail-value nominal">
-
                         Rp {{ number_format(
-                            $sisaTagihan,
+                            $sisaTagihanTampilan,
                             0,
                             ',',
                             '.'
                         ) }}
-
                     </span>
 
                 </div>
 
             </div>
-
         </div>
 
 
         {{-- DETAIL REKENING --}}
-
         <div class="card">
 
             <h2 class="card-title">
@@ -254,38 +328,39 @@
             </div>
 
 
-<div class="qris-box">
+            {{-- QRIS --}}
+            <div class="qris-box">
 
-    <div class="qris-title">
-        Pembayaran QRIS
-    </div>
+                <div class="qris-title">
+                    Pembayaran QRIS
+                </div>
 
-    @if(file_exists(public_path('images/qris.jpeg')))
+                @if(file_exists(public_path('images/qris.jpeg')))
 
-        <img
-            src="{{ asset('images/qris.jpeg') }}"
-            alt="QRIS SMP Plus Al-I'tam"
-        >
+                    <img
+                        src="{{ asset('images/qris.jpeg') }}"
+                        alt="QRIS SMP Plus Al-I'tam"
+                    >
 
-    @else
+                @else
 
-        <div style="
-            padding:35px 15px;
-            color:#777;
-            border:1px dashed #ccc;
-            border-radius:8px;
-            margin-bottom:10px;
-        ">
-            QRIS sekolah belum tersedia
-        </div>
+                    <div style="
+                        padding:35px 15px;
+                        color:#777;
+                        border:1px dashed #ccc;
+                        border-radius:8px;
+                        margin-bottom:10px;
+                    ">
+                        QRIS sekolah belum tersedia
+                    </div>
 
-    @endif
+                @endif
 
-    <div class="qris-description">
-        Silakan scan QRIS sekolah untuk melakukan pembayaran.
-    </div>
+                <div class="qris-description">
+                    Silakan scan QRIS sekolah untuk melakukan pembayaran.
+                </div>
 
-</div>
+            </div>
 
         </div>
 
@@ -293,7 +368,6 @@
 
 
     {{-- FORM PEMBAYARAN --}}
-
     <div class="form-card">
 
         <h2 class="card-title">
@@ -314,7 +388,6 @@
 
 
             {{-- INFORMASI NOMINAL --}}
-
             <div class="payment-info-box">
 
                 <div class="payment-info-icon">
@@ -327,16 +400,66 @@
                         Pembayaran sebagian diperbolehkan
                     </strong>
 
-                    <p>
-                        Silakan transfer sesuai nominal yang ingin dibayarkan
-                        atau sesuai kesepakatan dengan pihak sekolah.
-                    </p>
+                    @if($isSpp)
 
-                    <p>
-                        Setelah pembayaran dilakukan, upload bukti pembayaran
-                        di bawah ini. Nominal pembayaran akan diperiksa dan
-                        ditentukan oleh admin berdasarkan bukti pembayaran.
-                    </p>
+                        <p>
+                            Total SPP tahun ajaran ini sebesar
+                            <strong>
+                                Rp {{ number_format(
+                                    $totalTagihanTampilan,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) }}
+                            </strong>.
+                        </p>
+
+                        <p>
+                            Sudah dibayar sebesar
+                            <strong>
+                                Rp {{ number_format(
+                                    $totalDibayarTampilan,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) }}
+                            </strong>
+                            dan sisa yang harus dibayar sebesar
+                            <strong>
+                                Rp {{ number_format(
+                                    $sisaTagihanTampilan,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) }}
+                            </strong>.
+                        </p>
+
+                        <p>
+                            Silakan transfer sesuai nominal yang ingin dibayarkan
+                            atau sesuai kesepakatan dengan pihak sekolah.
+                        </p>
+
+                        <p>
+                            Setelah pembayaran dilakukan, upload bukti pembayaran
+                            di bawah ini. Nominal pembayaran akan diperiksa dan
+                            ditentukan oleh admin berdasarkan bukti pembayaran.
+                        </p>
+
+                    @else
+
+                        <p>
+                            Silakan transfer sesuai nominal yang ingin dibayarkan
+                            atau sesuai kesepakatan dengan pihak sekolah.
+                        </p>
+
+                        <p>
+                            Setelah pembayaran dilakukan, upload bukti pembayaran
+                            di bawah ini. Nominal pembayaran akan diperiksa dan
+                            ditentukan oleh admin berdasarkan bukti pembayaran.
+                        </p>
+
+                    @endif
 
                 </div>
 
@@ -344,21 +467,22 @@
 
 
             {{-- METODE PEMBAYARAN --}}
-
             <div class="form-group">
 
                 <label class="form-label">
 
                     Metode Pembayaran
 
-                    <span class="required">*</span>
+                    <span class="required">
+                        *
+                    </span>
 
                 </label>
 
 
                 <div class="method-options">
 
-
+                    {{-- TRANSFER --}}
                     <div class="method-option">
 
                         <input
@@ -383,6 +507,7 @@
                     </div>
 
 
+                    {{-- QRIS --}}
                     <div class="method-option">
 
                         <input
@@ -411,7 +536,6 @@
 
 
             {{-- BUKTI PEMBAYARAN --}}
-
             <div class="form-group">
 
                 <label
@@ -421,7 +545,9 @@
 
                     Bukti Pembayaran
 
-                    <span class="required">*</span>
+                    <span class="required">
+                        *
+                    </span>
 
                 </label>
 
@@ -437,10 +563,8 @@
                     >
 
                     <small class="form-help">
-
                         Format JPG, JPEG, PNG.
                         Maksimal 2 MB.
-
                     </small>
 
                 </div>
@@ -449,7 +573,6 @@
 
 
             {{-- ACTION --}}
-
             <div class="action-buttons">
 
                 <a

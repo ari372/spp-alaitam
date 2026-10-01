@@ -6,6 +6,117 @@
 
 @push('styles')
     @vite('resources/css/admin/tagihan.css')
+
+    <style>
+        .tagihan-category-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 12px 14px;
+            border: 0;
+            background: #f5f7f6;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .tagihan-category-toggle:hover {
+            background: #eaf2ee;
+        }
+
+        .tagihan-category-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tagihan-category-toggle-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f5132;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .tagihan-category-toggle-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .tagihan-category-toggle-info strong {
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .tagihan-category-toggle-info small {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .tagihan-category-toggle-arrow {
+            font-size: 18px;
+            color: #0f5132;
+            transition: transform 0.2s ease;
+        }
+
+        .tagihan-category-toggle.open
+        .tagihan-category-toggle-arrow {
+            transform: rotate(180deg);
+        }
+
+        .tagihan-spp-items {
+            display: none;
+            margin-top: 8px;
+        }
+
+        .tagihan-spp-items.open {
+            display: block;
+        }
+
+        .tagihan-spp-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f8faf9;
+            border: 1px solid #e5ebe7;
+            border-radius: 9px;
+        }
+
+        .tagihan-spp-summary-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tagihan-spp-summary-left i {
+            color: #0f5132;
+        }
+
+        .tagihan-spp-summary-left span {
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .tagihan-spp-summary-total {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f5132;
+        }
+
+        .tagihan-spp-item {
+            margin-bottom: 6px;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -301,34 +412,14 @@
 
                         @php
 
-                            /*
-                            |--------------------------------------------------------------------------
-                            | DATA SISWA
-                            |--------------------------------------------------------------------------
-                            */
-
                             $tagihanPertama =
                                 $daftarTagihan->first();
 
                             $siswa =
                                 $tagihanPertama?->siswa;
 
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | TOTAL SEMUA TAGIHAN SISWA
-                            |--------------------------------------------------------------------------
-                            */
-
                             $totalTagihan =
                                 $daftarTagihan->sum('nominal');
-
-
-                            /*
-                            |--------------------------------------------------------------------------
-                            | GROUPING BERDASARKAN TAHUN AJARAN
-                            |--------------------------------------------------------------------------
-                            */
 
                             $tagihanPerTahun =
                                 $daftarTagihan
@@ -341,25 +432,13 @@
 
                         <tr>
 
-                            {{-- =================================================
-                                 CHECKBOX SISWA
-                            ================================================== --}}
+                            {{-- CHECKBOX SISWA --}}
 
                             <td class="kolom-check">
-
-                                {{--
-
-                                    Tidak memilih seluruh siswa sekaligus.
-                                    Checkbox utama berada di header.
-
-                                --}}
-
                             </td>
 
 
-                            {{-- =================================================
-                                 NOMOR
-                            ================================================== --}}
+                            {{-- NOMOR --}}
 
                             <td class="no">
 
@@ -368,9 +447,7 @@
                             </td>
 
 
-                            {{-- =================================================
-                                 DATA SISWA
-                            ================================================== --}}
+                            {{-- DATA SISWA --}}
 
                             <td>
 
@@ -394,9 +471,7 @@
                             </td>
 
 
-                            {{-- =================================================
-                                 KELAS
-                            ================================================== --}}
+                            {{-- KELAS --}}
 
                             <td>
 
@@ -409,9 +484,7 @@
                             </td>
 
 
-                            {{-- =================================================
-                                 DAFTAR TAGIHAN PER TAHUN AJARAN
-                            ================================================== --}}
+                            {{-- DAFTAR TAGIHAN PER TAHUN AJARAN --}}
 
                             <td>
 
@@ -431,6 +504,42 @@
                                                 $daftarTahun
                                                     ->sum('nominal');
 
+$tagihanSpp =
+    $daftarTahun
+        ->filter(
+            function ($item) {
+                return strtolower(
+                    trim(
+                        $item->kategori?->nama ?? ''
+                    )
+                ) === 'spp';
+            }
+        )
+        ->sortBy(function ($item) {
+            return [
+                (int) ($item->tahun ?? 0),
+                (int) ($item->bulan ?? 0),
+                (int) $item->id,
+            ];
+        })
+        ->values();
+                                            $tagihanLain =
+                                                $daftarTahun->filter(
+                                                    function ($item) {
+                                                        return strtolower(
+                                                            trim(
+                                                                $item->kategori?->nama ?? ''
+                                                            )
+                                                        ) !== 'spp';
+                                                    }
+                                                );
+
+                                            $jumlahSpp =
+                                                $tagihanSpp->count();
+
+                                            $totalSpp =
+                                                $tagihanSpp->sum('nominal');
+
                                         @endphp
 
 
@@ -445,9 +554,7 @@
 
                                             <div class="tagihan-year-header">
 
-
                                                 <div class="tagihan-year-title">
-
 
                                                     <div class="tagihan-year-icon">
 
@@ -485,213 +592,432 @@
 
                                                 </div>
 
-
                                             </div>
 
 
-                                            {{-- DAFTAR TAGIHAN --}}
+                                            {{-- =====================================
+                                                 SPP
+                                            ====================================== --}}
 
-                                            <div class="tagihan-year-items">
+                                            @if($jumlahSpp > 0)
 
+                                                <div class="tagihan-spp-group">
 
-                                                @foreach($daftarTahun as $item)
+                                                    {{-- BARIS SPP YANG BISA DIBUKA --}}
 
-                                                    <div class="tagihan-list-item">
+                                                    <button
+                                                        type="button"
+                                                        class="tagihan-category-toggle"
+                                                        data-target="spp-{{ $siswaId }}-{{ $tahunId }}"
+                                                    >
 
+                                                        <div class="tagihan-category-toggle-left">
 
-                                                        {{-- CHECKBOX TAGIHAN --}}
+                                                            <div class="tagihan-category-toggle-icon">
 
-                                                        <div class="tagihan-check">
-
-                                                            <input
-                                                                type="checkbox"
-                                                                class="tagihan-checkbox"
-                                                                value="{{ $item->id }}"
-                                                                title="Pilih tagihan"
-                                                            >
-
-                                                        </div>
-
-
-                                                        {{-- INFORMASI TAGIHAN --}}
-
-                                                        <div class="tagihan-list-info">
-
-
-                                                            {{-- ICON --}}
-
-                                                            <div class="tagihan-category-icon">
-
-                                                                @php
-
-                                                                    $namaKategori =
-                                                                        strtolower(
-                                                                            $item->kategori?->nama ?? ''
-                                                                        );
-
-                                                                @endphp
-
-
-                                                                @if(str_contains($namaKategori, 'spp'))
-
-                                                                    <i class="bi bi-receipt"></i>
-
-
-                                                                @elseif(str_contains($namaKategori, 'jas'))
-
-                                                                    <i class="bi bi-person-badge"></i>
-
-
-                                                                @elseif(
-                                                                    str_contains($namaKategori, 'ujian') ||
-                                                                    str_contains($namaKategori, 'pts')
-                                                                )
-
-                                                                    <i class="bi bi-clipboard-check"></i>
-
-
-                                                                @else
-
-                                                                    <i class="bi bi-file-text"></i>
-
-                                                                @endif
+                                                                <i class="bi bi-receipt"></i>
 
                                                             </div>
 
 
-                                                            {{-- DETAIL --}}
+                                                            <div class="tagihan-category-toggle-info">
 
-                                                            <div class="tagihan-list-detail">
+                                                                <strong>
+                                                                    SPP
+                                                                </strong>
 
-
-                                                                <span class="tagihan-category">
-
-                                                                    {{ $item->kategori?->nama ?? '-' }}
-
-                                                                </span>
-
-
-                                                                <span class="tagihan-item-nominal">
-
-                                                                    Rp
-                                                                    {{ number_format($item->nominal ?? 0, 0, ',', '.') }}
-
-                                                                </span>
-
-
-                                                                <small class="tagihan-item-tempo">
-
-                                                                    Jatuh tempo:
-
-                                                                    @if($item->jatuh_tempo)
-
-                                                                        {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
-
-                                                                    @else
-
-                                                                        -
-
-                                                                    @endif
-
+                                                                <small>
+                                                                    {{ $jumlahSpp }} bulan
+                                                                    • Rp {{ number_format($totalSpp, 0, ',', '.') }}
                                                                 </small>
 
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <span class="tagihan-category-toggle-arrow">
+
+                                                            <i class="bi bi-chevron-down"></i>
+
+                                                        </span>
+
+                                                    </button>
+
+
+                                                    {{-- ISI SPP --}}
+
+                                                    <div
+                                                        id="spp-{{ $siswaId }}-{{ $tahunId }}"
+                                                        class="tagihan-spp-items"
+                                                    >
+
+                                                        <div class="tagihan-spp-summary">
+
+                                                            <div class="tagihan-spp-summary-left">
+
+                                                                <i class="bi bi-calendar-month"></i>
+
+                                                                <span>
+                                                                    Rincian pembayaran SPP per bulan
+                                                                </span>
+
+                                                            </div>
+
+                                                            <div class="tagihan-spp-summary-total">
+
+                                                                Rp
+                                                                {{ number_format($totalSpp, 0, ',', '.') }}
 
                                                             </div>
 
                                                         </div>
 
 
-                                                        {{-- =================================================
-                                                             AKSI TAGIHAN
-                                                        ================================================== --}}
+                                                        @foreach($tagihanSpp as $item)
 
-                                                        <div class="tagihan-item-actions">
+                                                            <div class="tagihan-list-item tagihan-spp-item">
 
+                                                                {{-- CHECKBOX --}}
 
-                                                            {{-- DETAIL --}}
+                                                                <div class="tagihan-check">
 
-                                                            <a
-                                                                href="{{ route('admin.tagihan.show', $item->id) }}"
-                                                                class="btn-icon btn-detail"
-                                                                title="Lihat detail tagihan"
-                                                                aria-label="Lihat detail tagihan"
-                                                            >
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        class="tagihan-checkbox"
+                                                                        value="{{ $item->id }}"
+                                                                        title="Pilih tagihan"
+                                                                    >
 
-                                                                <i class="bi bi-info-circle"></i>
-
-                                                            </a>
+                                                                </div>
 
 
-                                                            {{-- EDIT --}}
+                                                                {{-- INFORMASI --}}
 
-                                                            <a
-                                                                href="{{ route('admin.tagihan.edit', $item->id) }}"
-                                                                class="btn-icon btn-edit"
-                                                                title="Edit tagihan"
-                                                                aria-label="Edit tagihan"
-                                                            >
+                                                                <div class="tagihan-list-info">
 
-                                                                <i class="bi bi-pencil-square"></i>
+                                                                    {{-- ICON --}}
 
-                                                            </a>
+                                                                    <div class="tagihan-category-icon">
 
+                                                                        <i class="bi bi-receipt"></i>
 
-                                                            {{-- HAPUS SATUAN --}}
-
-                                                            <form
-                                                                action="{{ route('admin.tagihan.destroy', $item->id) }}"
-                                                                method="POST"
-                                                                class="form-hapus"
-                                                                onsubmit="return confirm('Yakin ingin menghapus tagihan ini?')"
-                                                            >
-
-                                                                @csrf
-
-                                                                @method('DELETE')
+                                                                    </div>
 
 
-                                                                <button
-                                                                    type="submit"
-                                                                    class="btn-icon btn-hapus"
-                                                                    title="Hapus tagihan"
-                                                                    aria-label="Hapus tagihan"
-                                                                >
+                                                                    {{-- DETAIL --}}
 
-                                                                    <i class="bi bi-trash3"></i>
+                                                                    <div class="tagihan-list-detail">
 
-                                                                </button>
+                                                                        <span class="tagihan-category">
 
-                                                            </form>
+                                                                            @php
+
+                                                                                $bulanNama = null;
+
+                                                                                if ($item->bulan) {
+
+                                                                                    $bulanNama = \Carbon\Carbon::create(
+                                                                                        $item->tahun ?? now()->year,
+                                                                                        $item->bulan,
+                                                                                        1
+                                                                                    )->translatedFormat('F');
+
+                                                                                }
+
+                                                                            @endphp
+
+                                                                            SPP
+                                                                            @if($bulanNama)
+                                                                                - {{ $bulanNama }}
+                                                                            @endif
+
+                                                                        </span>
 
 
-                                                        </div>
+                                                                        <span class="tagihan-item-nominal">
 
+                                                                            Rp
+                                                                            {{ number_format($item->nominal ?? 0, 0, ',', '.') }}
+
+                                                                        </span>
+
+
+                                                                        <small class="tagihan-item-tempo">
+
+                                                                            Jatuh tempo:
+
+                                                                            @if($item->jatuh_tempo)
+
+                                                                                {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
+
+                                                                            @else
+
+                                                                                -
+
+                                                                            @endif
+
+                                                                        </small>
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                {{-- AKSI --}}
+
+                                                                <div class="tagihan-item-actions">
+
+                                                                    {{-- DETAIL --}}
+
+                                                                    <a
+                                                                        href="{{ route('admin.tagihan.show', $item->id) }}"
+                                                                        class="btn-icon btn-detail"
+                                                                        title="Lihat detail tagihan"
+                                                                        aria-label="Lihat detail tagihan"
+                                                                    >
+
+                                                                        <i class="bi bi-info-circle"></i>
+
+                                                                    </a>
+
+
+                                                                    {{-- EDIT --}}
+
+                                                                    <a
+                                                                        href="{{ route('admin.tagihan.edit', $item->id) }}"
+                                                                        class="btn-icon btn-edit"
+                                                                        title="Edit tagihan"
+                                                                        aria-label="Edit tagihan"
+                                                                    >
+
+                                                                        <i class="bi bi-pencil-square"></i>
+
+                                                                    </a>
+
+
+                                                                    {{-- HAPUS --}}
+
+                                                                    <form
+                                                                        action="{{ route('admin.tagihan.destroy', $item->id) }}"
+                                                                        method="POST"
+                                                                        class="form-hapus"
+                                                                        onsubmit="return confirm('Yakin ingin menghapus tagihan ini?')"
+                                                                    >
+
+                                                                        @csrf
+
+                                                                        @method('DELETE')
+
+
+                                                                        <button
+                                                                            type="submit"
+                                                                            class="btn-icon btn-hapus"
+                                                                            title="Hapus tagihan"
+                                                                            aria-label="Hapus tagihan"
+                                                                        >
+
+                                                                            <i class="bi bi-trash3"></i>
+
+                                                                        </button>
+
+                                                                    </form>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        @endforeach
 
                                                     </div>
 
-                                                @endforeach
+                                                </div>
+
+                                            @endif
 
 
-                                            </div>
+                                            {{-- =====================================
+                                                 TAGIHAN NON SPP
+                                            ====================================== --}}
+
+                                            @foreach($tagihanLain as $item)
+
+                                                @php
+
+                                                    $namaKategori =
+                                                        strtolower(
+                                                            $item->kategori?->nama ?? ''
+                                                        );
+
+                                                @endphp
+
+
+                                                <div class="tagihan-list-item">
+
+                                                    {{-- CHECKBOX --}}
+
+                                                    <div class="tagihan-check">
+
+                                                        <input
+                                                            type="checkbox"
+                                                            class="tagihan-checkbox"
+                                                            value="{{ $item->id }}"
+                                                            title="Pilih tagihan"
+                                                        >
+
+                                                    </div>
+
+
+                                                    {{-- INFORMASI --}}
+
+                                                    <div class="tagihan-list-info">
+
+
+                                                        {{-- ICON --}}
+
+                                                        <div class="tagihan-category-icon">
+
+                                                            @if(str_contains($namaKategori, 'jas'))
+
+                                                                <i class="bi bi-person-badge"></i>
+
+                                                            @elseif(
+                                                                str_contains($namaKategori, 'ujian') ||
+                                                                str_contains($namaKategori, 'pts')
+                                                            )
+
+                                                                <i class="bi bi-clipboard-check"></i>
+
+                                                            @else
+
+                                                                <i class="bi bi-file-text"></i>
+
+                                                            @endif
+
+                                                        </div>
+
+
+                                                        {{-- DETAIL --}}
+
+                                                        <div class="tagihan-list-detail">
+
+                                                            <span class="tagihan-category">
+
+                                                                {{ $item->kategori?->nama ?? '-' }}
+
+                                                            </span>
+
+
+                                                            <span class="tagihan-item-nominal">
+
+                                                                Rp
+                                                                {{ number_format($item->nominal ?? 0, 0, ',', '.') }}
+
+                                                            </span>
+
+
+                                                            <small class="tagihan-item-tempo">
+
+                                                                Jatuh tempo:
+
+                                                                @if($item->jatuh_tempo)
+
+                                                                    {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
+
+                                                                @else
+
+                                                                    -
+
+                                                                @endif
+
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    {{-- AKSI --}}
+
+                                                    <div class="tagihan-item-actions">
+
+
+                                                        {{-- DETAIL --}}
+
+                                                        <a
+                                                            href="{{ route('admin.tagihan.show', $item->id) }}"
+                                                            class="btn-icon btn-detail"
+                                                            title="Lihat detail tagihan"
+                                                            aria-label="Lihat detail tagihan"
+                                                        >
+
+                                                            <i class="bi bi-info-circle"></i>
+
+                                                        </a>
+
+
+                                                        {{-- EDIT --}}
+
+                                                        <a
+                                                            href="{{ route('admin.tagihan.edit', $item->id) }}"
+                                                            class="btn-icon btn-edit"
+                                                            title="Edit tagihan"
+                                                            aria-label="Edit tagihan"
+                                                        >
+
+                                                            <i class="bi bi-pencil-square"></i>
+
+                                                        </a>
+
+
+                                                        {{-- HAPUS --}}
+
+                                                        <form
+                                                            action="{{ route('admin.tagihan.destroy', $item->id) }}"
+                                                            method="POST"
+                                                            class="form-hapus"
+                                                            onsubmit="return confirm('Yakin ingin menghapus tagihan ini?')"
+                                                        >
+
+                                                            @csrf
+
+                                                            @method('DELETE')
+
+
+                                                            <button
+                                                                type="submit"
+                                                                class="btn-icon btn-hapus"
+                                                                title="Hapus tagihan"
+                                                                aria-label="Hapus tagihan"
+                                                            >
+
+                                                                <i class="bi bi-trash3"></i>
+
+                                                            </button>
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            @endforeach
+
 
                                         </div>
 
                                     @endforeach
-
 
                                 </div>
 
                             </td>
 
 
-                            {{-- =================================================
-                                 TOTAL TAGIHAN SISWA
-                            ================================================== --}}
+                            {{-- TOTAL TAGIHAN SISWA --}}
 
                             <td>
 
                                 <div class="tagihan-total-wrapper">
-
 
                                     <strong class="tagihan-total">
 
@@ -704,21 +1030,18 @@
                                     <small class="tagihan-total-count">
 
                                         {{ $daftarTagihan->count() }}
-                                        jenis tagihan
+                                        tagihan
 
                                     </small>
-
 
                                 </div>
 
                             </td>
 
-
                         </tr>
 
 
                     @empty
-
 
                         <tr>
 
@@ -748,9 +1071,7 @@
 
                         </tr>
 
-
                     @endforelse
-
 
                 </tbody>
 
@@ -766,41 +1087,102 @@
 
 
 @push('scripts')
+
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
 
-    const checkAll = document.getElementById('checkAllTagihan');
+    const checkAll =
+        document.getElementById('checkAllTagihan');
 
-    const checkboxes = document.querySelectorAll(
-        '.tagihan-checkbox'
-    );
+    const checkboxes =
+        document.querySelectorAll('.tagihan-checkbox');
 
-    const jumlahDipilih = document.getElementById(
-        'jumlahTagihanDipilih'
-    );
+    const jumlahDipilih =
+        document.getElementById('jumlahTagihanDipilih');
 
-    const btnHapus = document.getElementById(
-        'btnHapusTagihanTerpilih'
-    );
+    const btnHapus =
+        document.getElementById('btnHapusTagihanTerpilih');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | TOGGLE SPP
+    |--------------------------------------------------------------------------
+    */
+
+    const toggleButtons =
+        document.querySelectorAll('.tagihan-category-toggle');
+
+
+    toggleButtons.forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            const targetId =
+                button.getAttribute('data-target');
+
+            const target =
+                document.getElementById(targetId);
+
+            if (!target) {
+                return;
+            }
+
+
+            const isOpen =
+                target.classList.contains('open');
+
+
+            if (isOpen) {
+
+                target.classList.remove('open');
+
+                button.classList.remove('open');
+
+            } else {
+
+                target.classList.add('open');
+
+                button.classList.add('open');
+
+            }
+
+        });
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE CHECKBOX
+    |--------------------------------------------------------------------------
+    */
 
     function updateSelected() {
 
-        const selected = document.querySelectorAll(
-            '.tagihan-checkbox:checked'
-        );
+        const selected =
+            document.querySelectorAll(
+                '.tagihan-checkbox:checked'
+            );
 
-        const jumlah = selected.length;
+        const jumlah =
+            selected.length;
 
 
         if (jumlahDipilih) {
+
             jumlahDipilih.textContent =
                 jumlah + ' tagihan dipilih';
+
         }
 
 
         if (btnHapus) {
-            btnHapus.disabled = jumlah === 0;
+
+            btnHapus.disabled =
+                jumlah === 0;
+
         }
 
 
@@ -812,34 +1194,45 @@ document.addEventListener('DOMContentLoaded', function () {
         if (jumlah === 0) {
 
             checkAll.checked = false;
+
             checkAll.indeterminate = false;
 
         } else if (jumlah === checkboxes.length) {
 
             checkAll.checked = true;
+
             checkAll.indeterminate = false;
 
         } else {
 
             checkAll.checked = false;
+
             checkAll.indeterminate = true;
+
         }
+
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | PASTIKAN AWALNYA TIDAK ADA YANG TERPILIH
+    | RESET CHECKBOX SAAT HALAMAN DIBUKA
     |--------------------------------------------------------------------------
     */
 
     checkboxes.forEach(function (checkbox) {
+
         checkbox.checked = false;
+
     });
 
+
     if (checkAll) {
+
         checkAll.checked = false;
+
         checkAll.indeterminate = false;
+
     }
 
 
@@ -851,17 +1244,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (checkAll) {
 
-        checkAll.addEventListener('change', function () {
+        checkAll.addEventListener(
+            'change',
+            function () {
 
-            checkboxes.forEach(function (checkbox) {
+                checkboxes.forEach(
+                    function (checkbox) {
 
-                checkbox.checked =
-                    checkAll.checked;
+                        checkbox.checked =
+                            checkAll.checked;
 
-            });
+                    }
+                );
 
-            updateSelected();
-        });
+                updateSelected();
+
+            }
+        );
+
     }
 
 
@@ -912,11 +1312,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     selected.length;
 
 
-                const konfirmasi = confirm(
-                    'Apakah Anda yakin ingin menghapus ' +
-                    jumlah +
-                    ' tagihan yang dipilih?'
-                );
+                const konfirmasi =
+                    confirm(
+                        'Apakah Anda yakin ingin menghapus ' +
+                        jumlah +
+                        ' tagihan yang dipilih?'
+                    );
 
 
                 if (!konfirmasi) {
@@ -937,35 +1338,43 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.createElement('input');
 
                 csrf.type = 'hidden';
+
                 csrf.name = '_token';
+
                 csrf.value = '{{ csrf_token() }}';
+
 
                 form.appendChild(csrf);
 
 
-                selected.forEach(function (checkbox) {
+                selected.forEach(
+                    function (checkbox) {
 
-                    const input =
-                        document.createElement('input');
+                        const input =
+                            document.createElement('input');
 
-                    input.type = 'hidden';
+                        input.type = 'hidden';
 
-                    input.name =
-                        'tagihan_ids[]';
+                        input.name =
+                            'tagihan_ids[]';
 
-                    input.value =
-                        checkbox.value;
+                        input.value =
+                            checkbox.value;
 
-                    form.appendChild(input);
 
-                });
+                        form.appendChild(input);
+
+                    }
+                );
 
 
                 document.body.appendChild(form);
 
                 form.submit();
+
             }
         );
+
     }
 
 
@@ -976,7 +1385,9 @@ document.addEventListener('DOMContentLoaded', function () {
     */
 
     if (typeof lucide !== 'undefined') {
+
         lucide.createIcons();
+
     }
 
 
@@ -989,5 +1400,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSelected();
 
 });
+
 </script>
+
 @endpush

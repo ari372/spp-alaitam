@@ -98,11 +98,6 @@
                     );
 
 
-                /*
-                 * Jika sudah lunas,
-                 * tidak perlu ditampilkan sebagai pengingat.
-                 */
-
                 if ($sisa <= 0) {
                     return false;
                 }
@@ -114,30 +109,12 @@
                     )->startOfDay();
 
 
-                /*
-                 * Nilai positif =
-                 * masih beberapa hari sebelum jatuh tempo.
-                 *
-                 * Nilai 0 =
-                 * jatuh tempo hari ini.
-                 *
-                 * Nilai negatif =
-                 * sudah terlambat.
-                 */
-
                 $selisihHari =
                     $tanggalHariIni->diffInDays(
                         $tanggalJatuhTempo,
                         false
                     );
 
-
-                /*
-                 * Tampilkan:
-                 * - tagihan yang akan jatuh tempo
-                 *   sesuai hari pengingat
-                 * - tagihan yang sudah lewat
-                 */
 
                 return $selisihHari <= $hariPengingat;
 
@@ -427,7 +404,6 @@
 
     <div class="anak-info">
 
-        {{-- NAMA SISWA --}}
         <div class="anak-item anak-item-primary">
 
             <span>
@@ -442,7 +418,6 @@
         </div>
 
 
-        {{-- NIS --}}
         <div class="anak-item">
 
             <span>
@@ -457,7 +432,6 @@
         </div>
 
 
-        {{-- KELAS --}}
         <div class="anak-item">
 
             <span>
@@ -472,7 +446,6 @@
         </div>
 
 
-        {{-- ORANG TUA --}}
         <div class="anak-item anak-item-parent">
 
             <span>
@@ -498,8 +471,6 @@
 
 <div class="summary">
 
-
-    {{-- TOTAL TAGIHAN --}}
     <div class="summary-card">
 
         <div class="summary-card-header">
@@ -526,7 +497,6 @@
 
 
 
-    {{-- SUDAH DIBAYAR --}}
     <div class="summary-card summary-card-success">
 
         <div class="summary-card-header">
@@ -553,7 +523,6 @@
 
 
 
-    {{-- SISA TAGIHAN --}}
     <div class="summary-card summary-card-warning">
 
         <div class="summary-card-header">
@@ -610,22 +579,6 @@
         ->values();
 
 
-    /*
-     * Kelompokkan tagihan berdasarkan Tahun Ajaran.
-     *
-     * Contoh:
-     *
-     * 2025/2026
-     *   - SPP
-     *   - Jas/Baju
-     *   - Ujian
-     *
-     * 2026/2027
-     *   - SPP
-     *   - Jas/Baju
-     *   - Ujian
-     */
-
     $tagihanPerTahun = $tagihanBelumLunas
         ->groupBy(function ($item) {
 
@@ -642,11 +595,6 @@
 ========================================================= --}}
 
 <div class="table-card">
-
-
-    {{-- =====================================================
-         HEADER CARD
-    ====================================================== --}}
 
     <div class="table-card-header">
 
@@ -735,9 +683,6 @@
 
 
                 <div class="tahun-tagihan-card">
-
-
-                    {{-- HEADER TAHUN AJARAN --}}
 
                     <div class="tahun-tagihan-header">
 
@@ -915,6 +860,24 @@
 
                                         <strong>
                                             {{ $item->kategori?->nama ?? '-' }}
+
+                                            @if (
+                                                str_contains(
+                                                    $namaKategori,
+                                                    'spp'
+                                                ) &&
+                                                $item->bulan &&
+                                                $item->tahun
+                                            )
+
+                                                -
+                                                {{ \Carbon\Carbon::create(
+                                                    $item->tahun,
+                                                    $item->bulan,
+                                                    1
+                                                )->translatedFormat('F Y') }}
+
+                                            @endif
                                         </strong>
 
 
@@ -1006,9 +969,6 @@
                                 {{-- AKSI --}}
 
                                 <div class="tagihan-item-action">
-
-
-                                    {{-- DETAIL --}}
 
                                     <button
                                         type="button"
@@ -1278,6 +1238,21 @@
 
                                 <strong>
                                     {{ $item->kategori?->nama ?? '-' }}
+
+                                    @if (
+                                        strtolower($item->kategori?->nama ?? '') === 'spp' &&
+                                        $item->bulan &&
+                                        $item->tahun
+                                    )
+
+                                        -
+                                        {{ \Carbon\Carbon::create(
+                                            $item->tahun,
+                                            $item->bulan,
+                                            1
+                                        )->translatedFormat('F Y') }}
+
+                                    @endif
                                 </strong>
 
                             </div>
@@ -1816,6 +1791,21 @@
 
                         <td>
                             {{ $item->tagihan?->kategori?->nama ?? '-' }}
+
+                            @if (
+                                strtolower($item->tagihan?->kategori?->nama ?? '') === 'spp' &&
+                                $item->tagihan?->bulan &&
+                                $item->tagihan?->tahun
+                            )
+
+                                -
+                                {{ \Carbon\Carbon::create(
+                                    $item->tagihan->tahun,
+                                    $item->tagihan->bulan,
+                                    1
+                                )->translatedFormat('F Y') }}
+
+                            @endif
                         </td>
 
 
@@ -2108,7 +2098,24 @@
                                         </div>
 
                                         <div class="payment-detail-value">
+
                                             {{ $item->tagihan?->kategori?->nama ?? '-' }}
+
+                                            @if (
+                                                strtolower($item->tagihan?->kategori?->nama ?? '') === 'spp' &&
+                                                $item->tagihan?->bulan &&
+                                                $item->tagihan?->tahun
+                                            )
+
+                                                -
+                                                {{ \Carbon\Carbon::create(
+                                                    $item->tagihan->tahun,
+                                                    $item->tagihan->bulan,
+                                                    1
+                                                )->translatedFormat('F Y') }}
+
+                                            @endif
+
                                         </div>
 
                                     </div>

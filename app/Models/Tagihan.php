@@ -15,11 +15,15 @@ class Tagihan extends Model
         'tahun_ajaran_id',
         'kategori_tagihan_id',
         'nominal',
+        'bulan',
+        'tahun',
         'jatuh_tempo',
     ];
 
     protected $casts = [
         'nominal' => 'decimal:2',
+        'bulan' => 'integer',
+        'tahun' => 'integer',
         'jatuh_tempo' => 'date',
     ];
 

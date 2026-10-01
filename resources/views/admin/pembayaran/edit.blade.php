@@ -91,11 +91,15 @@
                 </strong>
 
                 <ul>
+
                     @foreach($errors->all() as $error)
+
                         <li>
                             {{ $error }}
                         </li>
+
                     @endforeach
+
                 </ul>
 
             </div>
@@ -121,6 +125,7 @@
                     </div>
 
                     <div>
+
                         <h3>
                             Informasi Pembayaran
                         </h3>
@@ -128,6 +133,7 @@
                         <p>
                             Detail pembayaran dari orang tua
                         </p>
+
                     </div>
 
                 </div>
@@ -142,12 +148,17 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="user-round"></i>
+
                         Nama Siswa
+
                     </span>
 
                     <strong class="koreksi-value">
+
                         {{ $tagihan->siswa->nama ?? '-' }}
+
                     </strong>
 
                 </div>
@@ -157,12 +168,17 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="badge"></i>
+
                         NIS
+
                     </span>
 
                     <strong class="koreksi-value">
+
                         {{ $tagihan->siswa->nis ?? '-' }}
+
                     </strong>
 
                 </div>
@@ -172,12 +188,17 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="calendar-days"></i>
+
                         Tahun Ajaran
+
                     </span>
 
                     <strong class="koreksi-value">
+
                         {{ $tagihan->tahunAjaran->nama ?? '-' }}
+
                     </strong>
 
                 </div>
@@ -187,12 +208,40 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="tag"></i>
+
                         Kategori
+
                     </span>
 
                     <strong class="koreksi-value koreksi-green">
-                        {{ $tagihan->kategori->nama ?? '-' }}
+
+                        @if(
+                            strtolower(
+                                trim($tagihan->kategori->nama ?? '')
+                            ) === 'spp'
+                        )
+
+                            SPP
+
+                            @if($tagihan->bulan && $tagihan->tahun)
+
+                                -
+                                {{ \Carbon\Carbon::create(
+                                    $tagihan->tahun,
+                                    $tagihan->bulan,
+                                    1
+                                )->translatedFormat('F Y') }}
+
+                            @endif
+
+                        @else
+
+                            {{ $tagihan->kategori->nama ?? '-' }}
+
+                        @endif
+
                     </strong>
 
                 </div>
@@ -202,8 +251,11 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="receipt"></i>
+
                         Total Tagihan
+
                     </span>
 
                     <strong class="koreksi-value koreksi-nominal">
@@ -220,12 +272,57 @@
                 </div>
 
 
+                {{-- SPP: INFORMASI TOTAL YANG DAPAT DIALOKASIKAN --}}
+                @if(
+                    strtolower(
+                        trim($tagihan->kategori->nama ?? '')
+                    ) === 'spp'
+                )
+
+                    <div class="koreksi-detail-item">
+
+                        <span class="koreksi-label">
+
+                            <i data-lucide="calendar-range"></i>
+
+                            Periode Pembayaran
+
+                        </span>
+
+                        <strong class="koreksi-value">
+
+                            Mulai dari
+
+                            @if($tagihan->bulan && $tagihan->tahun)
+
+                                {{ \Carbon\Carbon::create(
+                                    $tagihan->tahun,
+                                    $tagihan->bulan,
+                                    1
+                                )->translatedFormat('F Y') }}
+
+                            @else
+
+                                Bulan terpilih
+
+                            @endif
+
+                        </strong>
+
+                    </div>
+
+                @endif
+
+
                 {{-- SUDAH DIBAYAR --}}
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="circle-check"></i>
+
                         Sudah Dibayar
+
                     </span>
 
                     <strong class="koreksi-value">
@@ -246,8 +343,11 @@
                 <div class="koreksi-detail-item koreksi-sisa">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="wallet"></i>
+
                         Sisa Tagihan
+
                     </span>
 
                     <strong class="koreksi-value koreksi-nominal">
@@ -268,14 +368,21 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="wallet-cards"></i>
+
                         Metode Pembayaran
+
                     </span>
 
                     <strong class="koreksi-value">
 
                         <span class="metode-badge">
-                            {{ strtoupper($pembayaran->metode ?? '-') }}
+
+                            {{ strtoupper(
+                                $pembayaran->metode ?? '-'
+                            ) }}
+
                         </span>
 
                     </strong>
@@ -287,14 +394,19 @@
                 <div class="koreksi-detail-item">
 
                     <span class="koreksi-label">
+
                         <i data-lucide="clock"></i>
+
                         Waktu Pengiriman
+
                     </span>
 
                     <strong class="koreksi-value">
 
                         {{ $pembayaran->tanggal_kirim
-                            ? $pembayaran->tanggal_kirim->format('d-m-Y H:i')
+                            ? $pembayaran->tanggal_kirim->format(
+                                'd-m-Y H:i'
+                            )
                             : '-'
                         }}
 
@@ -320,6 +432,7 @@
                     </div>
 
                     <div>
+
                         <h3>
                             Bukti Pembayaran
                         </h3>
@@ -327,6 +440,7 @@
                         <p>
                             Periksa bukti yang dikirim orang tua
                         </p>
+
                     </div>
 
                 </div>
@@ -360,8 +474,11 @@
                         target="_blank"
                         class="koreksi-btn-bukti"
                     >
+
                         <i data-lucide="maximize-2"></i>
+
                         Lihat Bukti Lebih Besar
+
                     </a>
 
                 @else
@@ -369,7 +486,9 @@
                     <div class="koreksi-bukti-empty">
 
                         <div class="koreksi-bukti-empty-icon">
+
                             <i data-lucide="image-off"></i>
+
                         </div>
 
                         <strong>
@@ -399,10 +518,13 @@
             <div class="koreksi-card-title">
 
                 <div class="koreksi-icon">
+
                     <i data-lucide="pencil-line"></i>
+
                 </div>
 
                 <div>
+
                     <h3>
                         Koreksi Data Pembayaran
                     </h3>
@@ -410,6 +532,7 @@
                     <p>
                         Masukkan nominal sesuai dengan bukti pembayaran.
                     </p>
+
                 </div>
 
             </div>
@@ -437,11 +560,13 @@
                     for="nominal"
                     class="koreksi-form-label"
                 >
+
                     Nominal Pembayaran
 
                     <span class="koreksi-required">
                         *
                     </span>
+
                 </label>
 
 
@@ -474,12 +599,14 @@
                     Maksimal nominal yang dapat dicatat:
 
                     <strong>
+
                         Rp {{ number_format(
                             $sisaTagihan,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </strong>
 
                 </small>
@@ -494,11 +621,13 @@
                     for="metode"
                     class="koreksi-form-label"
                 >
+
                     Metode Pembayaran
 
                     <span class="koreksi-required">
                         *
                     </span>
+
                 </label>
 
 
@@ -546,30 +675,92 @@
             </div>
 
 
-            {{-- INFORMASI --}}
-            <div class="koreksi-info">
+            {{-- INFORMASI KHUSUS SPP --}}
+            @if(
+                strtolower(
+                    trim($tagihan->kategori->nama ?? '')
+                ) === 'spp'
+            )
 
-                <div class="koreksi-info-icon">
-                    <i data-lucide="info"></i>
+                <div class="koreksi-info">
+
+                    <div class="koreksi-info-icon">
+
+                        <i data-lucide="info"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Pembayaran SPP dapat mencakup beberapa bulan
+                        </strong>
+
+                        <p>
+
+                            Nominal yang dimasukkan akan digunakan untuk
+                            melunasi sisa tagihan SPP mulai dari bulan
+
+                            <strong>
+
+                                @if($tagihan->bulan && $tagihan->tahun)
+
+                                    {{ \Carbon\Carbon::create(
+                                        $tagihan->tahun,
+                                        $tagihan->bulan,
+                                        1
+                                    )->translatedFormat('F Y') }}
+
+                                @else
+
+                                    yang dipilih
+
+                                @endif
+
+                            </strong>
+
+                            kemudian dilanjutkan ke bulan berikutnya secara
+                            otomatis saat pembayaran disetujui.
+
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div>
+            @else
 
-                    <strong>
-                        Periksa nominal pada bukti pembayaran
-                    </strong>
+                {{-- INFORMASI NON-SPP --}}
+                <div class="koreksi-info">
 
-                    <p>
-                        Pastikan nominal yang dimasukkan sesuai dengan
-                        jumlah yang terlihat pada bukti pembayaran.
-                        Setelah dikoreksi, pembayaran tetap berstatus
-                        <strong>Menunggu Persetujuan</strong>
-                        sampai admin menyetujuinya.
-                    </p>
+                    <div class="koreksi-info-icon">
+
+                        <i data-lucide="info"></i>
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Periksa nominal pada bukti pembayaran
+                        </strong>
+
+                        <p>
+
+                            Pastikan nominal yang dimasukkan sesuai dengan
+                            jumlah yang terlihat pada bukti pembayaran.
+
+                            Setelah dikoreksi, pembayaran tetap berstatus
+                            <strong>Menunggu Persetujuan</strong>
+                            sampai admin menyetujuinya.
+
+                        </p>
+
+                    </div>
 
                 </div>
 
-            </div>
+            @endif
 
 
             {{-- ACTION --}}
@@ -579,8 +770,11 @@
                     href="{{ route('admin.pembayaran.index') }}"
                     class="koreksi-btn koreksi-btn-back"
                 >
+
                     <i data-lucide="arrow-left"></i>
+
                     Kembali
+
                 </a>
 
 
@@ -588,8 +782,11 @@
                     type="submit"
                     class="koreksi-btn koreksi-btn-save"
                 >
+
                     <i data-lucide="save"></i>
+
                     Simpan Koreksi
+
                 </button>
 
             </div>
@@ -605,9 +802,15 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function () {
-        lucide.createIcons();
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
     });
+
 </script>
 
 @endsection

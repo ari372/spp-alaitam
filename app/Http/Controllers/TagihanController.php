@@ -36,7 +36,6 @@ class TagihanController extends Controller
                         ->orWhere('nis', 'like', '%' . $search . '%');
 
                 })
-
                 ->orWhereHas('kategori', function ($kategoriQuery) use ($search) {
 
                     $kategoriQuery->where(
@@ -46,7 +45,6 @@ class TagihanController extends Controller
                     );
 
                 })
-
                 ->orWhereHas('tahunAjaran', function ($tahunQuery) use ($search) {
 
                     $tahunQuery->where(
@@ -56,6 +54,7 @@ class TagihanController extends Controller
                     );
 
                 });
+
             });
         }
 
@@ -72,14 +71,12 @@ class TagihanController extends Controller
         );
     }
 
-
     /**
-     * Form buat tagihan untuk semua siswa.
+     * Form buat tagihan.
      */
     public function create()
     {
-        $kategori = KategoriTagihan::orderBy('nama')
-            ->get();
+        $kategori = KategoriTagihan::orderBy('nama')->get();
 
         $tahunAjaran = TahunAjaran::orderBy(
             'tanggal_mulai',
@@ -95,7 +92,6 @@ class TagihanController extends Controller
         );
     }
 
-
     /**
      * Form edit tagihan.
      */
@@ -107,8 +103,7 @@ class TagihanController extends Controller
             'kategori',
         ]);
 
-        $kategori = KategoriTagihan::orderBy('nama')
-            ->get();
+        $kategori = KategoriTagihan::orderBy('nama')->get();
 
         $tahunAjaran = TahunAjaran::orderBy(
             'tanggal_mulai',
@@ -125,14 +120,11 @@ class TagihanController extends Controller
         );
     }
 
-
     /**
      * Update tagihan.
      */
-    public function update(
-        Request $request,
-        Tagihan $tagihan
-    ) {
+    public function update(Request $request, Tagihan $tagihan)
+    {
         $validated = $request->validate([
             'tahun_ajaran_id' => [
                 'required',
@@ -143,30 +135,318 @@ class TagihanController extends Controller
                 'required',
                 'exists:kategori_tagihan,id',
             ],
-
-            'jatuh_tempo' => [
-                'nullable',
-                'date',
-            ],
         ]);
 
         $kategori = KategoriTagihan::findOrFail(
             $validated['kategori_tagihan_id']
         );
 
-        $tagihan->update([
-            'tahun_ajaran_id' =>
-                $validated['tahun_ajaran_id'],
+        $tahunAjaran = TahunAjaran::findOrFail(
+            $validated['tahun_ajaran_id']
+        );
 
-            'kategori_tagihan_id' =>
-                $validated['kategori_tagihan_id'],
+        /*
+        |--------------------------------------------------------------------------
+        | SPP
+        |--------------------------------------------------------------------------
+        |
+        | Nominal kategori SPP = TOTAL SPP 1 tahun.
+        |
+        | Contoh:
+        |
+        | Rp1.350.000 / 12 = Rp112.500 per bulan
+        |
+        */
 
-            'nominal' =>
-                $kategori->nominal,
+        if ($this->isSpp($kategori)) {
 
-            'jatuh_tempo' =>
-                $validated['jatuh_tempo'] ?? null,
-        ]);
+            /*
+            |--------------------------------------------------------------------------
+            | Tentukan bulan dan tahun tagihan
+            |--------------------------------------------------------------------------
+            */
+
+            if ($tagihan->bulan && $tagihan->tahun) {
+
+                $bulan = (int) $tagihan->bulan;
+
+                $tahun = (int) $tagihan->tahun;
+
+            } elseif ($tagihan->jatuh_tempo) {
+
+                $tanggalLama = Carbon::parse(
+                    $tagihan->jatuh_tempo
+                );
+
+                $bulan = $tanggalLama->month;
+
+                $tahun = $tanggalLama->year;
+
+            } else {
+
+                $tanggalMulai = Carbon::parse(
+                    $tahunAjaran->tanggal_mulai
+                );
+
+                $bulan = $tanggalMulai->month;
+
+                $tahun = $tanggalMulai->year;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hitung jumlah bulan tahun ajaran
+            |--------------------------------------------------------------------------
+            */
+
+            $periode =
+                $this->getPeriodeTahunAjaran(
+                    $tahunAjaran
+                );
+
+            $jumlahBulan =
+                count($periode);
+
+
+            if ($jumlahBulan <= 0) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Periode tahun ajaran tidak valid.'
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hitung nominal per bulan
+            |--------------------------------------------------------------------------
+            */
+
+            $totalSpp =
+                (int) round(
+                    (float) $kategori->nominal
+                );
+
+            $nominalPerBulan =
+                intdiv(
+                    $totalSpp,
+                    $jumlahBulan
+                );
+
+            $sisa =
+                $totalSpp -
+                ($nominalPerBulan * $jumlahBulan);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tentukan posisi bulan dalam periode
+            |--------------------------------------------------------------------------
+            */
+
+            $indexBulan = 0;
+
+            foreach ($periode as $index => $periodeBulanan) {
+
+                if (
+                    (int) $periodeBulanan['bulan'] === $bulan &&
+                    (int) $periodeBulanan['tahun'] === $tahun
+                ) {
+
+                    $indexBulan = $index;
+
+                    break;
+                }
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Tambahkan sisa ke bulan tertentu
+            |--------------------------------------------------------------------------
+            */
+
+            $nominalBulanIni =
+                $nominalPerBulan;
+
+            if ($indexBulan < $sisa) {
+
+                $nominalBulanIni++;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cek apakah tahun/kategori diubah
+            |--------------------------------------------------------------------------
+            */
+
+            $duplikat = Tagihan::where(
+                'siswa_id',
+                $tagihan->siswa_id
+            )
+                ->where(
+                    'tahun_ajaran_id',
+                    $validated['tahun_ajaran_id']
+                )
+                ->where(
+                    'kategori_tagihan_id',
+                    $validated['kategori_tagihan_id']
+                )
+                ->where(
+                    'bulan',
+                    $bulan
+                )
+                ->where(
+                    'tahun',
+                    $tahun
+                )
+                ->where(
+                    'id',
+                    '!=',
+                    $tagihan->id
+                )
+                ->exists();
+
+
+            if ($duplikat) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Tagihan SPP untuk bulan tersebut sudah ada.'
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jatuh tempo
+            |--------------------------------------------------------------------------
+            */
+
+            $jatuhTempo =
+                $this->buatTanggalJatuhTempo(
+                    $tahun,
+                    $bulan
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update
+            |--------------------------------------------------------------------------
+            */
+
+            $tagihan->update([
+
+                'tahun_ajaran_id' =>
+                    $validated['tahun_ajaran_id'],
+
+                'kategori_tagihan_id' =>
+                    $validated['kategori_tagihan_id'],
+
+                'nominal' =>
+                    $nominalBulanIni,
+
+                'bulan' =>
+                    $bulan,
+
+                'tahun' =>
+                    $tahun,
+
+                'jatuh_tempo' =>
+                    $jatuhTempo,
+
+            ]);
+
+        } else {
+
+            /*
+            |--------------------------------------------------------------------------
+            | NON SPP
+            |--------------------------------------------------------------------------
+            */
+
+            $jatuhTempo =
+                $this->buatTanggalJatuhTempoNonSpp(
+                    $tahunAjaran
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Cek duplikat non-SPP
+            |--------------------------------------------------------------------------
+            */
+
+            $duplikat = Tagihan::where(
+                'siswa_id',
+                $tagihan->siswa_id
+            )
+                ->where(
+                    'tahun_ajaran_id',
+                    $validated['tahun_ajaran_id']
+                )
+                ->where(
+                    'kategori_tagihan_id',
+                    $validated['kategori_tagihan_id']
+                )
+                ->whereNull('bulan')
+                ->whereNull('tahun')
+                ->where(
+                    'id',
+                    '!=',
+                    $tagihan->id
+                )
+                ->exists();
+
+
+            if ($duplikat) {
+
+                return back()
+                    ->withInput()
+                    ->with(
+                        'error',
+                        'Tagihan untuk kategori tersebut sudah ada.'
+                    );
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update non-SPP
+            |--------------------------------------------------------------------------
+            */
+
+            $tagihan->update([
+
+                'tahun_ajaran_id' =>
+                    $validated['tahun_ajaran_id'],
+
+                'kategori_tagihan_id' =>
+                    $validated['kategori_tagihan_id'],
+
+                'nominal' =>
+                    $kategori->nominal,
+
+                'bulan' =>
+                    null,
+
+                'tahun' =>
+                    null,
+
+                'jatuh_tempo' =>
+                    $jatuhTempo,
+
+            ]);
+        }
+
 
         return redirect()
             ->route('admin.tagihan.index')
@@ -175,7 +455,6 @@ class TagihanController extends Controller
                 'Tagihan berhasil diperbarui.'
             );
     }
-
 
     /**
      * Hapus tagihan.
@@ -192,9 +471,8 @@ class TagihanController extends Controller
             );
     }
 
-
     /**
-     * Simpan tagihan untuk semua siswa.
+     * Membuat tagihan untuk semua siswa.
      */
     public function store(Request $request)
     {
@@ -208,17 +486,11 @@ class TagihanController extends Controller
                 'required',
                 'string',
             ],
-
-            'jatuh_tempo' => [
-                'nullable',
-                'date',
-            ],
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
-        | Validasi kategori jika bukan semua kategori
+        | Validasi kategori
         |--------------------------------------------------------------------------
         */
 
@@ -235,21 +507,33 @@ class TagihanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Ambil kategori
+        | Tahun ajaran
+        |--------------------------------------------------------------------------
+        */
+
+        $tahunAjaran = TahunAjaran::findOrFail(
+            $validated['tahun_ajaran_id']
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kategori
         |--------------------------------------------------------------------------
         */
 
         if ($validated['kategori_tagihan_id'] === 'semua') {
 
-            $daftarKategori = KategoriTagihan::orderBy('nama')
-                ->get();
+            $daftarKategori =
+                KategoriTagihan::orderBy('nama')->get();
 
         } else {
 
-            $daftarKategori = KategoriTagihan::where(
-                'id',
-                $validated['kategori_tagihan_id']
-            )->get();
+            $daftarKategori =
+                KategoriTagihan::where(
+                    'id',
+                    $validated['kategori_tagihan_id']
+                )->get();
         }
 
 
@@ -266,12 +550,12 @@ class TagihanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Ambil seluruh siswa
+        | Semua siswa
         |--------------------------------------------------------------------------
         */
 
-        $siswa = Siswa::select('id')
-            ->get();
+        $siswa =
+            Siswa::select('id')->get();
 
 
         if ($siswa->isEmpty()) {
@@ -287,107 +571,56 @@ class TagihanController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Tentukan tanggal jatuh tempo
+        | Periode tahun ajaran
         |--------------------------------------------------------------------------
         |
-        | Jika admin memasukkan tanggal secara manual,
-        | tanggal tersebut tetap digunakan.
+        | Contoh:
         |
-        | Jika kosong, sistem mengambil tanggal dari
-        | Pengaturan Pembayaran.
+        | 2028/2029
+        |
+        | Juli 2028 sampai Juni 2029
         |
         */
 
-        $jatuhTempo = $validated['jatuh_tempo'] ?? null;
+        $periode =
+            $this->getPeriodeTahunAjaran(
+                $tahunAjaran
+            );
 
 
-        if (!$jatuhTempo) {
-
-            $pengaturan = PengaturanPembayaran::first();
-
-
-            if (
-                $pengaturan &&
-                $pengaturan->aktif
-            ) {
-
-                $tanggalJatuhTempo =
-                    (int) $pengaturan->tanggal_jatuh_tempo;
+        $jumlahBulan =
+            count($periode);
 
 
-                /*
-                |--------------------------------------------------------------------------
-                | Tentukan tanggal jatuh tempo berikutnya
-                |--------------------------------------------------------------------------
-                |
-                | Contoh:
-                |
-                | Pengaturan = tanggal 5
-                |
-                | Hari ini 1 September
-                | → 5 September
-                |
-                | Hari ini 5 September
-                | → 5 September
-                |
-                | Hari ini 10 September
-                | → 5 Oktober
-                |
-                */
+        if ($jumlahBulan <= 0) {
 
-                $hariIni = Carbon::now();
-
-                $tanggalBulanIni = min(
-                    $tanggalJatuhTempo,
-                    $hariIni->daysInMonth
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Periode tahun ajaran tidak valid.'
                 );
-
-                $jatuhTempoCarbon = $hariIni->copy()
-                    ->startOfDay()
-                    ->setDay($tanggalBulanIni);
-
-
-                if ($hariIni->startOfDay()->greaterThan(
-                    $jatuhTempoCarbon
-                )) {
-
-                    $bulanBerikutnya = $hariIni
-                        ->copy()
-                        ->addMonthNoOverflow();
-
-                    $tanggalBulanBerikutnya = min(
-                        $tanggalJatuhTempo,
-                        $bulanBerikutnya->daysInMonth
-                    );
-
-                    $jatuhTempoCarbon = $bulanBerikutnya
-                        ->startOfDay()
-                        ->setDay($tanggalBulanBerikutnya);
-                }
-
-
-                $jatuhTempo =
-                    $jatuhTempoCarbon->format('Y-m-d');
-            }
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Proses pembuatan tagihan
-        |--------------------------------------------------------------------------
-        */
 
         $jumlahDibuat = 0;
 
         $jumlahSudahAda = 0;
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | Transaction
+        |--------------------------------------------------------------------------
+        */
+
         DB::transaction(function () use (
             $siswa,
             $daftarKategori,
             $validated,
-            $jatuhTempo,
+            $periode,
+            $jumlahBulan,
+            $tahunAjaran,
             &$jumlahDibuat,
             &$jumlahSudahAda
         ) {
@@ -396,63 +629,300 @@ class TagihanController extends Controller
 
                 foreach ($daftarKategori as $kategori) {
 
-
                     /*
                     |--------------------------------------------------------------------------
-                    | Cek tagihan yang sama
+                    | SPP = 12 TAGIHAN BULANAN
                     |--------------------------------------------------------------------------
+                    |
+                    | Nominal kategori SPP dianggap sebagai TOTAL
+                    | selama satu tahun ajaran.
+                    |
+                    | Contoh:
+                    |
+                    | Rp1.350.000 / 12
+                    | = Rp112.500 per bulan
+                    |
                     */
 
-                    $sudahAda = Tagihan::where(
-                        'siswa_id',
-                        $itemSiswa->id
-                    )
-                        ->where(
-                            'tahun_ajaran_id',
-                            $validated['tahun_ajaran_id']
-                        )
-                        ->where(
-                            'kategori_tagihan_id',
-                            $kategori->id
-                        )
-                        ->exists();
+                    if ($this->isSpp($kategori)) {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Total SPP satu tahun
+                        |--------------------------------------------------------------------------
+                        */
+
+                        $totalSpp =
+                            (int) round(
+                                (float) $kategori->nominal
+                            );
 
 
-                    if ($sudahAda) {
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Nominal dasar setiap bulan
+                        |--------------------------------------------------------------------------
+                        */
 
-                        $jumlahSudahAda++;
+                        $nominalPerBulan =
+                            intdiv(
+                                $totalSpp,
+                                $jumlahBulan
+                            );
 
-                        continue;
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Hitung sisa pembagian
+                        |--------------------------------------------------------------------------
+                        |
+                        | Contoh:
+                        |
+                        | Rp1.350.000 / 12
+                        |
+                        | Hasil = Rp112.500
+                        | Sisa = Rp0
+                        |
+                        */
+
+                        $sisa =
+                            $totalSpp -
+                            (
+                                $nominalPerBulan *
+                                $jumlahBulan
+                            );
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Buat 12 bulan
+                        |--------------------------------------------------------------------------
+                        */
+
+                        foreach (
+                            $periode
+                            as $index => $periodeBulanan
+                        ) {
+
+                            $bulan =
+                                $periodeBulanan['bulan'];
+
+                            $tahun =
+                                $periodeBulanan['tahun'];
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Cek SPP bulan tersebut
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $sudahAda =
+                                Tagihan::where(
+                                    'siswa_id',
+                                    $itemSiswa->id
+                                )
+                                ->where(
+                                    'tahun_ajaran_id',
+                                    $validated['tahun_ajaran_id']
+                                )
+                                ->where(
+                                    'kategori_tagihan_id',
+                                    $kategori->id
+                                )
+                                ->where(
+                                    'bulan',
+                                    $bulan
+                                )
+                                ->where(
+                                    'tahun',
+                                    $tahun
+                                )
+                                ->exists();
+
+
+                            if ($sudahAda) {
+
+                                $jumlahSudahAda++;
+
+                                continue;
+                            }
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Nominal bulan ini
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $nominalBulanIni =
+                                $nominalPerBulan;
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Bagikan sisa pembagian
+                            |--------------------------------------------------------------------------
+                            |
+                            | Kalau ada sisa, Rp1 ditambahkan
+                            | ke bulan-bulan pertama.
+                            |
+                            */
+
+                            if ($index < $sisa) {
+
+                                $nominalBulanIni++;
+                            }
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Jatuh tempo
+                            |--------------------------------------------------------------------------
+                            */
+
+                            $jatuhTempo =
+                                $this->buatTanggalJatuhTempo(
+                                    $tahun,
+                                    $bulan
+                                );
+
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | Buat tagihan SPP
+                            |--------------------------------------------------------------------------
+                            */
+
+                            Tagihan::create([
+
+                                'siswa_id' =>
+                                    $itemSiswa->id,
+
+                                'tahun_ajaran_id' =>
+                                    $validated['tahun_ajaran_id'],
+
+                                'kategori_tagihan_id' =>
+                                    $kategori->id,
+
+                                /*
+                                 * NOMINAL DI SINI SUDAH
+                                 * MENJADI NOMINAL BULANAN
+                                 */
+                                'nominal' =>
+                                    $nominalBulanIni,
+
+                                'bulan' =>
+                                    $bulan,
+
+                                'tahun' =>
+                                    $tahun,
+
+                                'jatuh_tempo' =>
+                                    $jatuhTempo,
+
+                            ]);
+
+
+                            $jumlahDibuat++;
+
+                        }
+
+                    } else {
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | SELAIN SPP = SATU TAGIHAN
+                        |--------------------------------------------------------------------------
+                        |
+                        | Contoh:
+                        |
+                        | Ujian    Rp550.000
+                        | Jas      Rp300.000
+                        | PTS      Rp250.000
+                        |
+                        | Tidak dibagi 12 bulan.
+                        |
+                        */
+
+                        $sudahAda =
+                            Tagihan::where(
+                                'siswa_id',
+                                $itemSiswa->id
+                            )
+                            ->where(
+                                'tahun_ajaran_id',
+                                $validated['tahun_ajaran_id']
+                            )
+                            ->where(
+                                'kategori_tagihan_id',
+                                $kategori->id
+                            )
+                            ->whereNull('bulan')
+                            ->whereNull('tahun')
+                            ->exists();
+
+
+                        if ($sudahAda) {
+
+                            $jumlahSudahAda++;
+
+                            continue;
+                        }
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Jatuh tempo non-SPP
+                        |--------------------------------------------------------------------------
+                        */
+
+                        $jatuhTempo =
+                            $this->buatTanggalJatuhTempoNonSpp(
+                                $tahunAjaran
+                            );
+
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | Buat tagihan non-SPP
+                        |--------------------------------------------------------------------------
+                        */
+
+                        Tagihan::create([
+
+                            'siswa_id' =>
+                                $itemSiswa->id,
+
+                            'tahun_ajaran_id' =>
+                                $validated['tahun_ajaran_id'],
+
+                            'kategori_tagihan_id' =>
+                                $kategori->id,
+
+                            'nominal' =>
+                                $kategori->nominal,
+
+                            'bulan' =>
+                                null,
+
+                            'tahun' =>
+                                null,
+
+                            'jatuh_tempo' =>
+                                $jatuhTempo,
+
+                        ]);
+
+
+                        $jumlahDibuat++;
+
                     }
 
-
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Buat tagihan
-                    |--------------------------------------------------------------------------
-                    */
-
-                    Tagihan::create([
-                        'siswa_id' =>
-                            $itemSiswa->id,
-
-                        'tahun_ajaran_id' =>
-                            $validated['tahun_ajaran_id'],
-
-                        'kategori_tagihan_id' =>
-                            $kategori->id,
-
-                        'nominal' =>
-                            $kategori->nominal,
-
-                        'jatuh_tempo' =>
-                            $jatuhTempo,
-                    ]);
-
-
-                    $jumlahDibuat++;
                 }
+
             }
+
         });
 
 
@@ -484,9 +954,8 @@ class TagihanController extends Controller
             );
     }
 
-
     /**
-     * Menampilkan detail tagihan.
+     * Detail tagihan.
      */
     public function show(Tagihan $tagihan)
     {
@@ -502,7 +971,6 @@ class TagihanController extends Controller
             compact('tagihan')
         );
     }
-
 
     /**
      * Hapus beberapa tagihan sekaligus.
@@ -523,9 +991,10 @@ class TagihanController extends Controller
         ]);
 
 
-        $jumlah = count(
-            $request->tagihan_ids
-        );
+        $jumlah =
+            count(
+                $request->tagihan_ids
+            );
 
 
         Tagihan::whereIn(
@@ -543,72 +1012,161 @@ class TagihanController extends Controller
             );
     }
 
+    /**
+     * Mengecek apakah kategori adalah SPP.
+     */
+    private function isSpp(
+        KategoriTagihan $kategori
+    ): bool {
+
+        return strtolower(
+            trim($kategori->nama)
+        ) === 'spp';
+    }
 
     /**
-     * Menentukan tanggal jatuh tempo berikutnya
-     * berdasarkan pengaturan pembayaran.
-     *
-     * Method ini disiapkan agar logika tanggal
-     * dapat digunakan kembali jika diperlukan.
+     * Membuat periode bulanan berdasarkan
+     * tanggal mulai dan tanggal selesai
+     * tahun ajaran.
      */
-    private function getTanggalJatuhTempo()
-    {
-        $pengaturan = PengaturanPembayaran::first();
+    private function getPeriodeTahunAjaran(
+        TahunAjaran $tahunAjaran
+    ): array {
+
+        $tanggalMulai =
+            Carbon::parse(
+                $tahunAjaran->tanggal_mulai
+            )->startOfMonth();
+
+
+        $tanggalSelesai =
+            Carbon::parse(
+                $tahunAjaran->tanggal_selesai
+            )->startOfMonth();
+
+
+        $periode = [];
+
+
+        $tanggal =
+            $tanggalMulai->copy();
+
+
+        while (
+            $tanggal->lessThanOrEqualTo(
+                $tanggalSelesai
+            )
+        ) {
+
+            $periode[] = [
+
+                'bulan' =>
+                    $tanggal->month,
+
+                'tahun' =>
+                    $tanggal->year,
+
+            ];
+
+
+            $tanggal->addMonth();
+        }
+
+
+        return $periode;
+    }
+
+    /**
+     * Membuat tanggal jatuh tempo SPP.
+     */
+    private function buatTanggalJatuhTempo(
+        int $tahun,
+        int $bulan
+    ): ?string {
+
+        $pengaturan =
+            PengaturanPembayaran::first();
 
 
         if (
             !$pengaturan ||
             !$pengaturan->aktif
         ) {
+
             return null;
         }
 
 
-        $tanggal =
+        $hari =
             (int) $pengaturan->tanggal_jatuh_tempo;
 
 
-        $hariIni = Carbon::now();
+        $jumlahHari =
+            Carbon::create(
+                $tahun,
+                $bulan,
+                1
+            )->daysInMonth;
 
 
-        $tanggalBulanIni = min(
-            $tanggal,
-            $hariIni->daysInMonth
-        );
-
-
-        $jatuhTempo = $hariIni
-            ->copy()
-            ->startOfDay()
-            ->setDay($tanggalBulanIni);
-
-
-        if (
-            $hariIni
-                ->copy()
-                ->startOfDay()
-                ->greaterThan($jatuhTempo)
-        ) {
-
-            $bulanBerikutnya = $hariIni
-                ->copy()
-                ->addMonthNoOverflow();
-
-
-            $tanggalBulanBerikutnya = min(
-                $tanggal,
-                $bulanBerikutnya->daysInMonth
+        $hari =
+            min(
+                $hari,
+                $jumlahHari
             );
 
 
-            $jatuhTempo = $bulanBerikutnya
-                ->startOfDay()
-                ->setDay(
-                    $tanggalBulanBerikutnya
-                );
+        return Carbon::create(
+            $tahun,
+            $bulan,
+            $hari
+        )->format('Y-m-d');
+    }
+
+    /**
+     * Membuat tanggal jatuh tempo non-SPP.
+     */
+    private function buatTanggalJatuhTempoNonSpp(
+        TahunAjaran $tahunAjaran
+    ): ?string {
+
+        $pengaturan =
+            PengaturanPembayaran::first();
+
+
+        if (
+            !$pengaturan ||
+            !$pengaturan->aktif
+        ) {
+
+            return null;
         }
 
 
-        return $jatuhTempo->format('Y-m-d');
+        $tanggalMulai =
+            Carbon::parse(
+                $tahunAjaran->tanggal_mulai
+            );
+
+
+        $hari =
+            (int) $pengaturan->tanggal_jatuh_tempo;
+
+
+        $jumlahHari =
+            $tanggalMulai->daysInMonth;
+
+
+        $hari =
+            min(
+                $hari,
+                $jumlahHari
+            );
+
+
+        return $tanggalMulai
+            ->copy()
+            ->setDay($hari)
+            ->format('Y-m-d');
     }
 }

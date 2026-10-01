@@ -23,11 +23,8 @@ class DashboardController extends Controller
         // =================================================
 
         $totalSiswa = Siswa::count();
-
         $totalOrangTua = OrangTua::count();
-
         $totalKelas = Kelas::count();
-
 
         // =================================================
         // AMBIL SEMUA TAGIHAN
@@ -40,7 +37,6 @@ class DashboardController extends Controller
             'pembayaran'
         ])->get();
 
-
         // =================================================
         // TOTAL SELURUH TAGIHAN
         // =================================================
@@ -49,14 +45,8 @@ class DashboardController extends Controller
             return (float) $item->nominal;
         });
 
-
         // =================================================
         // TOTAL PEMBAYARAN
-        // =================================================
-        //
-        // dibayar   = pembayaran yang sudah disetujui
-        // disetujui = jika ada status tersebut
-        //
         // =================================================
 
         $totalPembayaran = PembayaranTagihan::whereIn(
@@ -69,7 +59,6 @@ class DashboardController extends Controller
 
         $totalPembayaran = (float) $totalPembayaran;
 
-
         // =================================================
         // SISA TAGIHAN
         // =================================================
@@ -79,17 +68,13 @@ class DashboardController extends Controller
             0
         );
 
-
         // =================================================
         // STATUS SISWA
         // =================================================
 
         $lunas = 0;
-
         $belumLunas = 0;
-
         $terlambat = 0;
-
 
         // =================================================
         // TANGGAL HARI INI
@@ -97,13 +82,11 @@ class DashboardController extends Controller
 
         $hariIni = Carbon::today();
 
-
         // =================================================
         // KELOMPOKKAN TAGIHAN BERDASARKAN SISWA
         // =================================================
 
         $tagihanPerSiswa = $tagihan->groupBy('siswa_id');
-
 
         // =================================================
         // CEK STATUS SETIAP SISWA
@@ -111,32 +94,21 @@ class DashboardController extends Controller
 
         foreach ($tagihanPerSiswa as $siswaId => $tagihanSiswa) {
 
-            // Awalnya dianggap lunas
             $semuaLunas = true;
-
-            // Ada tagihan belum lunas
             $adaBelumLunas = false;
-
-            // Ada tagihan yang benar-benar terlambat
             $adaTerlambat = false;
-
-
-            // =================================================
-            // CEK SETIAP TAGIHAN
-            // =================================================
 
             foreach ($tagihanSiswa as $item) {
 
-                // ---------------------------------------------
+                // -----------------------------------------
                 // NOMINAL TAGIHAN
-                // ---------------------------------------------
+                // -----------------------------------------
 
                 $nominalTagihan = (float) $item->nominal;
 
-
-                // ---------------------------------------------
-                // TOTAL PEMBAYARAN YANG SUDAH SAH
-                // ---------------------------------------------
+                // -----------------------------------------
+                // TOTAL PEMBAYARAN SAH
+                // -----------------------------------------
 
                 $dibayar = $item->pembayaran
                     ->filter(function ($pembayaran) {
@@ -154,39 +126,32 @@ class DashboardController extends Controller
                                 'disetujui'
                             ]
                         );
-
                     })
                     ->sum(function ($pembayaran) {
-
                         return (float) $pembayaran->nominal;
-
                     });
 
-
-                // ---------------------------------------------
+                // -----------------------------------------
                 // HITUNG SISA
-                // ---------------------------------------------
+                // -----------------------------------------
 
                 $sisa = max(
                     $nominalTagihan - $dibayar,
                     0
                 );
 
-
-                // =================================================
-                // JIKA TAGIHAN MASIH MEMILIKI SISA
-                // =================================================
+                // -----------------------------------------
+                // JIKA BELUM LUNAS
+                // -----------------------------------------
 
                 if ($sisa > 0) {
 
                     $semuaLunas = false;
-
                     $adaBelumLunas = true;
 
-
-                    // =================================================
+                    // -------------------------------------
                     // CEK JATUH TEMPO
-                    // =================================================
+                    // -------------------------------------
 
                     if (!empty($item->jatuh_tempo)) {
 
@@ -196,43 +161,17 @@ class DashboardController extends Controller
                                 $item->jatuh_tempo
                             )->startOfDay();
 
-
-                            // =================================================
-                            // TERLAMBAT HANYA JIKA:
-                            //
-                            // JATUH TEMPO < HARI INI
-                            //
-                            // Contoh:
-                            //
-                            // Hari ini       : 09-09-2026
-                            // Jatuh tempo    : 05-10-2026
-                            //
-                            // Maka:
-                            // Belum Lunas
-                            //
-                            // BUKAN:
-                            // Terlambat
-                            // =================================================
-
                             if ($jatuhTempo->lt($hariIni)) {
-
                                 $adaTerlambat = true;
-
                             }
 
                         } catch (\Exception $e) {
-
-                            // Jika format tanggal tidak valid,
-                            // jangan dianggap terlambat.
-
+                            // Jangan dianggap terlambat
+                            // jika tanggal tidak valid.
                         }
-
                     }
-
                 }
-
             }
-
 
             // =================================================
             // TENTUKAN STATUS SISWA
@@ -240,28 +179,17 @@ class DashboardController extends Controller
 
             if ($semuaLunas) {
 
-                // Semua tagihan siswa sudah lunas
-
                 $lunas++;
 
             } elseif ($adaTerlambat) {
-
-                // Ada tagihan belum lunas
-                // yang sudah melewati jatuh tempo
 
                 $terlambat++;
 
             } elseif ($adaBelumLunas) {
 
-                // Ada tagihan belum lunas
-                // tetapi belum melewati jatuh tempo
-
                 $belumLunas++;
-
             }
-
         }
-
 
         // =================================================
         // PEMBAYARAN MENUNGGU PERSETUJUAN
@@ -272,7 +200,6 @@ class DashboardController extends Controller
             'menunggu'
         )->count();
 
-
         // =================================================
         // PEMBAYARAN TERBARU
         // =================================================
@@ -282,10 +209,9 @@ class DashboardController extends Controller
             'tagihan.kategori',
             'tagihan.tahunAjaran'
         ])
-        ->orderByDesc('tanggal_kirim')
-        ->take(5)
-        ->get();
-
+            ->orderByDesc('tanggal_kirim')
+            ->take(5)
+            ->get();
 
         // =================================================
         // GRAFIK PEMBAYARAN
@@ -306,9 +232,7 @@ class DashboardController extends Controller
             'Des'
         ];
 
-
         $dataGrafik = [];
-
 
         for ($bulan = 1; $bulan <= 12; $bulan++) {
 
@@ -319,21 +243,18 @@ class DashboardController extends Controller
                     'disetujui'
                 ]
             )
-            ->whereYear(
-                'tanggal_kirim',
-                Carbon::now()->year
-            )
-            ->whereMonth(
-                'tanggal_kirim',
-                $bulan
-            )
-            ->sum('nominal');
-
+                ->whereYear(
+                    'tanggal_kirim',
+                    Carbon::now()->year
+                )
+                ->whereMonth(
+                    'tanggal_kirim',
+                    $bulan
+                )
+                ->sum('nominal');
 
             $dataGrafik[] = (float) $totalBulan;
-
         }
-
 
         // =================================================
         // KIRIM DATA KE VIEW ADMIN
@@ -359,7 +280,6 @@ class DashboardController extends Controller
         );
     }
 
-
     // =====================================================
     // DASHBOARD ORANG TUA
     // =====================================================
@@ -367,7 +287,6 @@ class DashboardController extends Controller
     public function orangTua()
     {
         $user = Auth::user();
-
 
         // =================================================
         // CARI DATA ORANG TUA
@@ -377,7 +296,6 @@ class DashboardController extends Controller
             'user_id',
             $user->id
         )->first();
-
 
         // =================================================
         // JIKA DATA ORANG TUA TIDAK ADA
@@ -398,7 +316,6 @@ class DashboardController extends Controller
             );
         }
 
-
         // =================================================
         // CARI DATA ANAK
         // =================================================
@@ -410,12 +327,11 @@ class DashboardController extends Controller
             'tagihan.tahunAjaran',
             'tagihan.pembayaran'
         ])
-        ->where(
-            'orang_tua_id',
-            $orangTua->id
-        )
-        ->first();
-
+            ->where(
+                'orang_tua_id',
+                $orangTua->id
+            )
+            ->first();
 
         // =================================================
         // JIKA DATA ANAK TIDAK ADA
@@ -436,24 +352,253 @@ class DashboardController extends Controller
             );
         }
 
-
         // =================================================
-        // DATA TAGIHAN
-        // =================================================
-
-        $tagihan = $siswa->tagihan;
-
-
-        // =================================================
-        // TOTAL TAGIHAN
+        // SEMUA TAGIHAN ANAK
         // =================================================
 
-        $totalTagihan = $tagihan->sum(function ($item) {
+        $semuaTagihan = $siswa->tagihan;
 
-            return (float) $item->nominal;
+        // =================================================
+        // KELOMPOKKAN SPP
+        // BERDASARKAN TAHUN AJARAN
+        // =================================================
 
-        });
+        $tagihanSppPerTahun = $semuaTagihan
+            ->filter(function ($item) {
 
+                return strtolower(
+                    trim(
+                        $item->kategori->nama ?? ''
+                    )
+                ) === 'spp';
+
+            })
+            ->groupBy('tahun_ajaran_id');
+
+        // =================================================
+        // HITUNG TOTAL SPP DAN PEMBAYARAN
+        // =================================================
+
+        $totalSpp = 0;
+        $totalSppDibayar = 0;
+
+        foreach ($tagihanSppPerTahun as $tahunAjaranId => $tagihanSpp) {
+
+            // ---------------------------------------------
+            // TOTAL NOMINAL SPP
+            // ---------------------------------------------
+
+            $totalSppTahun = $tagihanSpp->sum(
+                function ($item) {
+                    return (float) $item->nominal;
+                }
+            );
+
+            $totalSpp += $totalSppTahun;
+
+            // ---------------------------------------------
+            // TOTAL PEMBAYARAN SPP
+            // ---------------------------------------------
+
+            foreach ($tagihanSpp as $spp) {
+
+                $dibayar = $spp->pembayaran
+                    ->filter(function ($pembayaran) {
+
+                        $status = strtolower(
+                            trim(
+                                (string) $pembayaran->status
+                            )
+                        );
+
+                        return in_array(
+                            $status,
+                            [
+                                'dibayar',
+                                'disetujui'
+                            ]
+                        );
+                    })
+                    ->sum(function ($pembayaran) {
+
+                        return (float) $pembayaran->nominal;
+                    });
+
+                $totalSppDibayar += $dibayar;
+            }
+        }
+
+        // =================================================
+        // SISA TOTAL SPP
+        // =================================================
+
+        $sisaSpp = max(
+            $totalSpp - $totalSppDibayar,
+            0
+        );
+
+        // =================================================
+        // BUAT TAGIHAN AKTIF
+        // =================================================
+        //
+        // SPP:
+        // Jika satu tahun ajaran sudah lunas,
+        // seluruh 12 tagihan SPP tidak ditampilkan
+        // sebagai tagihan aktif.
+        //
+        // Jika belum lunas:
+        // tagihan SPP tetap ditampilkan.
+        //
+        // NON-SPP:
+        // Tetap ditampilkan sesuai sisa masing-masing.
+        // =================================================
+
+        $tagihan = collect();
+
+        foreach ($semuaTagihan->groupBy('tahun_ajaran_id') as $tahunAjaranId => $tagihanTahun) {
+
+            // ---------------------------------------------
+            // AMBIL TAGIHAN SPP TAHUN INI
+            // ---------------------------------------------
+
+            $sppTahun = $tagihanTahun
+                ->filter(function ($item) {
+
+                    return strtolower(
+                        trim(
+                            $item->kategori->nama ?? ''
+                        )
+                    ) === 'spp';
+
+                });
+
+            // ---------------------------------------------
+            // HITUNG TOTAL SPP TAHUN INI
+            // ---------------------------------------------
+
+            $totalSppTahun = $sppTahun->sum(
+                function ($item) {
+                    return (float) $item->nominal;
+                }
+            );
+
+            // ---------------------------------------------
+            // HITUNG PEMBAYARAN SPP TAHUN INI
+            // ---------------------------------------------
+
+            $dibayarSppTahun = 0;
+
+            foreach ($sppTahun as $spp) {
+
+                $dibayarSppTahun += $spp->pembayaran
+                    ->filter(function ($pembayaran) {
+
+                        $status = strtolower(
+                            trim(
+                                (string) $pembayaran->status
+                            )
+                        );
+
+                        return in_array(
+                            $status,
+                            [
+                                'dibayar',
+                                'disetujui'
+                            ]
+                        );
+                    })
+                    ->sum(function ($pembayaran) {
+
+                        return (float) $pembayaran->nominal;
+                    });
+            }
+
+            $sisaSppTahun = max(
+                $totalSppTahun - $dibayarSppTahun,
+                0
+            );
+
+            // ---------------------------------------------
+            // JIKA SPP BELUM LUNAS
+            // ---------------------------------------------
+
+            if ($sisaSppTahun > 0) {
+
+                foreach ($sppTahun as $spp) {
+
+                    $tagihan->push($spp);
+                }
+            }
+
+            // ---------------------------------------------
+            // TAGIHAN NON-SPP
+            // ---------------------------------------------
+
+            $nonSpp = $tagihanTahun->filter(
+                function ($item) {
+
+                    return strtolower(
+                        trim(
+                            $item->kategori->nama ?? ''
+                        )
+                    ) !== 'spp';
+                }
+            );
+
+            foreach ($nonSpp as $item) {
+
+                $nominalTagihan = (float) $item->nominal;
+
+                $dibayar = $item->pembayaran
+                    ->filter(function ($pembayaran) {
+
+                        $status = strtolower(
+                            trim(
+                                (string) $pembayaran->status
+                            )
+                        );
+
+                        return in_array(
+                            $status,
+                            [
+                                'dibayar',
+                                'disetujui'
+                            ]
+                        );
+                    })
+                    ->sum(function ($pembayaran) {
+
+                        return (float) $pembayaran->nominal;
+                    });
+
+                $sisa = max(
+                    $nominalTagihan - $dibayar,
+                    0
+                );
+
+                // Hanya tampilkan tagihan
+                // yang masih memiliki sisa.
+                if ($sisa > 0) {
+
+                    $tagihan->push($item);
+                }
+            }
+        }
+
+        // =================================================
+        // URUTKAN TAGIHAN
+        // =================================================
+
+        $tagihan = $tagihan
+            ->sortByDesc(function ($item) {
+
+                return optional(
+                    $item->tahunAjaran
+                )->tanggal_mulai
+                    ?? '0000-00-00';
+
+            })
+            ->values();
 
         // =================================================
         // DATA PEMBAYARAN
@@ -464,17 +609,30 @@ class DashboardController extends Controller
             'tagihan.tahunAjaran',
             'tagihan.siswa'
         ])
-        ->whereHas('tagihan', function ($query) use ($siswa) {
+            ->whereHas('tagihan', function ($query) use ($siswa) {
 
-            $query->where(
-                'siswa_id',
-                $siswa->id
-            );
+                $query->where(
+                    'siswa_id',
+                    $siswa->id
+                );
 
-        })
-        ->orderByDesc('tanggal_kirim')
-        ->get();
+            })
+            ->orderByDesc('tanggal_kirim')
+            ->get();
 
+        // =================================================
+        // TOTAL SELURUH TAGIHAN
+        // =================================================
+        //
+        // Untuk dashboard, total tagihan tetap
+        // berdasarkan seluruh kewajiban anak.
+        // =================================================
+
+        $totalTagihan = $semuaTagihan->sum(
+            function ($item) {
+                return (float) $item->nominal;
+            }
+        );
 
         // =================================================
         // TOTAL SUDAH DIBAYAR
@@ -496,14 +654,11 @@ class DashboardController extends Controller
                         'disetujui'
                     ]
                 );
-
             })
             ->sum(function ($item) {
 
                 return (float) $item->nominal;
-
             });
-
 
         // =================================================
         // SISA TAGIHAN
@@ -513,7 +668,6 @@ class DashboardController extends Controller
             $totalTagihan - $totalDibayar,
             0
         );
-
 
         // =================================================
         // KIRIM DATA KE VIEW

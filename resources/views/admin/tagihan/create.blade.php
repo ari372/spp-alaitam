@@ -5,8 +5,11 @@
 @section('page-title', 'Buat Tagihan')
 
 @push('styles')
+
     @vite('resources/css/admin/tagihan.css')
+
 @endpush
+
 
 @section('content')
 
@@ -18,19 +21,30 @@
         <div class="tagihan-detail-header">
 
             <div>
+
                 <h2 class="tagihan-detail-title">
+
                     <i class="bi bi-file-earmark-plus"></i>
+
                     Buat Tagihan
+
                 </h2>
 
                 <p class="tagihan-detail-subtitle">
+
                     Buat tagihan untuk seluruh siswa sekaligus.
+
                 </p>
+
             </div>
 
+
             <span class="tagihan-form-badge">
+
                 <i class="bi bi-people"></i>
+
                 Semua Siswa
+
             </span>
 
         </div>
@@ -96,9 +110,14 @@
                 Tagihan akan dibuat secara otomatis untuk
                 <strong>seluruh siswa</strong> yang terdaftar.
 
+                Untuk kategori <strong>SPP</strong>,
+                tagihan dibuat setiap bulan sesuai periode
+                tahun ajaran.
+
                 Jika memilih
                 <strong>Semua Kategori</strong>,
-                semua kategori tagihan akan dibuat otomatis.
+                semua kategori tagihan akan dibuat sesuai
+                aturan masing-masing kategori.
 
             </p>
 
@@ -128,6 +147,7 @@
 
                     </label>
 
+
                     <select
                         name="tahun_ajaran_id"
                         id="tahun_ajaran_id"
@@ -136,20 +156,27 @@
                     >
 
                         <option value="">
+
                             -- Pilih Tahun Ajaran --
+
                         </option>
+
 
                         @foreach($tahunAjaran as $tahun)
 
                             <option
                                 value="{{ $tahun->id }}"
+                                data-mulai="{{ $tahun->tanggal_mulai }}"
+                                data-selesai="{{ $tahun->tanggal_selesai }}"
                                 {{ old('tahun_ajaran_id') == $tahun->id ? 'selected' : '' }}
                             >
 
                                 {{ $tahun->nama }}
 
                                 @if($tahun->aktif)
+
                                     (Aktif)
+
                                 @endif
 
                             </option>
@@ -157,6 +184,14 @@
                         @endforeach
 
                     </select>
+
+
+                    <small class="tagihan-form-help">
+
+                        Pilih tahun ajaran yang akan digunakan
+                        untuk tagihan.
+
+                    </small>
 
                 </div>
 
@@ -172,6 +207,7 @@
 
                     </label>
 
+
                     <select
                         name="kategori_tagihan_id"
                         id="kategori"
@@ -180,7 +216,9 @@
                     >
 
                         <option value="">
+
                             -- Pilih Kategori --
+
                         </option>
 
 
@@ -189,7 +227,9 @@
                             value="semua"
                             {{ old('kategori_tagihan_id') === 'semua' ? 'selected' : '' }}
                         >
+
                             Semua Kategori
+
                         </option>
 
 
@@ -197,6 +237,7 @@
 
                             <option
                                 value="{{ $item->id }}"
+                                data-nama="{{ strtolower(trim($item->nama)) }}"
                                 data-nominal="{{ $item->nominal }}"
                                 {{ old('kategori_tagihan_id') == $item->id ? 'selected' : '' }}
                             >
@@ -204,6 +245,7 @@
                                 {{ $item->nama }}
 
                                 -
+
                                 Rp
                                 {{ number_format($item->nominal, 0, ',', '.') }}
 
@@ -213,9 +255,11 @@
 
                     </select>
 
+
                     <small class="tagihan-form-help">
 
-                        Pilih satu kategori atau pilih Semua Kategori.
+                        Pilih satu kategori atau pilih
+                        Semua Kategori.
 
                     </small>
 
@@ -233,6 +277,7 @@
 
                     </label>
 
+
                     <input
                         type="text"
                         id="nominal"
@@ -241,18 +286,18 @@
                         class="tagihan-form-control tagihan-readonly"
                     >
 
+
                     <small class="tagihan-form-help">
 
-                        Jika memilih Semua Kategori,
-                        nominal setiap kategori mengikuti
-                        nominal yang tersimpan di database.
+                        Nominal mengikuti kategori
+                        yang dipilih.
 
                     </small>
 
                 </div>
 
 
-                {{-- JUMLAH SISWA --}}
+                {{-- TARGET SISWA --}}
                 <div class="tagihan-form-group">
 
                     <label for="target">
@@ -263,6 +308,7 @@
 
                     </label>
 
+
                     <input
                         type="text"
                         id="target"
@@ -271,13 +317,53 @@
                         class="tagihan-form-control tagihan-target"
                     >
 
+
+                    <small class="tagihan-form-help">
+
+                        Tagihan akan dibuat untuk
+                        seluruh siswa yang terdaftar.
+
+                    </small>
+
+                </div>
+
+
+                {{-- PERIODE --}}
+                <div class="tagihan-form-group">
+
+                    <label for="periode">
+
+                        <i class="bi bi-calendar-range"></i>
+
+                        Periode
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="periode"
+                        readonly
+                        placeholder="Pilih tahun ajaran terlebih dahulu"
+                        class="tagihan-form-control tagihan-readonly"
+                    >
+
+
+                    <small class="tagihan-form-help">
+
+                        Untuk SPP, periode mengikuti
+                        tahun ajaran dari bulan mulai
+                        sampai bulan selesai.
+
+                    </small>
+
                 </div>
 
 
                 {{-- JATUH TEMPO --}}
                 <div class="tagihan-form-group">
 
-                    <label for="jatuh_tempo">
+                    <label for="jatuh_tempo_info">
 
                         <i class="bi bi-calendar-event"></i>
 
@@ -302,73 +388,23 @@
 
                     @if($aktifPengaturan)
 
-                        @php
-
-                            $hariIni = \Carbon\Carbon::now();
-
-                            $tanggal =
-                                min(
-                                    (int) $tanggalJatuhTempo,
-                                    $hariIni->daysInMonth
-                                );
-
-                            $tanggalTempo =
-                                $hariIni
-                                    ->copy()
-                                    ->startOfDay()
-                                    ->setDay($tanggal);
-
-                            if (
-                                $hariIni
-                                    ->copy()
-                                    ->startOfDay()
-                                    ->greaterThan($tanggalTempo)
-                            ) {
-
-                                $bulanBerikutnya =
-                                    $hariIni
-                                        ->copy()
-                                        ->addMonthNoOverflow();
-
-                                $tanggalBulanBerikutnya =
-                                    min(
-                                        (int) $tanggalJatuhTempo,
-                                        $bulanBerikutnya->daysInMonth
-                                    );
-
-                                $tanggalTempo =
-                                    $bulanBerikutnya
-                                        ->copy()
-                                        ->startOfDay()
-                                        ->setDay(
-                                            $tanggalBulanBerikutnya
-                                        );
-                            }
-
-                            $tanggalTempoValue =
-                                $tanggalTempo->format('Y-m-d');
-
-                        @endphp
-
-
                         <input
-                            type="date"
-                            name="jatuh_tempo"
-                            id="jatuh_tempo"
-                            value="{{ old('jatuh_tempo', $tanggalTempoValue) }}"
+                            type="text"
+                            id="jatuh_tempo_info"
                             readonly
+                            value="Tanggal {{ $tanggalJatuhTempo }} setiap bulan"
                             class="tagihan-form-control tagihan-readonly"
                         >
 
 
                         <small class="tagihan-form-help">
 
-                            Jatuh tempo otomatis mengikuti
+                            Tanggal jatuh tempo mengikuti
                             pengaturan pembayaran.
 
-                            Tanggal setiap bulan:
                             <strong>
-                                {{ $tanggalJatuhTempo }}
+                                Tanggal {{ $tanggalJatuhTempo }}
+                                setiap bulan.
                             </strong>
 
                         </small>
@@ -376,21 +412,53 @@
                     @else
 
                         <input
-                            type="date"
-                            name="jatuh_tempo"
-                            id="jatuh_tempo"
-                            value="{{ old('jatuh_tempo') }}"
-                            class="tagihan-form-control"
+                            type="text"
+                            id="jatuh_tempo_info"
+                            readonly
+                            value="Pengaturan jatuh tempo tidak aktif"
+                            class="tagihan-form-control tagihan-readonly"
                         >
+
 
                         <small class="tagihan-form-help">
 
-                            Pengaturan jatuh tempo sedang tidak aktif.
-                            Silakan tentukan tanggal secara manual.
+                            Pengaturan jatuh tempo sedang
+                            tidak aktif.
 
                         </small>
 
                     @endif
+
+                </div>
+
+
+                {{-- POLA TAGIHAN --}}
+                <div class="tagihan-form-group">
+
+                    <label for="pola_tagihan">
+
+                        <i class="bi bi-repeat"></i>
+
+                        Pola Tagihan
+
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="pola_tagihan"
+                        readonly
+                        value="Pilih kategori terlebih dahulu"
+                        class="tagihan-form-control tagihan-readonly"
+                    >
+
+
+                    <small class="tagihan-form-help">
+
+                        SPP dibuat bulanan.
+                        Kategori lainnya dibuat satu kali.
+
+                    </small>
 
                 </div>
 
@@ -426,6 +494,7 @@
 
             </div>
 
+
         </form>
 
     </div>
@@ -441,64 +510,333 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | ELEMENT
+    |--------------------------------------------------------------------------
+    */
+
+    const tahunAjaranSelect =
+        document.getElementById('tahun_ajaran_id');
+
     const kategoriSelect =
         document.getElementById('kategori');
 
     const nominalInput =
         document.getElementById('nominal');
 
+    const periodeInput =
+        document.getElementById('periode');
 
-    if (kategoriSelect && nominalInput) {
-
-        function tampilkanNominal() {
-
-            const option =
-                kategoriSelect.options[
-                    kategoriSelect.selectedIndex
-                ];
+    const polaTagihanInput =
+        document.getElementById('pola_tagihan');
 
 
-            if (!option || !option.value) {
+    /*
+    |--------------------------------------------------------------------------
+    | NAMA BULAN
+    |--------------------------------------------------------------------------
+    */
 
-                nominalInput.value = '';
-
-                return;
-            }
-
-
-            if (option.value === 'semua') {
-
-                nominalInput.value =
-                    'Mengikuti nominal semua kategori';
-
-                return;
-            }
-
-
-            const nominal =
-                Number(
-                    option.dataset.nominal || 0
-                );
+    const namaBulan = [
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+    ];
 
 
-            nominalInput.value =
-                'Rp ' +
-                nominal.toLocaleString('id-ID');
+    /*
+    |--------------------------------------------------------------------------
+    | FORMAT TANGGAL
+    |--------------------------------------------------------------------------
+    */
+
+    function parseTanggal(tanggal) {
+
+        if (!tanggal) {
+            return null;
+        }
+
+        const bagian =
+            tanggal.split('-');
+
+        if (bagian.length !== 3) {
+            return null;
+        }
+
+        return {
+            tahun: Number(bagian[0]),
+            bulan: Number(bagian[1]),
+            hari: Number(bagian[2])
+        };
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMPILKAN NOMINAL
+    |--------------------------------------------------------------------------
+    */
+
+    function tampilkanNominal() {
+
+        if (
+            !kategoriSelect ||
+            !nominalInput
+        ) {
+            return;
         }
 
 
+        const option =
+            kategoriSelect.options[
+                kategoriSelect.selectedIndex
+            ];
+
+
+        if (
+            !option ||
+            !option.value
+        ) {
+
+            nominalInput.value = '';
+
+            return;
+        }
+
+
+        if (
+            option.value === 'semua'
+        ) {
+
+            nominalInput.value =
+                'Mengikuti nominal semua kategori';
+
+            return;
+        }
+
+
+        const nominal =
+            Number(
+                option.dataset.nominal || 0
+            );
+
+
+        nominalInput.value =
+            'Rp ' +
+            nominal.toLocaleString('id-ID');
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMPILKAN PERIODE
+    |--------------------------------------------------------------------------
+    */
+
+    function tampilkanPeriode() {
+
+        if (
+            !tahunAjaranSelect ||
+            !periodeInput
+        ) {
+            return;
+        }
+
+
+        const option =
+            tahunAjaranSelect.options[
+                tahunAjaranSelect.selectedIndex
+            ];
+
+
+        if (
+            !option ||
+            !option.value
+        ) {
+
+            periodeInput.value =
+                'Pilih tahun ajaran terlebih dahulu';
+
+            return;
+        }
+
+
+        const tanggalMulai =
+            parseTanggal(
+                option.dataset.mulai
+            );
+
+
+        const tanggalSelesai =
+            parseTanggal(
+                option.dataset.selesai
+            );
+
+
+        if (
+            !tanggalMulai ||
+            !tanggalSelesai
+        ) {
+
+            periodeInput.value =
+                'Periode tahun ajaran belum tersedia';
+
+            return;
+        }
+
+
+        periodeInput.value =
+            namaBulan[tanggalMulai.bulan - 1] +
+            ' ' +
+            tanggalMulai.tahun +
+            ' - ' +
+            namaBulan[tanggalSelesai.bulan - 1] +
+            ' ' +
+            tanggalSelesai.tahun;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMPILKAN POLA TAGIHAN
+    |--------------------------------------------------------------------------
+    */
+
+    function tampilkanPolaTagihan() {
+
+        if (
+            !kategoriSelect ||
+            !polaTagihanInput
+        ) {
+            return;
+        }
+
+
+        const option =
+            kategoriSelect.options[
+                kategoriSelect.selectedIndex
+            ];
+
+
+        if (
+            !option ||
+            !option.value
+        ) {
+
+            polaTagihanInput.value =
+                'Pilih kategori terlebih dahulu';
+
+            return;
+        }
+
+
+        if (
+            option.value === 'semua'
+        ) {
+
+            polaTagihanInput.value =
+                'SPP bulanan, kategori lainnya satu kali';
+
+            return;
+        }
+
+
+        const namaKategori =
+            (
+                option.dataset.nama || ''
+            ).trim().toLowerCase();
+
+
+        if (
+            namaKategori === 'spp'
+        ) {
+
+            polaTagihanInput.value =
+                'Bulanan — 12 tagihan per siswa';
+
+        } else {
+
+            polaTagihanInput.value =
+                'Satu kali — 1 tagihan per siswa';
+        }
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVENT KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
+    if (kategoriSelect) {
+
         kategoriSelect.addEventListener(
             'change',
-            tampilkanNominal
+            function () {
+
+                tampilkanNominal();
+
+                tampilkanPolaTagihan();
+
+            }
         );
-
-
-        tampilkanNominal();
 
     }
 
 
-    if (typeof lucide !== 'undefined') {
+    /*
+    |--------------------------------------------------------------------------
+    | EVENT TAHUN AJARAN
+    |--------------------------------------------------------------------------
+    */
+
+    if (tahunAjaranSelect) {
+
+        tahunAjaranSelect.addEventListener(
+            'change',
+            function () {
+
+                tampilkanPeriode();
+
+            }
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INITIAL LOAD
+    |--------------------------------------------------------------------------
+    */
+
+    tampilkanNominal();
+
+    tampilkanPeriode();
+
+    tampilkanPolaTagihan();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LUCIDE
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        typeof lucide !== 'undefined'
+    ) {
 
         lucide.createIcons();
 

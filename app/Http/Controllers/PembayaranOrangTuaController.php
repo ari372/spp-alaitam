@@ -12,7 +12,21 @@ class PembayaranOrangTuaController extends Controller
 {
     /**
      * ============================================================
-     * CEK APAKAH TAGIHAN ADALAH PTS ATAU UJIAN
+     * CEK APAKAH KATEGORI ADALAH SPP
+     * ============================================================
+     */
+    private function isSpp(Tagihan $tagihan)
+    {
+        $namaKategori = strtolower(
+            trim($tagihan->kategori->nama ?? '')
+        );
+
+        return $namaKategori === 'spp';
+    }
+
+    /**
+     * ============================================================
+     * CEK APAKAH KATEGORI ADALAH PTS ATAU UJIAN
      * ============================================================
      */
     private function isPtsAtauUjian(Tagihan $tagihan)
@@ -25,44 +39,67 @@ class PembayaranOrangTuaController extends Controller
             || str_contains($namaKategori, 'ujian');
     }
 
-
     /**
      * ============================================================
-     * CARI TAGIHAN SPP UNTUK SISWA DAN TAHUN AJARAN YANG SAMA
+     * AMBIL SELURUH TAGIHAN SPP DALAM 1 TAHUN AJARAN
      * ============================================================
+     *
+     * Contoh:
+     *
+     * Juli       2028
+     * Agustus    2028
+     * September  2028
+     * Oktober    2028
+     * November   2028
+     * Desember   2028
+     * Januari    2029
+     * Februari   2029
+     * Maret      2029
+     * April      2029
+     * Mei        2029
+     * Juni       2029
+     *
+     * Semua dianggap sebagai satu kewajiban SPP tahunan.
      */
     private function getTagihanSpp(Tagihan $tagihan)
     {
-        return Tagihan::where(
-            'siswa_id',
-            $tagihan->siswa_id
-        )
+        return Tagihan::with([
+            'kategori',
+            'tahunAjaran',
+        ])
+            ->where(
+                'siswa_id',
+                $tagihan->siswa_id
+            )
             ->where(
                 'tahun_ajaran_id',
                 $tagihan->tahun_ajaran_id
             )
             ->whereHas('kategori', function ($query) {
-
                 $query->whereRaw(
                     'LOWER(TRIM(nama)) = ?',
                     ['spp']
                 );
-
             })
-            ->first();
+            ->orderBy('tahun')
+            ->orderBy('bulan')
+            ->orderBy('id')
+            ->get();
     }
-
 
     /**
      * ============================================================
-     * HITUNG TOTAL SPP YANG SUDAH DIBAYAR
+     * HITUNG TOTAL PEMBAYARAN SATU TAGIHAN
      * ============================================================
+     *
+     * Hanya pembayaran yang sudah disetujui
+     * yang dihitung sebagai pembayaran.
      */
-    private function getTotalSppDibayar(Tagihan $spp)
+    private function getTotalDibayar(Tagihan $tagihan)
     {
-        return PembayaranTagihan::where(
+        return (float) PembayaranTagihan::where(
             'tagihan_id',
-            $spp->id
+            $tagihan->id
         )
             ->whereIn('status', [
                 'dibayar',
@@ -71,6 +108,151 @@ class PembayaranOrangTuaController extends Controller
             ->sum('nominal');
     }
 
+    /**
+     * ============================================================
+     * HITUNG SISA SATU TAGIHAN
+     * ============================================================
+     *
+     * Digunakan untuk NON-SPP.
+     *
+     * Untuk SPP kita menggunakan getSisaSpp().
+     */
+    private function getSisaTagihan(Tagihan $tagihan)
+    {
+        $totalDibayar = $this->getTotalDibayar(
+            $tagihan
+        );
+
+        return max(
+            (float) $tagihan->nominal
+                - $totalDibayar,
+            0
+        );
+    }
+
+    /**
+     * ============================================================
+     * HITUNG TOTAL NOMINAL SPP 1 TAHUN AJARAN
+     * ============================================================
+     *
+     * Contoh:
+     *
+     * 12 x Rp112.500
+     * = Rp1.350.000
+     */
+    private function getTotalSpp(Tagihan $tagihan)
+    {
+        return (float) $this->getTagihanSpp($tagihan)
+            ->sum(function ($spp) {
+                return (float) $spp->nominal;
+            });
+    }
+
+    /**
+     * ============================================================
+     * HITUNG TOTAL SPP YANG SUDAH DIBAYAR
+     * ============================================================
+     *
+     * Semua pembayaran dari 12 tagihan SPP
+     * dijumlahkan menjadi satu.
+     */
+    private function getTotalSppDibayar(Tagihan $tagihan)
+    {
+        $tagihanSpp = $this->getTagihanSpp(
+            $tagihan
+        );
+
+        if ($tagihanSpp->isEmpty()) {
+            return 0;
+        }
+
+        $total = 0;
+
+        foreach ($tagihanSpp as $spp) {
+            $total += $this->getTotalDibayar(
+                $spp
+            );
+        }
+
+        return $total;
+    }
+
+    /**
+     * ============================================================
+     * HITUNG SISA SPP 1 TAHUN AJARAN
+     * ============================================================
+     *
+     * Contoh:
+     *
+     * Total SPP      Rp1.350.000
+     * Sudah dibayar  Rp850.000
+     * -----------------------
+     * Sisa           Rp500.000
+     *
+     * Jadi orang tua dapat melakukan pelunasan
+     * Rp500.000 meskipun tagihan bulan berjalan
+     * misalnya hanya Rp112.500.
+     */
+    private function getSisaSpp(Tagihan $tagihan)
+    {
+        $totalSpp = $this->getTotalSpp(
+            $tagihan
+        );
+
+        $totalDibayar = $this->getTotalSppDibayar(
+            $tagihan
+        );
+
+        return max(
+            $totalSpp - $totalDibayar,
+            0
+        );
+    }
+
+    /**
+     * ============================================================
+     * CEK APAKAH SPP TAHUNAN SUDAH LUNAS
+     * ============================================================
+     *
+     * SPP dianggap lunas apabila:
+     *
+     * total pembayaran >= total nominal
+     * seluruh SPP dalam tahun ajaran.
+     *
+     * Tidak perlu mengecek setiap bulan satu per satu.
+     */
+    private function isSppLunas(Tagihan $tagihan)
+    {
+        $tagihanSpp = $this->getTagihanSpp(
+            $tagihan
+        );
+
+        if ($tagihanSpp->isEmpty()) {
+            return false;
+        }
+
+        return $this->getSisaSpp(
+            $tagihan
+        ) <= 0;
+    }
+
+    /**
+     * ============================================================
+     * CEK PEMBAYARAN MENUNGGU PADA TAGIHAN
+     * ============================================================
+     */
+    private function adaPembayaranMenunggu(Tagihan $tagihan)
+    {
+        return PembayaranTagihan::where(
+            'tagihan_id',
+            $tagihan->id
+        )
+            ->where(
+                'status',
+                'menunggu'
+            )
+            ->exists();
+    }
 
     /**
      * ============================================================
@@ -81,12 +263,11 @@ class PembayaranOrangTuaController extends Controller
     {
         $user = Auth::user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK DATA ORANG TUA
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * CEK DATA ORANG TUA
+         * ========================================================
+         */
         $orangTua = $user->orangTua;
 
         if (!$orangTua) {
@@ -96,13 +277,11 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PASTIKAN TAGIHAN MILIK ANAK
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * PASTIKAN TAGIHAN MILIK ANAK
+         * ========================================================
+         */
         $milikOrangTua = $orangTua->siswa()
             ->where(
                 'id',
@@ -117,13 +296,11 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD RELASI
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * LOAD RELASI
+         * ========================================================
+         */
         $tagihan->load([
             'siswa',
             'tahunAjaran',
@@ -131,40 +308,100 @@ class PembayaranOrangTuaController extends Controller
             'pembayaran',
         ]);
 
+        /**
+         * ========================================================
+         * JIKA SPP
+         *
+         * Sisa pembayaran dihitung berdasarkan
+         * TOTAL SPP SATU TAHUN AJARAN.
+         * ========================================================
+         */
+        if ($this->isSpp($tagihan)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL TAGIHAN YANG SUDAH DIBAYAR
-        |--------------------------------------------------------------------------
-        */
+            $tagihanSpp = $this->getTagihanSpp(
+                $tagihan
+            );
 
-        $totalDibayar = $tagihan->pembayaran
-            ->whereIn('status', [
-                'dibayar',
-                'disetujui',
-            ])
-            ->sum('nominal');
+            if ($tagihanSpp->isEmpty()) {
+                return redirect()
+                    ->route('orangtua.dashboard')
+                    ->with(
+                        'error',
+                        'Tagihan SPP untuk tahun ajaran ini belum ditemukan.'
+                    );
+            }
 
+            /**
+             * SPP SUDAH LUNAS
+             */
+            if ($this->isSppLunas($tagihan)) {
+                return redirect()
+                    ->route('orangtua.dashboard')
+                    ->with(
+                        'error',
+                        'SPP tahun ajaran ini sudah lunas.'
+                    );
+            }
 
-        /*
-        |--------------------------------------------------------------------------
-        | HITUNG SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
+            /**
+             * CEK PEMBAYARAN MENUNGGU
+             *
+             * Pembayaran tetap terkait dengan
+             * bulan yang dipilih.
+             */
+            if (
+                $this->adaPembayaranMenunggu(
+                    $tagihan
+                )
+            ) {
+                return redirect()
+                    ->route('orangtua.dashboard')
+                    ->with(
+                        'error',
+                        'Pembayaran untuk tagihan ini sedang menunggu persetujuan admin.'
+                    );
+            }
 
-        $sisaTagihan = max(
-            (float) $tagihan->nominal
-                - (float) $totalDibayar,
-            0
+            /**
+             * UNTUK SPP:
+             *
+             * totalDibayar = total SPP yang sudah dibayar
+             * sisaTagihan = sisa SPP satu tahun
+             */
+            $totalDibayar = $this->getTotalSppDibayar(
+                $tagihan
+            );
+
+            $sisaTagihan = $this->getSisaSpp(
+                $tagihan
+            );
+
+            return view(
+                'orangtua.pembayaran.create',
+                compact(
+                    'tagihan',
+                    'totalDibayar',
+                    'sisaTagihan'
+                )
+            );
+        }
+
+        /**
+         * ========================================================
+         * NON-SPP
+         * ========================================================
+         */
+        $totalDibayar = $this->getTotalDibayar(
+            $tagihan
         );
 
+        $sisaTagihan = $this->getSisaTagihan(
+            $tagihan
+        );
 
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA TAGIHAN SUDAH LUNAS
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * TAGIHAN NON-SPP SUDAH LUNAS
+         */
         if ($sisaTagihan <= 0) {
             return redirect()
                 ->route('orangtua.dashboard')
@@ -174,21 +411,14 @@ class PembayaranOrangTuaController extends Controller
                 );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK PEMBAYARAN YANG MASIH MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
-        $sedangDiproses = $tagihan->pembayaran
-            ->where(
-                'status',
-                'menunggu'
+        /**
+         * CEK PEMBAYARAN MENUNGGU
+         */
+        if (
+            $this->adaPembayaranMenunggu(
+                $tagihan
             )
-            ->count();
-
-        if ($sedangDiproses > 0) {
+        ) {
             return redirect()
                 ->route('orangtua.dashboard')
                 ->with(
@@ -197,27 +427,23 @@ class PembayaranOrangTuaController extends Controller
                 );
         }
 
+        /**
+         * ========================================================
+         * CEK PTS / UJIAN
+         *
+         * SPP TAHUN AJARAN HARUS LUNAS.
+         * ========================================================
+         */
+        if (
+            $this->isPtsAtauUjian(
+                $tagihan
+            )
+        ) {
+            $tagihanSpp = $this->getTagihanSpp(
+                $tagihan
+            );
 
-        /*
-        |--------------------------------------------------------------------------
-        | CEK KHUSUS PTS / UJIAN
-        |--------------------------------------------------------------------------
-        | SPP HARUS LUNAS TERLEBIH DAHULU
-        |--------------------------------------------------------------------------
-        */
-
-        if ($this->isPtsAtauUjian($tagihan)) {
-
-            $spp = $this->getTagihanSpp($tagihan);
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | JIKA TAGIHAN SPP TIDAK DITEMUKAN
-            |--------------------------------------------------------------------------
-            */
-
-            if (!$spp) {
+            if ($tagihanSpp->isEmpty()) {
                 return redirect()
                     ->route('orangtua.dashboard')
                     ->with(
@@ -226,36 +452,9 @@ class PembayaranOrangTuaController extends Controller
                     );
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | HITUNG TOTAL SPP YANG SUDAH DIBAYAR
-            |--------------------------------------------------------------------------
-            */
-
-            $totalSPPDibayar = $this->getTotalSppDibayar(
-                $spp
+            $sisaSPP = $this->getSisaSpp(
+                $tagihan
             );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | HITUNG SISA SPP
-            |--------------------------------------------------------------------------
-            */
-
-            $sisaSPP = max(
-                (float) $spp->nominal
-                    - (float) $totalSPPDibayar,
-                0
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SPP BELUM LUNAS
-            |--------------------------------------------------------------------------
-            */
 
             if ($sisaSPP > 0) {
                 return redirect()
@@ -266,13 +465,6 @@ class PembayaranOrangTuaController extends Controller
                     );
             }
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TAMPILKAN FORM
-        |--------------------------------------------------------------------------
-        */
 
         return view(
             'orangtua.pembayaran.create',
@@ -284,11 +476,14 @@ class PembayaranOrangTuaController extends Controller
         );
     }
 
-
     /**
      * ============================================================
      * SIMPAN PEMBAYARAN
      * ============================================================
+     *
+     * Orang tua tidak memasukkan nominal.
+     *
+     * Nominal akan diperiksa dan ditentukan admin.
      */
     public function store(
         Request $request,
@@ -296,13 +491,11 @@ class PembayaranOrangTuaController extends Controller
     ) {
         $user = Auth::user();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK DATA ORANG TUA
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * CEK DATA ORANG TUA
+         * ========================================================
+         */
         $orangTua = $user->orangTua;
 
         if (!$orangTua) {
@@ -312,13 +505,11 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | PASTIKAN TAGIHAN MILIK ANAK
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * PASTIKAN TAGIHAN MILIK ANAK
+         * ========================================================
+         */
         $milikOrangTua = $orangTua->siswa()
             ->where(
                 'id',
@@ -333,39 +524,29 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | VALIDASI
-        |--------------------------------------------------------------------------
-        | Orang tua hanya mengirim metode pembayaran dan bukti.
-        | Nominal akan ditentukan oleh admin melalui fitur koreksi.
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * VALIDASI
+         * ========================================================
+         */
         $validated = $request->validate([
-
             'metode' => [
                 'required',
                 'in:transfer,qris',
             ],
-
             'bukti_pembayaran' => [
                 'required',
                 'image',
                 'mimes:jpg,jpeg,png',
                 'max:2048',
             ],
-
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD RELASI
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * LOAD RELASI
+         * ========================================================
+         */
         $tagihan->load([
             'siswa',
             'tahunAjaran',
@@ -373,97 +554,20 @@ class PembayaranOrangTuaController extends Controller
             'pembayaran',
         ]);
 
+        /**
+         * ========================================================
+         * JIKA SPP
+         *
+         * Cek berdasarkan TOTAL SPP TAHUNAN.
+         * ========================================================
+         */
+        if ($this->isSpp($tagihan)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL PEMBAYARAN YANG SUDAH DISETUJUI
-        |--------------------------------------------------------------------------
-        */
+            $tagihanSpp = $this->getTagihanSpp(
+                $tagihan
+            );
 
-        $totalDibayar = PembayaranTagihan::where(
-            'tagihan_id',
-            $tagihan->id
-        )
-            ->whereIn('status', [
-                'dibayar',
-                'disetujui',
-            ])
-            ->sum('nominal');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | SISA TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
-        $sisaTagihan = max(
-            (float) $tagihan->nominal
-                - (float) $totalDibayar,
-            0
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | JIKA SUDAH LUNAS
-        |--------------------------------------------------------------------------
-        */
-
-        if ($sisaTagihan <= 0) {
-            return back()
-                ->with(
-                    'error',
-                    'Tagihan sudah lunas.'
-                );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK PEMBAYARAN MENUNGGU
-        |--------------------------------------------------------------------------
-        */
-
-        $menunggu = PembayaranTagihan::where(
-            'tagihan_id',
-            $tagihan->id
-        )
-            ->where(
-                'status',
-                'menunggu'
-            )
-            ->exists();
-
-        if ($menunggu) {
-            return back()
-                ->with(
-                    'error',
-                    'Masih ada pembayaran yang menunggu persetujuan admin.'
-                );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK KHUSUS PTS / UJIAN
-        |--------------------------------------------------------------------------
-        | SPP HARUS LUNAS SEBELUM PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
-        if ($this->isPtsAtauUjian($tagihan)) {
-
-            $spp = $this->getTagihanSpp($tagihan);
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | JIKA SPP TIDAK DITEMUKAN
-            |--------------------------------------------------------------------------
-            */
-
-            if (!$spp) {
+            if ($tagihanSpp->isEmpty()) {
                 return back()
                     ->with(
                         'error',
@@ -471,53 +575,113 @@ class PembayaranOrangTuaController extends Controller
                     );
             }
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | TOTAL SPP
-            |--------------------------------------------------------------------------
-            */
-
-            $totalSPP = $this->getTotalSppDibayar(
-                $spp
+            /**
+             * SPP SUDAH LUNAS
+             */
+            $sisaSpp = $this->getSisaSpp(
+                $tagihan
             );
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | SISA SPP
-            |--------------------------------------------------------------------------
-            */
-
-            $sisaSPP = max(
-                (float) $spp->nominal
-                    - (float) $totalSPP,
-                0
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | SPP BELUM LUNAS
-            |--------------------------------------------------------------------------
-            */
-
-            if ($sisaSPP > 0) {
+            if ($sisaSpp <= 0) {
                 return back()
                     ->with(
                         'error',
-                        'SPP harus lunas terlebih dahulu sebelum membayar PTS/Ujian.'
+                        'SPP tahun ajaran ini sudah lunas.'
                     );
+            }
+
+            /**
+             * CEK PEMBAYARAN MENUNGGU
+             * pada bulan yang dipilih.
+             */
+            if (
+                $this->adaPembayaranMenunggu(
+                    $tagihan
+                )
+            ) {
+                return back()
+                    ->with(
+                        'error',
+                        'Masih ada pembayaran SPP yang menunggu persetujuan admin pada tagihan ini.'
+                    );
+            }
+        } else {
+
+            /**
+             * ====================================================
+             * NON-SPP
+             * ====================================================
+             */
+            $sisaTagihan = $this->getSisaTagihan(
+                $tagihan
+            );
+
+            if ($sisaTagihan <= 0) {
+                return back()
+                    ->with(
+                        'error',
+                        'Tagihan sudah lunas.'
+                    );
+            }
+
+            /**
+             * CEK PEMBAYARAN MENUNGGU
+             */
+            if (
+                $this->adaPembayaranMenunggu(
+                    $tagihan
+                )
+            ) {
+                return back()
+                    ->with(
+                        'error',
+                        'Masih ada pembayaran yang menunggu persetujuan admin.'
+                    );
+            }
+
+            /**
+             * ====================================================
+             * CEK PTS / UJIAN
+             *
+             * SPP TAHUNAN HARUS LUNAS.
+             * ====================================================
+             */
+            if (
+                $this->isPtsAtauUjian(
+                    $tagihan
+                )
+            ) {
+                $tagihanSpp = $this->getTagihanSpp(
+                    $tagihan
+                );
+
+                if ($tagihanSpp->isEmpty()) {
+                    return back()
+                        ->with(
+                            'error',
+                            'Tagihan SPP untuk tahun ajaran ini belum ditemukan.'
+                        );
+                }
+
+                $sisaSPP = $this->getSisaSpp(
+                    $tagihan
+                );
+
+                if ($sisaSPP > 0) {
+                    return back()
+                        ->with(
+                            'error',
+                            'SPP harus lunas terlebih dahulu sebelum membayar PTS/Ujian.'
+                        );
+                }
             }
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPLOAD BUKTI PEMBAYARAN
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * UPLOAD BUKTI PEMBAYARAN
+         * ========================================================
+         */
         $file = $request->file(
             'bukti_pembayaran'
         );
@@ -527,41 +691,38 @@ class PembayaranOrangTuaController extends Controller
             'public'
         );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | SIMPAN PEMBAYARAN
-        |--------------------------------------------------------------------------
-        | Nominal sengaja NULL.
-        | Admin akan menentukan nominal melalui Koreksi Pembayaran.
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * SIMPAN PEMBAYARAN
+         * ========================================================
+         *
+         * Untuk SPP:
+         *
+         * nominal = NULL
+         *
+         * Admin nanti memasukkan nominal sebenarnya.
+         *
+         * Contoh:
+         *
+         * Sisa SPP = Rp500.000
+         *
+         * Admin dapat mengisi Rp500.000.
+         */
         PembayaranTagihan::create([
-
             'tagihan_id' => $tagihan->id,
-
             'user_id' => $user->id,
-
             'nominal' => null,
-
             'metode' => $validated['metode'],
-
             'bukti_pembayaran' => $path,
-
             'status' => 'menunggu',
-
             'tanggal_kirim' => now(),
-
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | KEMBALI KE DASHBOARD
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * KEMBALI KE DASHBOARD
+         * ========================================================
+         */
         return redirect()
             ->route('orangtua.dashboard')
             ->with(
@@ -569,7 +730,6 @@ class PembayaranOrangTuaController extends Controller
                 'Bukti pembayaran berhasil dikirim. Silakan menunggu persetujuan admin.'
             );
     }
-
 
     /**
      * ============================================================
@@ -593,26 +753,22 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOAD RELASI
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * LOAD RELASI
+         * ========================================================
+         */
         $pembayaran->load([
             'tagihan.siswa.kelas',
             'tagihan.kategori',
             'tagihan.tahunAjaran',
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK TAGIHAN
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * CEK TAGIHAN
+         * ========================================================
+         */
         if (!$pembayaran->tagihan) {
             abort(
                 404,
@@ -620,16 +776,15 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | CEK HAK AKSES
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * CEK HAK AKSES
+         * ========================================================
+         */
         if (
             !$pembayaran->tagihan->siswa ||
-            $pembayaran->tagihan->siswa->orang_tua_id != $orangTua->id
+            $pembayaran->tagihan->siswa->orang_tua_id
+                != $orangTua->id
         ) {
             abort(
                 403,
@@ -637,13 +792,11 @@ class PembayaranOrangTuaController extends Controller
             );
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | BUAT PDF
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * BUAT PDF
+         * ========================================================
+         */
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
             'orangtua.pembayaran.bukti-pdf',
             compact('pembayaran')
@@ -654,15 +807,15 @@ class PembayaranOrangTuaController extends Controller
             'portrait'
         );
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DOWNLOAD
-        |--------------------------------------------------------------------------
-        */
-
+        /**
+         * ========================================================
+         * DOWNLOAD
+         * ========================================================
+         */
         return $pdf->download(
-            'bukti-pembayaran-' . $pembayaran->id . '.pdf'
+            'bukti-pembayaran-' .
+            $pembayaran->id .
+            '.pdf'
         );
     }
 }

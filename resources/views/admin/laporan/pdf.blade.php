@@ -7,7 +7,6 @@
     <title>Laporan Pembayaran</title>
 
     <style>
-
         @page {
             size: A4 landscape;
             margin: 18px 20px 20px 20px;
@@ -24,7 +23,6 @@
             margin: 0;
             padding: 0;
         }
-
 
         /* ================================
            HEADER
@@ -48,7 +46,6 @@
             font-size: 9px;
         }
 
-
         /* ================================
            FILTER INFO
         ================================= */
@@ -59,7 +56,6 @@
             color: #666666;
             font-size: 8px;
         }
-
 
         /* ================================
            TABLE
@@ -94,7 +90,6 @@
             background: #f7faf8;
         }
 
-
         /* ================================
            LEBAR KOLOM
            TOTAL = 100%
@@ -105,7 +100,7 @@
         }
 
         .col-siswa {
-            width: 16%;
+            width: 14%;
         }
 
         .col-nis {
@@ -113,35 +108,28 @@
         }
 
         .col-kelas {
-            width: 8%;
+            width: 7%;
         }
 
         .col-tahun {
-            width: 12%;
+            width: 10%;
+        }
+
+        .col-bulan {
+            width: 10%;
         }
 
         .col-kategori {
-            width: 12%;
+            width: 10%;
         }
 
         .col-nominal {
-            width: 12%;
+            width: 9%;
         }
 
         .col-status {
-            width: 8%;
+            width: 9%;
         }
-
-
-        /*
-            Untuk kolom nominal:
-            Tagihan 12%
-            Dibayar 12%
-            Sisa    12%
-
-            Ketiganya menggunakan col-nominal.
-        */
-
 
         /* ================================
            ALIGNMENT
@@ -159,7 +147,6 @@
             text-align: right;
         }
 
-
         /* ================================
            NOMINAL
         ================================= */
@@ -168,7 +155,6 @@
             white-space: nowrap;
             text-align: right;
         }
-
 
         /* ================================
            STATUS
@@ -183,7 +169,6 @@
             color: #dc3545;
             font-weight: bold;
         }
-
 
         /* ================================
            SUMMARY
@@ -223,7 +208,6 @@
             font-weight: bold;
         }
 
-
         /* ================================
            FOOTER
         ================================= */
@@ -234,14 +218,10 @@
             font-size: 7px;
             color: #777777;
         }
-
     </style>
-
 </head>
 
-
 <body>
-
 
     {{-- ================================
          HEADER
@@ -269,7 +249,11 @@
         @if(request('bulan') && request('tahun'))
 
             Periode:
-            {{ \Carbon\Carbon::create()->month(request('bulan'))->translatedFormat('F') }}
+
+            {{ \Carbon\Carbon::create()
+                ->month((int) request('bulan'))
+                ->translatedFormat('F') }}
+
             {{ request('tahun') }}
 
         @elseif(request('tahun'))
@@ -280,7 +264,10 @@
         @elseif(request('bulan'))
 
             Bulan:
-            {{ \Carbon\Carbon::create()->month(request('bulan'))->translatedFormat('F') }}
+
+            {{ \Carbon\Carbon::create()
+                ->month((int) request('bulan'))
+                ->translatedFormat('F') }}
 
         @else
 
@@ -321,6 +308,10 @@
                     Tahun Ajaran
                 </th>
 
+                <th class="col-bulan">
+                    Bulan
+                </th>
+
                 <th class="col-kategori">
                     Kategori
                 </th>
@@ -354,16 +345,177 @@
 
                     $tagihan = $item->tagihan;
 
-                    $nominalTagihan = $tagihan?->nominal ?? 0;
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NOMINAL TAGIHAN
+                    |--------------------------------------------------------------------------
+                    */
 
-                    $dibayar = $item->status === 'dibayar'
-                        ? ($item->nominal ?? 0)
-                        : 0;
+                    $nominalTagihan = (float) (
+                        $tagihan?->nominal ?? 0
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TOTAL PEMBAYARAN
+                    |--------------------------------------------------------------------------
+                    |
+                    | Gunakan seluruh pembayaran yang sudah dibayar
+                    | pada tagihan tersebut.
+                    |
+                    */
+
+                    $totalDibayar = 0;
+
+                    if ($tagihan) {
+
+                        if ($tagihan->relationLoaded('pembayaran')) {
+
+                            $totalDibayar = (float) $tagihan
+                                ->pembayaran
+                                ->whereIn(
+                                    'status',
+                                    [
+                                        'dibayar',
+                                        'disetujui'
+                                    ]
+                                )
+                                ->sum('nominal');
+
+                        } else {
+
+                            $totalDibayar = (float) \App\Models\PembayaranTagihan::where(
+                                'tagihan_id',
+                                $tagihan->id
+                            )
+                            ->whereIn(
+                                'status',
+                                [
+                                    'dibayar',
+                                    'disetujui'
+                                ]
+                            )
+                            ->sum('nominal');
+
+                        }
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SISA
+                    |--------------------------------------------------------------------------
+                    */
 
                     $sisa = max(
                         0,
-                        $nominalTagihan - $dibayar
+                        $nominalTagihan - $totalDibayar
                     );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | BULAN / PERIODE TAGIHAN
+                    |--------------------------------------------------------------------------
+                    |
+                    | SPP:
+                    | gunakan bulan dan tahun pada tagihan.
+                    |
+                    | Baju / PTS / Ujian:
+                    | gunakan bulan dari tanggal pembayaran.
+                    |
+                    */
+
+                    $bulanTagihan = '-';
+
+                    $kategoriNama = strtolower(
+                        trim(
+                            $tagihan?->kategori?->nama ?? ''
+                        )
+                    );
+
+                    $isSpp = $kategoriNama === 'spp';
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | SPP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (
+                        $isSpp &&
+                        $tagihan &&
+                        $tagihan->bulan &&
+                        $tagihan->tahun
+                    ) {
+
+                        $bulanTagihan = \Carbon\Carbon::create(
+                            $tagihan->tahun,
+                            $tagihan->bulan,
+                            1
+                        )->translatedFormat('F Y');
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | NON-SPP
+                    |--------------------------------------------------------------------------
+                    |
+                    | Contoh:
+                    |
+                    | Baju  -> September 2028
+                    | PTS   -> Oktober 2028
+                    | Ujian -> November 2028
+                    |
+                    */
+
+                    else {
+
+                        $tanggalPembayaran =
+                            $item->tanggal_disetujui
+                            ?? $item->tanggal_kirim
+                            ?? $item->created_at;
+
+                        if ($tanggalPembayaran) {
+
+                            $bulanTagihan = \Carbon\Carbon::parse(
+                                $tanggalPembayaran
+                            )
+                            ->timezone('Asia/Jakarta')
+                            ->translatedFormat('F Y');
+
+                        }
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | STATUS
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $statusLunas = $sisa <= 0;
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TANGGAL BAYAR
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $tanggalBayar = $item->tanggal_kirim
+                        ? \Carbon\Carbon::parse(
+                            $item->tanggal_kirim
+                        )
+                        ->timezone('Asia/Jakarta')
+                        ->format('d-m-Y H:i')
+                        : '-';
 
                 @endphp
 
@@ -371,80 +523,110 @@
                 <tr>
 
                     {{-- NO --}}
+
                     <td class="text-center">
                         {{ $loop->iteration }}
                     </td>
 
 
                     {{-- SISWA --}}
+
                     <td class="text-left">
                         {{ $tagihan?->siswa?->nama ?? '-' }}
                     </td>
 
 
                     {{-- NIS --}}
+
                     <td class="text-center">
                         {{ $tagihan?->siswa?->nis ?? '-' }}
                     </td>
 
 
                     {{-- KELAS --}}
+
                     <td class="text-center">
-                        {{ $tagihan?->siswa?->kelas?->nama_kelas
+
+                        {{
+                            $tagihan?->siswa?->kelas?->nama_kelas
                             ?? $tagihan?->siswa?->kelas?->nama
-                            ?? '-' }}
+                            ?? '-'
+                        }}
+
                     </td>
 
 
                     {{-- TAHUN AJARAN --}}
+
                     <td class="text-center">
                         {{ $tagihan?->tahunAjaran?->nama ?? '-' }}
                     </td>
 
 
+                    {{-- BULAN --}}
+
+                    <td class="text-center">
+                        {{ $bulanTagihan }}
+                    </td>
+
+
                     {{-- KATEGORI --}}
+
                     <td class="text-left">
                         {{ $tagihan?->kategori?->nama ?? '-' }}
                     </td>
 
 
                     {{-- TAGIHAN --}}
+
                     <td class="nominal">
-                        Rp {{ number_format(
+
+                        Rp
+                        {{ number_format(
                             $nominalTagihan,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
 
                     {{-- DIBAYAR --}}
+
                     <td class="nominal">
-                        Rp {{ number_format(
-                            $dibayar,
+
+                        Rp
+                        {{ number_format(
+                            $totalDibayar,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
 
                     {{-- SISA --}}
+
                     <td class="nominal">
-                        Rp {{ number_format(
+
+                        Rp
+                        {{ number_format(
                             $sisa,
                             0,
                             ',',
                             '.'
                         ) }}
+
                     </td>
 
 
                     {{-- STATUS --}}
+
                     <td class="text-center">
 
-                        @if($sisa <= 0)
+                        @if($statusLunas)
 
                             <span class="status-lunas">
                                 Lunas
@@ -462,12 +644,14 @@
 
                 </tr>
 
-
             @empty
 
                 <tr>
 
-                    <td colspan="10" class="text-center">
+                    <td
+                        colspan="11"
+                        class="text-center"
+                    >
                         Belum ada data laporan.
                     </td>
 
@@ -495,12 +679,15 @@
                 </td>
 
                 <td class="summary-value">
-                    Rp {{ number_format(
+
+                    Rp
+                    {{ number_format(
                         $totalTagihan ?? 0,
                         0,
                         ',',
                         '.'
                     ) }}
+
                 </td>
 
             </tr>
@@ -513,12 +700,15 @@
                 </td>
 
                 <td class="summary-value">
-                    Rp {{ number_format(
+
+                    Rp
+                    {{ number_format(
                         $totalPembayaran ?? 0,
                         0,
                         ',',
                         '.'
                     ) }}
+
                 </td>
 
             </tr>
@@ -532,7 +722,8 @@
 
                 <td class="summary-value">
 
-                    Rp {{ number_format(
+                    Rp
+                    {{ number_format(
                         $sisaTagihan ?? 0,
                         0,
                         ',',
@@ -555,10 +746,12 @@
     <div class="pdf-footer">
 
         Dicetak pada:
-        {{ now()->format('d/m/Y H:i') }}
+
+        {{ now()
+            ->timezone('Asia/Jakarta')
+            ->format('d/m/Y H:i') }}
 
     </div>
-
 
 </body>
 
