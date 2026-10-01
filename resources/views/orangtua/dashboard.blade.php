@@ -64,7 +64,6 @@
 
     $pengingatPembayaran = collect();
 
-
     if (
         $pengaturanAktif &&
         isset($tagihan)
@@ -80,7 +79,6 @@
                     return false;
                 }
 
-
                 $sudahDibayar =
                     $item->pembayaran
                         ->whereIn('status', [
@@ -89,7 +87,6 @@
                         ])
                         ->sum('nominal');
 
-
                 $sisa =
                     max(
                         (float) $item->nominal -
@@ -97,24 +94,20 @@
                         0
                     );
 
-
                 if ($sisa <= 0) {
                     return false;
                 }
-
 
                 $tanggalJatuhTempo =
                     \Carbon\Carbon::parse(
                         $item->jatuh_tempo
                     )->startOfDay();
 
-
                 $selisihHari =
                     $tanggalHariIni->diffInDays(
                         $tanggalJatuhTempo,
                         false
                     );
-
 
                 return $selisihHari <= $hariPengingat;
 
@@ -173,7 +166,6 @@
                             ])
                             ->sum('nominal');
 
-
                     $sisa =
                         max(
                             (float) $item->nominal -
@@ -181,12 +173,10 @@
                             0
                         );
 
-
                     $tanggalJatuhTempo =
                         \Carbon\Carbon::parse(
                             $item->jatuh_tempo
                         )->startOfDay();
-
 
                     $selisihHari =
                         $tanggalHariIni->diffInDays(
@@ -194,14 +184,8 @@
                             false
                         );
 
-
                     $sudahLewat =
                         $selisihHari < 0;
-
-
-                    $hariTersisa =
-                        abs($selisihHari);
-
 
                     $sedangDiproses =
                         $item->pembayaran
@@ -237,7 +221,6 @@
                             <strong>
                                 {{ $item->kategori?->nama ?? 'Tagihan' }}
                             </strong>
-
 
                             @if ($sudahLewat)
 
@@ -275,7 +258,6 @@
                                 {{ $item->tahunAjaran?->nama ?? '-' }}
                             </span>
 
-
                             <span>
                                 Sisa:
                                 <strong>
@@ -283,7 +265,6 @@
                                     {{ number_format($sisa, 0, ',', '.') }}
                                 </strong>
                             </span>
-
 
                             <span>
                                 Jatuh tempo:
@@ -496,7 +477,6 @@
     </div>
 
 
-
     <div class="summary-card summary-card-success">
 
         <div class="summary-card-header">
@@ -520,7 +500,6 @@
         </small>
 
     </div>
-
 
 
     <div class="summary-card summary-card-warning">
@@ -557,21 +536,29 @@
 
 @php
 
+    /*
+    |--------------------------------------------------------------------------
+    | TAGIHAN BELUM LUNAS
+    |--------------------------------------------------------------------------
+    */
+
     $tagihanBelumLunas = $tagihan
         ->filter(function ($item) {
 
-            $sudahDibayar = $item->pembayaran
-                ->whereIn('status', [
-                    'dibayar',
-                    'disetujui'
-                ])
-                ->sum('nominal');
+            $sudahDibayar =
+                $item->pembayaran
+                    ->whereIn('status', [
+                        'dibayar',
+                        'disetujui'
+                    ])
+                    ->sum('nominal');
 
-            $sisa = max(
-                (float) $item->nominal -
-                (float) $sudahDibayar,
-                0
-            );
+            $sisa =
+                max(
+                    (float) $item->nominal -
+                    (float) $sudahDibayar,
+                    0
+                );
 
             return $sisa > 0;
 
@@ -579,12 +566,131 @@
         ->values();
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | KELOMPOKKAN BERDASARKAN TAHUN AJARAN
+    |--------------------------------------------------------------------------
+    */
+
     $tagihanPerTahun = $tagihanBelumLunas
+
         ->groupBy(function ($item) {
 
             return $item->tahun_ajaran_id;
 
-        });
+        })
+
+        ->sortBy(function ($items) {
+
+            $tahunAjaran =
+                $items->first()?->tahunAjaran;
+
+
+            if ($tahunAjaran?->tanggal_mulai) {
+
+                return \Carbon\Carbon::parse(
+                    $tahunAjaran->tanggal_mulai
+                )->timestamp;
+
+            }
+
+
+            $nama =
+                trim(
+                    $tahunAjaran?->nama ?? ''
+                );
+
+
+            if (
+                preg_match(
+                    '/(\d{4})\s*[\/-]\s*(\d{4})/',
+                    $nama,
+                    $match
+                )
+            ) {
+
+                return (int) $match[1];
+
+            }
+
+
+            return PHP_INT_MAX;
+
+        })
+
+        ->map(function ($items) {
+
+            return $items
+
+                ->sortBy(function ($item) {
+
+                    $kategori =
+                        strtolower(
+                            trim(
+                                $item->kategori?->nama ?? ''
+                            )
+                        );
+
+
+                    if (
+                        $kategori === 'spp' &&
+                        $item->bulan &&
+                        $item->tahun
+                    ) {
+
+                        return sprintf(
+                            '0-%04d-%02d-%010d',
+                            (int) $item->tahun,
+                            (int) $item->bulan,
+                            (int) $item->id
+                        );
+
+                    }
+
+
+                    $jatuhTempo =
+                        $item->jatuh_tempo
+                            ? \Carbon\Carbon::parse(
+                                $item->jatuh_tempo
+                            )->timestamp
+                            : PHP_INT_MAX;
+
+
+                    return sprintf(
+                        '1-%010d-%010d',
+                        $jatuhTempo,
+                        (int) $item->id
+                    );
+
+                })
+
+                ->values();
+
+        })
+
+        ->values();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RIWAYAT PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    $pembayaranTampil =
+        collect($pembayaran)
+            ->sortByDesc(function ($item) {
+
+                if (!$item->tanggal_kirim) {
+                    return 0;
+                }
+
+                return \Carbon\Carbon::parse(
+                    $item->tanggal_kirim
+                )->timestamp;
+
+            })
+            ->values();
 
 @endphp
 
@@ -679,10 +785,82 @@
                     $tahunAjaran =
                         $tagihanTahun->first()?->tahunAjaran;
 
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PISAHKAN SPP DAN NON-SPP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $tagihanSpp =
+                        $tagihanTahun
+                            ->filter(function ($item) {
+
+                                return strtolower(
+                                    trim(
+                                        $item->kategori?->nama ?? ''
+                                    )
+                                ) === 'spp';
+
+                            })
+                            ->sortBy(function ($item) {
+
+                                return sprintf(
+                                    '%04d-%02d-%010d',
+                                    (int) $item->tahun,
+                                    (int) $item->bulan,
+                                    (int) $item->id
+                                );
+
+                            })
+                            ->values();
+
+
+                    $tagihanNonSpp =
+                        $tagihanTahun
+                            ->filter(function ($item) {
+
+                                return strtolower(
+                                    trim(
+                                        $item->kategori?->nama ?? ''
+                                    )
+                                ) !== 'spp';
+
+                            })
+                            ->values();
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TOTAL SPP
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $totalSpp =
+                        $tagihanSpp->sum(function ($item) {
+
+                            $sudahDibayar =
+                                $item->pembayaran
+                                    ->whereIn('status', [
+                                        'dibayar',
+                                        'disetujui'
+                                    ])
+                                    ->sum('nominal');
+
+                            return max(
+                                (float) $item->nominal -
+                                (float) $sudahDibayar,
+                                0
+                            );
+
+                        });
+
                 @endphp
 
 
                 <div class="tahun-tagihan-card">
+
+                    {{-- HEADER TAHUN AJARAN --}}
 
                     <div class="tahun-tagihan-header">
 
@@ -712,11 +890,366 @@
 
 
 
-                    {{-- DAFTAR TAGIHAN --}}
-
                     <div class="tagihan-list">
 
-                        @foreach ($tagihanTahun as $item)
+
+                        {{-- =================================================
+                             ACCORDION SPP
+                        ================================================== --}}
+
+                        @if ($tagihanSpp->count() > 0)
+
+                            @php
+
+                                $accordionId =
+                                    'accordion-spp-' . $tahunId;
+
+                            @endphp
+
+
+                            <div class="spp-accordion">
+
+                                {{-- HEADER SPP --}}
+
+                                <button
+                                    type="button"
+                                    class="spp-accordion-header"
+                                    onclick="toggleSppAccordion('{{ $accordionId }}', this)"
+                                    aria-expanded="false"
+                                    aria-controls="{{ $accordionId }}"
+                                >
+
+                                    <div class="spp-accordion-left">
+
+                                        <div class="spp-accordion-icon">
+                                            <i data-lucide="receipt-text"></i>
+                                        </div>
+
+
+                                        <div class="spp-accordion-title">
+
+                                            <strong>
+                                                SPP
+                                            </strong>
+
+                                            <span>
+                                                {{ $tagihanSpp->count() }}
+                                                bulan
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="spp-accordion-middle">
+
+                                        <span>
+                                            Total Sisa SPP
+                                        </span>
+
+                                        <strong>
+                                            Rp
+                                            {{ number_format($totalSpp, 0, ',', '.') }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="spp-accordion-arrow">
+
+                                        <i data-lucide="chevron-down"></i>
+
+                                    </div>
+
+                                </button>
+
+
+
+                                {{-- ISI ACCORDION --}}
+
+                                <div
+                                    id="{{ $accordionId }}"
+                                    class="spp-accordion-content"
+                                    aria-hidden="true"
+                                >
+
+                                    <div class="spp-month-list">
+
+                                        @foreach ($tagihanSpp as $item)
+
+                                            @php
+
+                                                $sudahDibayar =
+                                                    $item->pembayaran
+                                                        ->whereIn('status', [
+                                                            'dibayar',
+                                                            'disetujui'
+                                                        ])
+                                                        ->sum('nominal');
+
+
+                                                $sisa =
+                                                    max(
+                                                        (float) $item->nominal -
+                                                        (float) $sudahDibayar,
+                                                        0
+                                                    );
+
+
+                                                $sedangDiproses =
+                                                    $item->pembayaran
+                                                        ->contains(
+                                                            'status',
+                                                            'menunggu'
+                                                        );
+
+
+                                                $ditolak =
+                                                    $item->pembayaran
+                                                        ->contains(
+                                                            'status',
+                                                            'ditolak'
+                                                        );
+
+
+                                                if ($sisa <= 0) {
+
+                                                    $statusLabel =
+                                                        'Lunas';
+
+                                                    $statusClass =
+                                                        'status-lunas';
+
+                                                } elseif ($sedangDiproses) {
+
+                                                    $statusLabel =
+                                                        'Menunggu Persetujuan';
+
+                                                    $statusClass =
+                                                        'status-menunggu';
+
+                                                } elseif (
+                                                    $ditolak &&
+                                                    $sudahDibayar <= 0
+                                                ) {
+
+                                                    $statusLabel =
+                                                        'Ditolak';
+
+                                                    $statusClass =
+                                                        'status-ditolak';
+
+                                                } elseif (
+                                                    $sudahDibayar > 0 &&
+                                                    $sisa > 0
+                                                ) {
+
+                                                    $statusLabel =
+                                                        'Sebagian';
+
+                                                    $statusClass =
+                                                        'status-sebagian';
+
+                                                } else {
+
+                                                    $statusLabel =
+                                                        'Belum Bayar';
+
+                                                    $statusClass =
+                                                        'status-belum';
+
+                                                }
+
+                                            @endphp
+
+
+                                            <div class="spp-month-item">
+
+
+                                                {{-- BULAN --}}
+
+                                                <div class="spp-month-info">
+
+                                                    <div class="spp-month-icon">
+
+                                                        <i data-lucide="calendar"></i>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <strong>
+
+                                                            @if ($item->bulan && $item->tahun)
+
+                                                                {{ \Carbon\Carbon::create(
+                                                                    $item->tahun,
+                                                                    $item->bulan,
+                                                                    1
+                                                                )->translatedFormat('F Y') }}
+
+                                                            @else
+
+                                                                SPP
+
+                                                            @endif
+
+                                                        </strong>
+
+                                                        <span>
+                                                            Jatuh tempo:
+
+                                                            @if ($item->jatuh_tempo)
+
+                                                                {{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d-m-Y') }}
+
+                                                            @else
+
+                                                                Belum ditentukan
+
+                                                            @endif
+
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+
+
+                                                {{-- NOMINAL --}}
+
+                                                <div class="spp-month-nominal">
+
+                                                    <span>
+                                                        Sisa
+                                                    </span>
+
+                                                    <strong>
+                                                        Rp
+                                                        {{ number_format($sisa, 0, ',', '.') }}
+                                                    </strong>
+
+                                                </div>
+
+
+
+                                                {{-- STATUS --}}
+
+                                                <div class="spp-month-status">
+
+                                                    <span
+                                                        class="status {{ $statusClass }}"
+                                                    >
+
+                                                        @if (
+                                                            $statusClass ===
+                                                            'status-menunggu'
+                                                        )
+
+                                                            <i data-lucide="clock"></i>
+
+                                                        @elseif (
+                                                            $statusClass ===
+                                                            'status-ditolak'
+                                                        )
+
+                                                            <i data-lucide="circle-x"></i>
+
+                                                        @elseif (
+                                                            $statusClass ===
+                                                            'status-lunas'
+                                                        )
+
+                                                            <i data-lucide="check-circle"></i>
+
+                                                        @else
+
+                                                            <i data-lucide="circle-alert"></i>
+
+                                                        @endif
+
+                                                        {{ $statusLabel }}
+
+                                                    </span>
+
+                                                </div>
+
+
+
+                                                {{-- AKSI --}}
+
+                                                <div class="spp-month-action">
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn-detail"
+                                                        title="Detail Tagihan"
+                                                        aria-label="Detail Tagihan"
+                                                        onclick="openDetailTagihan({{ $item->id }})"
+                                                    >
+
+                                                        <i data-lucide="info"></i>
+
+                                                    </button>
+
+
+                                                    @if ($sedangDiproses)
+
+                                                        <span class="status status-menunggu">
+
+                                                            <i data-lucide="clock"></i>
+
+                                                            Diproses
+
+                                                        </span>
+
+                                                    @else
+
+                                                        <form
+                                                            action="{{ route('orangtua.pembayaran.create', ['tagihan' => $item->id]) }}"
+                                                            method="GET"
+                                                            class="payment-form"
+                                                        >
+
+                                                            <button
+                                                                type="submit"
+                                                                class="btn btn-bayar"
+                                                            >
+
+                                                                <i data-lucide="credit-card"></i>
+
+                                                                Bayar
+
+                                                            </button>
+
+                                                        </form>
+
+                                                    @endif
+
+                                                </div>
+
+                                            </div>
+
+                                        @endforeach
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @endif
+
+
+
+                        {{-- =================================================
+                             NON SPP
+                        ================================================== --}}
+
+                        @foreach ($tagihanNonSpp as $item)
 
                             @php
 
@@ -755,8 +1288,11 @@
 
                                 if ($sisa <= 0) {
 
-                                    $statusLabel = 'Lunas';
-                                    $statusClass = 'status-lunas';
+                                    $statusLabel =
+                                        'Lunas';
+
+                                    $statusClass =
+                                        'status-lunas';
 
                                 } elseif ($sedangDiproses) {
 
@@ -801,7 +1337,9 @@
 
                                 $namaKategori =
                                     strtolower(
-                                        $item->kategori?->nama ?? ''
+                                        trim(
+                                            $item->kategori?->nama ?? ''
+                                        )
                                     );
 
                             @endphp
@@ -809,23 +1347,11 @@
 
                             <div class="tagihan-item">
 
-
-                                {{-- KATEGORI --}}
-
                                 <div class="tagihan-item-category">
 
                                     <div class="tagihan-category-icon">
 
                                         @if (
-                                            str_contains(
-                                                $namaKategori,
-                                                'spp'
-                                            )
-                                        )
-
-                                            <i data-lucide="receipt-text"></i>
-
-                                        @elseif (
                                             str_contains(
                                                 $namaKategori,
                                                 'jas'
@@ -860,24 +1386,6 @@
 
                                         <strong>
                                             {{ $item->kategori?->nama ?? '-' }}
-
-                                            @if (
-                                                str_contains(
-                                                    $namaKategori,
-                                                    'spp'
-                                                ) &&
-                                                $item->bulan &&
-                                                $item->tahun
-                                            )
-
-                                                -
-                                                {{ \Carbon\Carbon::create(
-                                                    $item->tahun,
-                                                    $item->bulan,
-                                                    1
-                                                )->translatedFormat('F Y') }}
-
-                                            @endif
                                         </strong>
 
 
@@ -902,8 +1410,6 @@
 
 
 
-                                {{-- NOMINAL --}}
-
                                 <div class="tagihan-item-nominal">
 
                                     <span>
@@ -918,8 +1424,6 @@
                                 </div>
 
 
-
-                                {{-- STATUS --}}
 
                                 <div class="tagihan-item-status">
 
@@ -965,8 +1469,6 @@
                                 </div>
 
 
-
-                                {{-- AKSI --}}
 
                                 <div class="tagihan-item-action">
 
@@ -1157,6 +1659,13 @@
                     )
                     : 0;
 
+            $namaKategori =
+                strtolower(
+                    trim(
+                        $item->kategori?->nama ?? ''
+                    )
+                );
+
         @endphp
 
 
@@ -1184,7 +1693,17 @@
                     <div class="detail-modal-header-left">
 
                         <div class="detail-header-icon">
-                            <i data-lucide="file-text"></i>
+
+                            @if ($namaKategori === 'spp')
+
+                                <i data-lucide="receipt-text"></i>
+
+                            @else
+
+                                <i data-lucide="file-text"></i>
+
+                            @endif
+
                         </div>
 
                         <div>
@@ -1234,13 +1753,16 @@
 
                             <div class="detail-item">
 
-                                <span>Kategori</span>
+                                <span>
+                                    Kategori
+                                </span>
 
                                 <strong>
+
                                     {{ $item->kategori?->nama ?? '-' }}
 
                                     @if (
-                                        strtolower($item->kategori?->nama ?? '') === 'spp' &&
+                                        $namaKategori === 'spp' &&
                                         $item->bulan &&
                                         $item->tahun
                                     )
@@ -1253,6 +1775,7 @@
                                         )->translatedFormat('F Y') }}
 
                                     @endif
+
                                 </strong>
 
                             </div>
@@ -1260,7 +1783,9 @@
 
                             <div class="detail-item">
 
-                                <span>Tahun Ajaran</span>
+                                <span>
+                                    Tahun Ajaran
+                                </span>
 
                                 <strong>
                                     {{ $item->tahunAjaran?->nama ?? '-' }}
@@ -1271,7 +1796,9 @@
 
                             <div class="detail-item">
 
-                                <span>Nama Siswa</span>
+                                <span>
+                                    Nama Siswa
+                                </span>
 
                                 <strong>
                                     {{ $siswa->nama ?? '-' }}
@@ -1282,7 +1809,9 @@
 
                             <div class="detail-item">
 
-                                <span>Nama Orang Tua</span>
+                                <span>
+                                    Nama Orang Tua
+                                </span>
 
                                 <strong>
                                     {{ $siswa->orangTua?->nama ?? '-' }}
@@ -1293,7 +1822,9 @@
 
                             <div class="detail-item">
 
-                                <span>NIS</span>
+                                <span>
+                                    NIS
+                                </span>
 
                                 <strong>
                                     {{ $siswa->nis ?? '-' }}
@@ -1304,7 +1835,9 @@
 
                             <div class="detail-item">
 
-                                <span>Kelas</span>
+                                <span>
+                                    Kelas
+                                </span>
 
                                 <strong>
                                     {{ $siswa->kelas?->nama_kelas ?? $siswa->kelas?->nama ?? '-' }}
@@ -1315,7 +1848,9 @@
 
                             <div class="detail-item">
 
-                                <span>Total Tagihan</span>
+                                <span>
+                                    Total Tagihan
+                                </span>
 
                                 <strong>
                                     Rp
@@ -1327,7 +1862,9 @@
 
                             <div class="detail-item">
 
-                                <span>Sudah Dibayar</span>
+                                <span>
+                                    Sudah Dibayar
+                                </span>
 
                                 <strong>
                                     Rp
@@ -1339,7 +1876,9 @@
 
                             <div class="detail-item detail-item-sisa">
 
-                                <span>Sisa Tagihan</span>
+                                <span>
+                                    Sisa Tagihan
+                                </span>
 
                                 <strong>
                                     Rp
@@ -1351,7 +1890,9 @@
 
                             <div class="detail-item">
 
-                                <span>Jatuh Tempo</span>
+                                <span>
+                                    Jatuh Tempo
+                                </span>
 
                                 <strong>
 
@@ -1372,7 +1913,9 @@
 
                             <div class="detail-item">
 
-                                <span>Status</span>
+                                <span>
+                                    Status
+                                </span>
 
                                 <strong>
 
@@ -1694,37 +2237,14 @@
 
                     <tr>
 
-                        <th>
-                            No
-                        </th>
-
-                        <th>
-                            Tanggal
-                        </th>
-
-                        <th>
-                            Kategori
-                        </th>
-
-                        <th>
-                            Tahun Ajaran
-                        </th>
-
-                        <th>
-                            Nominal
-                        </th>
-
-                        <th>
-                            Metode
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                        <th>
-                            Aksi
-                        </th>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Kategori</th>
+                        <th>Tahun Ajaran</th>
+                        <th>Nominal</th>
+                        <th>Metode</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
 
                     </tr>
 
@@ -1733,7 +2253,7 @@
 
                 <tbody>
 
-                @forelse ($pembayaran as $index => $item)
+                @forelse ($pembayaranTampil as $index => $item)
 
                     @php
 
@@ -1790,10 +2310,15 @@
 
 
                         <td>
+
                             {{ $item->tagihan?->kategori?->nama ?? '-' }}
 
                             @if (
-                                strtolower($item->tagihan?->kategori?->nama ?? '') === 'spp' &&
+                                strtolower(
+                                    trim(
+                                        $item->tagihan?->kategori?->nama ?? ''
+                                    )
+                                ) === 'spp' &&
                                 $item->tagihan?->bulan &&
                                 $item->tagihan?->tahun
                             )
@@ -1806,6 +2331,7 @@
                                 )->translatedFormat('F Y') }}
 
                             @endif
+
                         </td>
 
 
@@ -1926,7 +2452,6 @@
 
                     </tr>
 
-
                 @empty
 
                     <tr>
@@ -1970,7 +2495,7 @@
              MODAL DETAIL PEMBAYARAN
         ====================================================== --}}
 
-        @foreach ($pembayaran as $item)
+        @foreach ($pembayaranTampil as $item)
 
             @php
 
@@ -2076,8 +2601,6 @@
                         <div class="payment-detail-layout">
 
 
-                            {{-- KOLOM KIRI --}}
-
                             <div class="payment-detail-left">
 
                                 <div class="payment-detail-card">
@@ -2102,7 +2625,11 @@
                                             {{ $item->tagihan?->kategori?->nama ?? '-' }}
 
                                             @if (
-                                                strtolower($item->tagihan?->kategori?->nama ?? '') === 'spp' &&
+                                                strtolower(
+                                                    trim(
+                                                        $item->tagihan?->kategori?->nama ?? ''
+                                                    )
+                                                ) === 'spp' &&
                                                 $item->tagihan?->bulan &&
                                                 $item->tagihan?->tahun
                                             )
@@ -2352,9 +2879,6 @@
                                     </div>
 
 
-
-                                    {{-- INFO STATUS --}}
-
                                     @if (
                                         in_array(
                                             $item->status,
@@ -2474,9 +2998,6 @@
                                     @endif
 
 
-
-                                    {{-- CATATAN ADMIN --}}
-
                                     @if (
                                         $item->status === 'ditolak' &&
                                         $item->catatan
@@ -2502,12 +3023,7 @@
 
 
 
-                            {{-- KOLOM KANAN --}}
-
                             <div class="payment-detail-right">
-
-
-                                {{-- BUKTI PEMBAYARAN --}}
 
                                 <div class="payment-proof-card">
 
@@ -2620,8 +3136,6 @@
 
 
 
-                                {{-- RINGKASAN PEMBAYARAN --}}
-
                                 <div class="payment-side-summary">
 
                                     <div class="payment-side-summary-title">
@@ -2716,13 +3230,6 @@
 
 <script>
 
-
-/*
-|--------------------------------------------------------------------------
-| REFRESH LUCIDE
-|--------------------------------------------------------------------------
-*/
-
 function refreshLucideIcons() {
 
     if (typeof lucide !== 'undefined') {
@@ -2732,7 +3239,6 @@ function refreshLucideIcons() {
     }
 
 }
-
 
 
 /*
@@ -2786,6 +3292,116 @@ function showPaymentSection(section, button) {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| ACCORDION SPP
+|--------------------------------------------------------------------------
+*/
+
+function toggleSppAccordion(id, button) {
+
+    const content =
+        document.getElementById(id);
+
+    if (!content || !button) {
+
+        return;
+
+    }
+
+
+    const isOpen =
+        button.getAttribute('aria-expanded') === 'true';
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tutup accordion lain
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .querySelectorAll('.spp-accordion-header')
+        .forEach(function (otherButton) {
+
+            const otherId =
+                otherButton.getAttribute(
+                    'aria-controls'
+                );
+
+            const otherContent =
+                document.getElementById(otherId);
+
+
+            if (
+                otherButton !== button &&
+                otherContent
+            ) {
+
+                otherButton.setAttribute(
+                    'aria-expanded',
+                    'false'
+                );
+
+                otherContent.setAttribute(
+                    'aria-hidden',
+                    'true'
+                );
+
+                otherContent.classList.remove(
+                    'open'
+                );
+
+            }
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Toggle accordion yang dipilih
+    |--------------------------------------------------------------------------
+    */
+
+    if (isOpen) {
+
+        button.setAttribute(
+            'aria-expanded',
+            'false'
+        );
+
+        content.setAttribute(
+            'aria-hidden',
+            'true'
+        );
+
+        content.classList.remove(
+            'open'
+        );
+
+    } else {
+
+        button.setAttribute(
+            'aria-expanded',
+            'true'
+        );
+
+        content.setAttribute(
+            'aria-hidden',
+            'false'
+        );
+
+        content.classList.add(
+            'open'
+        );
+
+    }
+
+
+    refreshLucideIcons();
+
+}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -2808,8 +3424,21 @@ function openDetailTagihan(id) {
     }
 
 
-    modal.classList.add('show');
+    document
+        .querySelectorAll('.detail-modal.show')
+        .forEach(function (element) {
 
+            element.classList.remove('show');
+
+            element.setAttribute(
+                'aria-hidden',
+                'true'
+            );
+
+        });
+
+
+    modal.classList.add('show');
 
     modal.setAttribute(
         'aria-hidden',
@@ -2827,6 +3456,11 @@ function openDetailTagihan(id) {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| CLOSE DETAIL TAGIHAN
+|--------------------------------------------------------------------------
+*/
 
 function closeDetailTagihan(id) {
 
@@ -2843,7 +3477,9 @@ function closeDetailTagihan(id) {
     }
 
 
-    modal.classList.remove('show');
+    modal.classList.remove(
+        'show'
+    );
 
 
     modal.setAttribute(
@@ -2867,7 +3503,6 @@ function closeDetailTagihan(id) {
     }
 
 }
-
 
 
 /*
@@ -2891,6 +3526,20 @@ function openDetailPembayaran(id) {
     }
 
 
+    document
+        .querySelectorAll('.detail-modal.show')
+        .forEach(function (element) {
+
+            element.classList.remove('show');
+
+            element.setAttribute(
+                'aria-hidden',
+                'true'
+            );
+
+        });
+
+
     modal.classList.add('show');
 
 
@@ -2910,6 +3559,11 @@ function openDetailPembayaran(id) {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| CLOSE DETAIL PEMBAYARAN
+|--------------------------------------------------------------------------
+*/
 
 function closeDetailPembayaran(id) {
 
@@ -2926,7 +3580,9 @@ function closeDetailPembayaran(id) {
     }
 
 
-    modal.classList.remove('show');
+    modal.classList.remove(
+        'show'
+    );
 
 
     modal.setAttribute(
@@ -2952,10 +3608,9 @@ function closeDetailPembayaran(id) {
 }
 
 
-
 /*
 |--------------------------------------------------------------------------
-| ESCAPE UNTUK MENUTUP MODAL
+| ESCAPE
 |--------------------------------------------------------------------------
 */
 
@@ -2996,10 +3651,9 @@ document.addEventListener(
 );
 
 
-
 /*
 |--------------------------------------------------------------------------
-| INISIALISASI HALAMAN
+| INISIALISASI
 |--------------------------------------------------------------------------
 */
 

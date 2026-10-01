@@ -1659,3 +1659,258 @@
     }
 
 }
+
+/* =========================================================
+   CREATE ORANG TUA
+========================================================= */
+
+.page-title {
+    margin-bottom: 28px;
+}
+
+.page-title h1 {
+    margin: 0 0 6px;
+    color: #0f5132;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.page-title p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CARD CREATE
+========================================================= */
+
+.orang-tua-card {
+    width: 100%;
+    max-width: 900px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.orang-tua-info {
+    padding: 15px 17px;
+    margin-bottom: 25px;
+    border: 1px solid #b6d9c6;
+    border-radius: 9px;
+    background: #edf7f1;
+    color: #0f5132;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.orang-tua-info strong {
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.orang-tua-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.orang-tua-form-group label {
+    color: #344054;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.orang-tua-form-group input,
+.orang-tua-form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d9dfdc;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #343a40;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.orang-tua-form-group input {
+    height: 45px;
+    padding: 0 13px;
+}
+
+.orang-tua-form-group textarea {
+    min-height: 115px;
+    padding: 12px 13px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.orang-tua-form-group input::placeholder,
+.orang-tua-form-group textarea::placeholder {
+    color: #899197;
+}
+
+.orang-tua-form-group input:focus,
+.orang-tua-form-group textarea:focus {
+    border-color: #0f5132;
+    box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.08);
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.orang-tua-error {
+    color: #dc3545;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.orang-tua-error-list {
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    border: 1px solid #f1aeb5;
+    border-radius: 9px;
+    background: #f8d7da;
+    color: #842029;
+    font-size: 13px;
+}
+
+.orang-tua-error-list ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.orang-tua-error-list li {
+    margin-bottom: 4px;
+}
+
+.orang-tua-error-list li:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   BUTTON AREA
+========================================================= */
+
+.orang-tua-button-area {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 22px;
+    border-top: 1px solid #edf0ee;
+}
+
+
+/* =========================================================
+   BUTTON
+========================================================= */
+
+.orang-tua-btn {
+    min-height: 43px;
+    padding: 10px 17px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+
+/* =========================================================
+   BUTTON SIMPAN
+========================================================= */
+
+.orang-tua-btn-simpan {
+    border: 1px solid #0f5132;
+    background: #0f5132;
+    color: #ffffff;
+}
+
+.orang-tua-btn-simpan:hover {
+    background: #0b3d25;
+    border-color: #0b3d25;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   BUTTON KEMBALI
+========================================================= */
+
+.orang-tua-btn-kembali {
+    border: 1px solid #d9dfdc;
+    background: #ffffff;
+    color: #495057;
+}
+
+.orang-tua-btn-kembali:hover {
+    background: #f2f6f3;
+    color: #0f5132;
+}
+
+
+/* =========================================================
+   RESPONSIVE CREATE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .orang-tua-card {
+        max-width: 100%;
+        padding: 22px;
+    }
+
+    .page-title h1 {
+        font-size: 25px;
+    }
+
+    .orang-tua-button-area {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .orang-tua-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .orang-tua-card {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .page-title {
+        margin-bottom: 20px;
+    }
+
+    .page-title h1 {
+        font-size: 23px;
+    }
+}
